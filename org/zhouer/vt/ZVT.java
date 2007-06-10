@@ -1,8 +1,7 @@
 package org.zhouer.vt;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.image.BufferedImage;
@@ -254,22 +253,20 @@ public class ZVT extends JComponent implements AdjustmentListener
 		scrollbar.setValue( scrollbar.getValue() + amount );
 	}
 	
+	public Dimension getPreferredSize()
+	{
+		// FIXME: magic number
+		return new Dimension( 800, 600 );
+	}
+	
 	public void adjustmentValueChanged( AdjustmentEvent ae )
 	{
 		vt.setScrollUp( scrollbar.getMaximum() - scrollbar.getValue() - scrollbar.getVisibleAmount() );
 	}
 	
-	protected void paintComponent( Graphics g )
-	{
-		vt.paint( g );
-	}
-	
 	public void run()
 	{
-		// XXX:
-		updateSize();
-		
-		// 取得 Focus
+		// XXX: 因為是 ZVT addKeyListener，所以在這裡 requestFocus。
 		requestFocusInWindow();
 		
 		vt.run();
@@ -289,10 +286,6 @@ public class ZVT extends JComponent implements AdjustmentListener
 		
 		// Input Method Framework, set passive-client
 		enableInputMethods( true );
-		
-		//FIXME: magic number
-		setBackground( Color.BLACK );
-		setLayout( new BorderLayout() );
 		
 		// VT100
 		vt = new VT100( this, resource, conv, bi );

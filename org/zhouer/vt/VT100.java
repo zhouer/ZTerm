@@ -2112,9 +2112,6 @@ public class VT100 extends JComponent
 	
 	public void run()
 	{
-		validate();
-		updateSize();
-		
 		init_ready = true;
 		
 		while( !parent.isClosed() ) {

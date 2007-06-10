@@ -458,14 +458,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			s.updateScreen();
 			
 			// 讓所選的 session 取得 focus
-			// XXX: s.requestFocusInWindow(); 無法正確取得 focus（似乎是 Java 的 bug）
-			// 因此必須使用下面的 workaround
-			javax.swing.SwingUtilities.invokeLater( new Runnable() {
-				public void run() {
-					s.requestFocusInWindow();
-				}
-			});
-	        
+			s.requestFocus();
 		} else {
 			// FIXME: magic number
 			setTitle("ZTerm");
@@ -679,7 +672,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		}
 
 		// 每個 session 都是一個 thread, 解決主程式被 block 住的問題。
-		// 在 Session 的 run() 中會取得 Focus
 		new Thread( s ).start();
 	}
 	
