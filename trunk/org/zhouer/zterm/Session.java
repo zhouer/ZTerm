@@ -1,6 +1,7 @@
 package org.zhouer.zterm;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -119,6 +120,12 @@ public class Session extends JPanel implements Runnable, Application
 	public void updateImage()
 	{
 		zvt.updateImage();
+	}
+	
+	public void requestFocus()
+	{
+		// XXX: 這麼做是否恰當？
+		zvt.requestFocusInWindow();
 	}
 	
 	public BufferedImage getImage()
@@ -392,25 +399,9 @@ public class Session extends JPanel implements Runnable, Application
 	
 	public void run()
 	{
-		zvt.run();
-	}
-	
-	public Session( Site s, Resource r, Convertor c, BufferedImage b, ZTerm pa )
-	{
-		super();
-		
-		site = s;
-		resource = r;
-		conv = c;
-		bi = b;
-		parent = pa;
-		
-		// 設定擁有一個分頁
-		hasTab = true;
-		
-		// XXX: 預設成 host
-		windowtitle = site.host;
-		iconname = site.host;
+		// XXX: 這裡需要先 updateSize()
+		// 以免 vt 的 height, width = 0 發生 devide by zero
+		zvt.updateSize();
 		
 		// 新建連線
 		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
@@ -433,16 +424,6 @@ public class Session extends JPanel implements Runnable, Application
 		
 		// TODO: 如果需要 input filter or trigger 可以在這邊套上
 		
-		zvt = new ZVT( resource, conv, bi, this );
-		
-		// 把 zvt 放進 JPanel 中
-		setLayout( new BorderLayout() );
-		add( zvt, BorderLayout.CENTER );
-		
-		// FIXME: 是否應該在這邊設定？
-		zvt.setEncoding( site.encoding );
-		zvt.setEmulation( site.emulation );
-		
 		// 設定 icon 為 connected icon
 		setTabIcon( ZTerm.ICON_CONNECTED );
 		
@@ -458,5 +439,39 @@ public class Session extends JPanel implements Runnable, Application
 		
 		// 記錄連線開始的時間
 		startTime = new Date().getTime();
+		
+		zvt.run();
+	}
+	
+	public Session( Site s, Resource r, Convertor c, BufferedImage b, ZTerm pa )
+	{
+		super();
+		
+		site = s;
+		resource = r;
+		conv = c;
+		bi = b;
+		parent = pa;
+		
+		// 設定擁有一個分頁
+		hasTab = true;
+		
+		// FIXME: 預設成 host
+		windowtitle = site.host;
+		iconname = site.host;
+		
+		// FIXME: magic number
+		setBackground( Color.BLACK );
+		
+		// ZVT
+		zvt = new ZVT( resource, conv, bi, this );
+		
+		// 把 zvt 放進 JPanel 中
+		setLayout( new BorderLayout() );
+		add( zvt, BorderLayout.CENTER );
+		
+		// FIXME: 是否應該在這邊設定？
+		zvt.setEncoding( site.encoding );
+		zvt.setEmulation( site.emulation );
 	}
 }

@@ -774,4 +774,8 @@
 	讓 User 與 VT100 可以獨立運作。
 
 20070609:
-	把 VT 的部份跟 ZTerm 切乾淨，改了很多東西。
+	把 VT 的部份跟 ZTerm 切乾淨，改了很多東西，目前還有 bug.
+
+20070610:
+	Code hosting 從 OpenSVN 移到 Google code.
+	因為重整架構帶來的 bug 修得差不多了。
