@@ -1,0 +1,21 @@
+ZTerm current
+
+ZTerm 是一個專為 BBS 設計的連線軟體。
+
+安裝前的準備：
+
+    * 您必須要有 JRE(Java Runtime Environment) 1.4 或以上的版本。
+    * Linux 下必須確認您的 Java 環境可以正確顯示中文。
+
+安裝：
+
+	下載 ZTerm.zip 後解壓縮，
+	若您使用 Windows 或 Mac 則滑鼠雙擊 ZTerm.jar 啟動，
+	若您使用 Linux 或其它 UNIX-like 平台則在命令列執行 java -jar ZTerm.jar
+
+使用方法：
+
+	請參照程式啟動後的「求助」選單內的「使用說明」
+
+專案網頁：http://zhouer.org/ZTerm/
+作者：zhouer at gmail dot com

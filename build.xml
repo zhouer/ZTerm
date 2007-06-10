@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="ZTerm">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.4"/>
+    <property name="source" value="1.4"/>
+    <property name="ganymed" value="ganymed-ssh2-build211beta4.jar"/>
+    <property name="ganymed-license" value="ganymed-ssh2-license.txt"/>
+    <path id="ZTerm.classpath">
+        <pathelement location="."/>
+        <pathelement location="${ganymed}" />
+    </path>
+
+    <target name="init">
+        <copy includeemptydirs="false" todir=".">
+            <fileset dir="." excludes="**/*.launch, **/*.java"/>
+        </copy>
+    </target>
+
+    <target name="clean">
+        <delete>
+            <fileset dir="." includes="**/*.class"/>
+		</delete>
+    </target>
+
+    <target depends="build-subprojects,build-project" name="build"/>
+
+    <target name="build-subprojects"/>
+
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="." source="${source}" target="${target}">
+            <src path="."/>
+            <classpath refid="ZTerm.classpath"/>
+        </javac>
+    </target>
+
+	<target name="jar" depends="build">
+		<jar destfile="ZTerm.jar">
+			<fileset dir="." includes="org/**" excludes="**/*.java" />
+			<manifest>
+				<attribute name="Main-Class" value="org.zhouer.zterm.ZTerm" />
+				<attribute name="Class-Path" value="${ganymed}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="zip" depends="jar">
+		<zip destfile="ZTerm.zip">
+			<fileset dir="." includes="${ganymed}, ${ganymed-license}, ZTerm.jar, README, LICENSE" />
+		</zip>
+	</target>
+
+</project>
