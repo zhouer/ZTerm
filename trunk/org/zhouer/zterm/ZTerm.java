@@ -455,7 +455,12 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			s.updateScreen();
 			
 			// 讓所選的 session 取得 focus
-			s.requestFocusInWindow();
+			// XXX: PowerPC Linux + IBM JRE 要 invokeLater 才正常
+			SwingUtilities.invokeLater( new Runnable() {
+				public void run() {
+					s.requestFocusInWindow();
+				}
+			});
 			
 		} else {
 			// FIXME: magic number

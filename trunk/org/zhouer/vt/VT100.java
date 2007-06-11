@@ -303,7 +303,8 @@ public class VT100 extends JComponent
 		
 		// 設定預設大小
 		// FIXME: magic number
-		setSize( new Dimension( 800, 600 ) );
+		// XXX: 這個動作很慢，暫時拿掉
+		// setSize( new Dimension( 800, 600 ) );
 		
 		// User
 		user = new User( parent, this, resource );
