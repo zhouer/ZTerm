@@ -142,5 +142,3 @@
 59. 修改 CSV 以符合通用的格式
 60. 提昇顯示速度
 61. shift-page{up,down} 捲頁
-
-vim: set nospell:

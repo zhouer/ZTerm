@@ -453,7 +453,8 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			s.updateScreen();
 			
 			// 讓所選的 session 取得 focus
-			s.requestFocus();
+			s.requestFocusInWindow();
+			
 		} else {
 			// FIXME: magic number
 			setTitle("ZTerm");

@@ -18,6 +18,26 @@ import org.zhouer.vt.Config;
 
 public class Resource implements Config
 {
+	public static final String GEOMETRY_X = "geometry.x";
+	public static final String GEOMETRY_Y = "geometry.y";
+	public static final String GEOMETRY_WIDTH = "geometry.width";
+	public static final String GEOMETRY_HEIGHT = "geometry.height";
+	
+	public static final String ANTI_IDLE = "connect.anti-idle";
+	public static final String ANTI_IDLE_INTERVAL = "connect.anti-idle-interval";
+	public static final String ANTI_IDLE_STRING = "connect.anti-idle-string";
+	
+	public static final String AUTO_RECONNECT = "connect.auto-reconnect";
+	public static final String AUTO_RECONNECT_TIME = "connect.autoreconnect-time";
+	public static final String AUTO_RECONNECT_INTERVAL = "connect.auto-reconnect-interval";
+	
+	public static final String EXTERNAL_BROWSER = "external-browser-command";
+	public static final String SYSTEM_LOOK_FEEL = "use-system-look-and-feel";
+	public static final String REMOVE_MANUAL_DISCONNECT = "remove-manual-disconnect";
+	public static final String USE_CUSTOM_BELL = "use-custom-bell";
+	public static final String CUSTOM_BELL_PATH = "custom-bell-path";
+	public static final String SHOW_TOOLBAR = "show-toolbar";
+	
 	private HashMap defmap, map;
 	
 	private void parseLine( String line )

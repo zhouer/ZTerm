@@ -71,6 +71,9 @@ public class VT100 extends JComponent
 	private int fontwidth, fontheight, fontdescent;
 	private int fontsize;
 	
+	// 處理來自使用者的事件
+	private User user;
+	
 	// 畫面
 	private BufferedImage bi;
 	
@@ -300,7 +303,14 @@ public class VT100 extends JComponent
 		
 		// 設定預設大小
 		// FIXME: magic number
-		// setSize( new Dimension( 800, 600 ) );
+		setSize( new Dimension( 800, 600 ) );
+		
+		// User
+		user = new User( parent, this, resource );
+		
+		addKeyListener( user );
+		addMouseListener( user );
+		addMouseMotionListener( user );
 	}
 	
 	/**
@@ -359,6 +369,8 @@ public class VT100 extends JComponent
 				setRepaintPhysical( physicalRow( i - scrolluprow ), j - 1 );
 			}
 		}
+		
+		repaint();
 	}
 	
 	/**
@@ -2152,6 +2164,11 @@ public class VT100 extends JComponent
 		
 		// 停止重繪用的 timer
 		ti.stop();
+		
+		// 停止反應來自使用者的事件
+		removeKeyListener( user );
+		removeMouseListener( user );
+		removeMouseMotionListener( user );
 	}
 	
 	public void run()
