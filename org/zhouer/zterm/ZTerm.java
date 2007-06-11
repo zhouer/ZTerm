@@ -46,10 +46,7 @@ import org.zhouer.utils.Convertor;
 public class ZTerm extends JFrame implements ActionListener, ChangeListener, KeyEventDispatcher, KeyListener, ComponentListener
 {
 	private static final long serialVersionUID = 6304594468121008572L;
-	
-	private int locationx, locationy;
-	private int width, height;
-	
+		
 	// 標準選單
 	private JMenuBar menuBar;
 	private JMenu connectMenu, siteMenu, editMenu, optionMenu, helpMenu;
@@ -382,6 +379,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	
 	public void updateBounds()
 	{
+		int locationx, locationy, width, height;
 		locationx = resource.getIntValue( Resource.GEOMETRY_X );
 		locationy = resource.getIntValue( Resource.GEOMETRY_Y );
 		width = resource.getIntValue( Resource.GEOMETRY_WIDTH );
@@ -395,21 +393,18 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	{
 		Session s;
 		
-		width = getWidth();
-		height = getHeight();
-		
 		// 產生跟主視窗一樣大的 image
-		bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+		bi = new BufferedImage( getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB );
 		
 		// 視窗大小調整時同步更新每個 session 的大小
 		for( int i = 0; i < sessions.size(); i++ ) {
 			s = (Session)sessions.elementAt( i );
 			s.validate();
-			s.updateImage();
+			s.updateImage( bi );
 			s.updateSize();
 		}
 	}
-
+	
 	public void updateAntiIdleTime()
 	{
 		for( int i = 0; i < sessions.size(); i++ ) {
@@ -540,11 +535,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		} else {
 			// System.out.println("Change to session: " + index + ", error range!");
 		}
-	}
-	
-	public BufferedImage getImage()
-	{
-		return bi;
 	}
 	
 	public int showConfirm( String msg, String title, int option )
@@ -1093,7 +1083,8 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	
 	public void keyReleased(KeyEvent e) {}
 	
-	public void keyTyped(KeyEvent e) {
+	public void keyTyped(KeyEvent e)
+	{
 		if( e.getSource() == siteText ) {
 			
 			// 不對快速鍵起反應
@@ -1168,7 +1159,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		// 設定視窗位置、大小
 		updateBounds();
 		// 設定好視窗大小後才知道 image 大小
-		bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+		bi = new BufferedImage( getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB );
 		
 		setVisible( true );
 		setResizable( true );

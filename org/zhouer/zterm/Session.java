@@ -5,6 +5,10 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +16,7 @@ import java.io.OutputStream;
 import java.util.Date;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.Timer;
 
 import org.zhouer.protocol.Protocol;
@@ -20,21 +25,27 @@ import org.zhouer.protocol.Telnet;
 import org.zhouer.utils.Convertor;
 import org.zhouer.vt.Application;
 import org.zhouer.vt.Config;
-import org.zhouer.vt.ZVT;
+import org.zhouer.vt.User;
+import org.zhouer.vt.VT100;
 
-public class Session extends JPanel implements Runnable, Application
+public class Session extends JPanel implements Runnable, Application, AdjustmentListener, MouseWheelListener
 {
 	private static final long serialVersionUID = 2180544188833033537L;
 
 	private ZTerm parent;
 	private Resource resource;
-	private BufferedImage bi;
 	private Convertor conv;
 	private Site site;
-	private ZVT zvt;
+	
+	private VT100 vt;
+	private JScrollBar scrollbar;
+	private User user;
 	
 	private String iconname;
 	private String windowtitle;
+	
+	// 捲頁緩衝區的行數
+	private int scrolllines;
 	
 	// 與遠端溝通用的物件
 	private Protocol network;
@@ -102,60 +113,42 @@ public class Session extends JPanel implements Runnable, Application
 	
 	public void updateSize()
 	{
-		zvt.updateSize();
-		zvt.updateFont();
-		zvt.updateScreen();
-	}
-	
-	public void updateFont()
-	{
-		zvt.updateFont();
+		vt.updateSize();
 	}
 	
 	public void updateScreen()
 	{
-		zvt.updateScreen();
+		vt.updateScreen();
 	}
 	
-	public void updateImage()
+	public void updateImage( BufferedImage bi )
 	{
-		zvt.updateImage();
-	}
-	
-	public void requestFocus()
-	{
-		// XXX: 這麼做是否恰當？
-		zvt.requestFocusInWindow();
-	}
-	
-	public BufferedImage getImage()
-	{
-		return bi;
+		vt.updateImage( bi );
 	}
 	
 	public void resetSelected()
 	{
-		zvt.resetSelected();
+		vt.resetSelected();
 	}
 	
 	public String getSelectedText()
 	{
-		return zvt.getSelectedText();
+		return vt.getSelectedText();
 	}
 	
 	public String getSelectedColorText()
 	{
-		return zvt.getSelectedColorText();
+		return vt.getSelectedColorText();
 	}
 	
 	public void pasteText( String str )
 	{
-		zvt.pasteText( str );
+		vt.pasteText( str );
 	}
 	
 	public void pasteColorText( String str )
 	{
-		zvt.pasteColorText( str );
+		vt.pasteColorText( str );
 	}
 	
 	/*
@@ -243,7 +236,7 @@ public class Session extends JPanel implements Runnable, Application
 	}
 	
 	/*
-	 *
+	 * 自己的
 	 */
 	
 	public Site getSite()
@@ -254,7 +247,7 @@ public class Session extends JPanel implements Runnable, Application
 	public void setEncoding( String enc )
 	{
 		site.encoding = enc;
-		zvt.setEncoding( site.encoding );
+		vt.setEncoding( site.encoding );
 	}
 	
 	public void setEmulation( String emu )
@@ -264,7 +257,7 @@ public class Session extends JPanel implements Runnable, Application
 		// 通知遠端 terminal type 已改變
 		network.setTerminalType( emu );
 		
-		zvt.setEmulation( emu );
+		vt.setEmulation( emu );
 	}
 	
 	public String getEmulation()
@@ -279,12 +272,14 @@ public class Session extends JPanel implements Runnable, Application
 	
 	public void setIconName( String in )
 	{
+		// TODO: 未完成
 		iconname = in;
 		parent.updateTab();
 	}
 	
 	public void setWindowTitle( String wt )
 	{
+		// TODO: 未完成
 		windowtitle = wt;
 		parent.updateTab();
 	}
@@ -305,14 +300,26 @@ public class Session extends JPanel implements Runnable, Application
 			return;
 		}
 		
-		//上層來的中斷連線命令，也就是來自使用者
+		// 移除 listener
+		removeMouseWheelListener( this );
+		
+		// 中斷連線
 		network.disconnect();
 		
 		// 停止防閒置用的 timer
 		if( ti != null ) {
 			ti.stop();
 		}
-
+		
+		// 通知 vt 停止運作
+		if( vt != null ) {
+			vt.close();
+			
+			vt.removeKeyListener( user );
+			vt.removeMouseListener( user );
+			vt.removeMouseMotionListener( user );
+		}
+		
 		// 將連線 icon 改為斷線
 		setTabIcon( ZTerm.ICON_CLOSED );
 		
@@ -352,6 +359,7 @@ public class Session extends JPanel implements Runnable, Application
 		// 所以這裡只要設定 antiIdleTime 就自動套用新的值了。
 		antiIdleInterval = resource.getIntValue( Config.ANTI_IDLE_INTERVAL ) * 1000 ;
 	}
+	
 	public void showMessage( String msg )
 	{
 		// 當分頁仍存在時才會顯示訊息
@@ -362,11 +370,11 @@ public class Session extends JPanel implements Runnable, Application
 	
 	public void showPopup( int x, int y )
 	{
-		Point p = zvt.getLocationOnScreen();
+		Point p = vt.getLocationOnScreen();
 		String link;
 		
-		if( zvt.coverURL(x, y) ) {
-			link = zvt.getURL( x, y );
+		if( vt.coverURL(x, y) ) {
+			link = vt.getURL( x, y );
 		} else {
 			link = null;
 		}
@@ -397,12 +405,23 @@ public class Session extends JPanel implements Runnable, Application
 		}
 	}
 	
+	public void adjustmentValueChanged( AdjustmentEvent ae )
+	{
+		vt.setScrollUp( scrollbar.getMaximum() - scrollbar.getValue() - scrollbar.getVisibleAmount() );
+	}
+	
+	public void mouseWheelMoved( MouseWheelEvent arg0 )
+	{
+		scroll( arg0.getWheelRotation() );
+	}
+	
+	public void scroll( int amount )
+	{
+		scrollbar.setValue( scrollbar.getValue() + amount );
+	}
+	
 	public void run()
 	{
-		// XXX: 這裡需要先 updateSize()
-		// 以免 vt 的 height, width = 0 發生 devide by zero
-		zvt.updateSize();
-		
 		// 新建連線
 		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
 			network = new Telnet( site.host, site.port );
@@ -440,17 +459,16 @@ public class Session extends JPanel implements Runnable, Application
 		// 記錄連線開始的時間
 		startTime = new Date().getTime();
 		
-		zvt.run();
+		vt.run();
 	}
 	
-	public Session( Site s, Resource r, Convertor c, BufferedImage b, ZTerm pa )
+	public Session( Site s, Resource r, Convertor c, BufferedImage bi, ZTerm pa )
 	{
 		super();
 		
 		site = s;
 		resource = r;
 		conv = c;
-		bi = b;
 		parent = pa;
 		
 		// 設定擁有一個分頁
@@ -461,17 +479,33 @@ public class Session extends JPanel implements Runnable, Application
 		iconname = site.host;
 		
 		// FIXME: magic number
-		setBackground( Color.BLACK );
+		setBackground( Color.WHITE );
 		
-		// ZVT
-		zvt = new ZVT( resource, conv, bi, this );
-		
-		// 把 zvt 放進 JPanel 中
-		setLayout( new BorderLayout() );
-		add( zvt, BorderLayout.CENTER );
+		// VT100
+		vt = new VT100( this, resource, conv, bi );
 		
 		// FIXME: 是否應該在這邊設定？
-		zvt.setEncoding( site.encoding );
-		zvt.setEmulation( site.emulation );
+		vt.setEncoding( site.encoding );
+		vt.setEmulation( site.emulation );
+		
+		// scrollbar
+		scrolllines = resource.getIntValue( Config.TERMINAL_SCROLLS );
+		// FIXME: magic number
+		scrollbar = new JScrollBar( JScrollBar.VERTICAL, scrolllines - 1, 24, 0, scrolllines + 23 );
+		scrollbar.addAdjustmentListener( this );
+		
+		// 設定 layout 並把 vt 及 scrollbar 放進去，
+		setLayout( new BorderLayout() );
+		add( vt, BorderLayout.CENTER );
+		add( scrollbar, BorderLayout.EAST );
+		
+		// User
+		user = new User( this, vt, resource );
+		
+		vt.addKeyListener( user );
+		vt.addMouseListener( user );
+		vt.addMouseMotionListener( user );
+		
+		addMouseWheelListener( this );
 	}
 }

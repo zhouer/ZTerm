@@ -1,7 +1,6 @@
 package org.zhouer.vt;
 
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 
 public interface Application
 {
@@ -26,7 +25,7 @@ public interface Application
 	public void setIconName( String name );
 	public void setWindowTitle( String title );
 	
-	public BufferedImage getImage();
+	public void scroll( int lines );
 	
 	public int readBytes( byte[] buf );
 	

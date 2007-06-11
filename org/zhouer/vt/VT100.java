@@ -1,10 +1,12 @@
 package org.zhouer.vt;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -45,7 +47,7 @@ public class VT100 extends JComponent
 {
 	private static final long serialVersionUID = -5704767444883397941L;
 
-	private ZVT parent;
+	private Application parent;
 	
 	// 畫面的寬與高
 	private int width, height;
@@ -237,7 +239,7 @@ public class VT100 extends JComponent
 	{
 		int i, j;
 		
-		// 從 nvt 讀取資料用的 buffer
+		// 從上層讀取資料用的 buffer
 		nvtBuf = new byte[4096];
 		nvtBufPos = nvtBufLen = 0;
 		
@@ -283,9 +285,22 @@ public class VT100 extends JComponent
 	
 	private void initOthers()
 	{
+		// 進入 run() 以後才確定初始化完成
+		init_ready = false;
+		
 		// 啟動閃爍控制 thread
 		ti = new Timer( 250, new RepaintTask() );
 		ti.start();
+		
+		// 取消  focus traversal key, 這樣才能收到 tab.
+		setFocusTraversalKeysEnabled( false );
+		
+		// Input Method Framework, set passive-client
+		enableInputMethods( true );
+		
+		// 設定預設大小
+		// FIXME: magic number
+		// setSize( new Dimension( 800, 600 ) );
 	}
 	
 	/**
@@ -329,12 +344,15 @@ public class VT100 extends JComponent
 	{
 		width = getWidth();
 		height = getHeight();
+		
+		updateFont();
+		updateScreen();
 	}
 	
 	/**
 	 * 重繪目前的畫面
 	 */
-	public void updateCurrentScreen()
+	public void updateScreen()
 	{
 		for(int i = 1; i <= maxrow; i++) {
 			for(int j = 1; j <= maxcol; j++) {
@@ -343,6 +361,9 @@ public class VT100 extends JComponent
 		}
 	}
 	
+	/**
+	 * updateFont 更新字型相關資訊
+	 */
 	public void updateFont()
 	{
 		FontMetrics fm;
@@ -1987,6 +2008,9 @@ public class VT100 extends JComponent
 		g = bi.createGraphics();
 		g.setFont(font);
 		
+		// 畫面置中
+		g.translate( transx, transy );
+		
 		// 設定 Anti-alias
 		if( resource.getBooleanValue( Config.FONT_ANTIALIAS ) ) {
 			g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
@@ -2102,6 +2126,26 @@ public class VT100 extends JComponent
 		}
 	}
 	
+	public Dimension getPreferredSize()
+	{
+		// FIXME: magic number
+		return new Dimension( 800, 600 );
+	}
+	
+	public void setBounds( int x, int y, int w, int h )
+	{
+		// layout manager 或其他人可能會透過 setBound 來改變 component 的大小，
+		// 此時要一併更新 component
+		super.setBounds( x, y, w, h );
+		updateSize();
+	}
+	
+	public void setBounds( Rectangle r )
+	{
+		super.setBounds( r );
+		updateSize();
+	}
+	
 	public void close()
 	{
 		// TODO: 應該還有其他東西應該收尾
@@ -2112,6 +2156,10 @@ public class VT100 extends JComponent
 	
 	public void run()
 	{
+		// 連線後自動取得 focus
+		requestFocusInWindow();
+
+		// 至此應該所有的初始化動作都完成了
 		init_ready = true;
 		
 		while( !parent.isClosed() ) {
@@ -2137,10 +2185,10 @@ public class VT100 extends JComponent
 		// 偶爾呼叫一次而不只是在顯示前才呼叫應該可以增進顯示速度。
 		draw();
 		
-		g.drawImage( bi, transx, transy, null );
+		g.drawImage( bi, 0, 0, null );
 	}
 	
-	public VT100( ZVT p, Config c, Convertor cv, BufferedImage b )
+	public VT100( Application p, Config c, Convertor cv, BufferedImage b )
 	{
 		super();
 		
@@ -2154,8 +2202,5 @@ public class VT100 extends JComponent
 		initOthers();
 		
 		updateImage( b );
-		
-		// 進入 run() 以後才確定初始化完成
-		init_ready = false;
 	}
 }
