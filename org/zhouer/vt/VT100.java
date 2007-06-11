@@ -2195,12 +2195,11 @@ public class VT100 extends JComponent
 		parent = p;
 		resource = c;
 		conv = cv;
+		bi = b;
 		
 		// 初始化一些變數、陣列
 		initValue();
 		initArray();
 		initOthers();
-		
-		updateImage( b );
 	}
 }
