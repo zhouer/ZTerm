@@ -6,12 +6,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
-public class User implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener
+public class User implements KeyListener, MouseListener, MouseMotionListener
 {
-	private ZVT parent;
+	private Application parent;
+	private VT100 vt;
 	private Config config;
 	private int pressX, pressY, dragX, dragY;
 	private boolean isDefaultCursor;
@@ -29,7 +28,7 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 		// 其他功能鍵
 		switch( e.getKeyCode() ) {
 		case KeyEvent.VK_UP:
-			if( parent.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
+			if( vt.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
 				buf[0] = 0x1b;
 				buf[1] = 0x5b;
 				buf[2] = 'A';
@@ -42,7 +41,7 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 			}
 			break;
 		case KeyEvent.VK_DOWN:
-			if( parent.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
+			if( vt.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
 				buf[0] = 0x1b;
 				buf[1] = 0x5b;
 				buf[2] = 'B';
@@ -55,7 +54,7 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 			}
 			break;
 		case KeyEvent.VK_RIGHT:
-			if( parent.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
+			if( vt.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
 				buf[0] = 0x1b;
 				buf[1] = 0x5b;
 				buf[2] = 'C';
@@ -68,7 +67,7 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 			}
 			break;
 		case KeyEvent.VK_LEFT:
-			if( parent.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
+			if( vt.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
 				buf[0] = 0x1b;
 				buf[1] = 0x5b;
 				buf[2] = 'D';
@@ -88,7 +87,7 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 			len = 4;
 			break;
 		case KeyEvent.VK_HOME:
-			if( parent.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
+			if( vt.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
 				buf[0] = 0x1b;
 				buf[1] = 0x5b;
 				buf[2] = '1';
@@ -116,7 +115,7 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 			len = 4;
 			break;
 		case KeyEvent.VK_END:
-			if( parent.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
+			if( vt.getKeypadMode() == VT100.NUMERIC_KEYPAD ) {
 				buf[0] = 0x1b;
 				buf[1] = 0x5b;
 				buf[2] = '4';
@@ -190,10 +189,10 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 		do {
 			if( e.getButton() == MouseEvent.BUTTON1 ) {
 				// 左鍵
-				if( parent.coverURL( e.getX(), e.getY() ) ) {
+				if( vt.coverURL( e.getX(), e.getY() ) ) {
 					// click
 					// 開啟瀏覽器
-					String url = parent.getURL( e.getX(), e.getY() );
+					String url = vt.getURL( e.getX(), e.getY() );
 
 					if( url.length() != 0 ) {
 						parent.openExternalBrowser( url );
@@ -202,14 +201,14 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 				} else if( e.getClickCount() == 2 ) {
 					// double click
 					// 選取連續字元
-					parent.selectConsequtive( e.getX(), e.getY() );
-					parent.repaint();
+					vt.selectConsequtive( e.getX(), e.getY() );
+					vt.repaint();
 					break;
 				} else if( e.getClickCount() == 3 ) {
 					// triple click
 					// 選取整行
-					parent.selectEntireLine( e.getX(), e.getY() );
-					parent.repaint();
+					vt.selectEntireLine( e.getX(), e.getY() );
+					vt.repaint();
 					break;
 				}
 			} else if( e.getButton() == MouseEvent.BUTTON2 ) { 
@@ -229,9 +228,9 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 				break;
 			}
 			
-			parent.requestFocus();
-			parent.resetSelected();
-			parent.repaint();
+			vt.requestFocus();
+			vt.resetSelected();
+			vt.repaint();
 			
 		} while( false );
 	}
@@ -271,21 +270,20 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 	public void mouseEntered( MouseEvent e )
 	{
 	}
-	
 	public void mouseExited( MouseEvent e )
 	{
 	}
 	
 	public void mouseMoved( MouseEvent e )
 	{
-		boolean cover = parent.coverURL( e.getX(), e.getY());
+		boolean cover = vt.coverURL( e.getX(), e.getY());
 		
 		// 只有滑鼠游標需改變時才 setCursor
 		if( isDefaultCursor && cover ) {
-			parent.setCursor( new Cursor(Cursor.HAND_CURSOR) );
+			vt.setCursor( new Cursor(Cursor.HAND_CURSOR) );
 			isDefaultCursor = false;
 		} else if ( !isDefaultCursor && !cover ) {
-			parent.setCursor( new Cursor(Cursor.DEFAULT_CURSOR) );
+			vt.setCursor( new Cursor(Cursor.DEFAULT_CURSOR) );
 			isDefaultCursor = true;
 		}
 	}
@@ -295,18 +293,14 @@ public class User implements KeyListener, MouseListener, MouseMotionListener, Mo
 		dragX = e.getX();
 		dragY = e.getY();
 		
-		parent.setSelected( pressX, pressY, dragX, dragY );
-		parent.repaint();
-	}
-
-	public void mouseWheelMoved( MouseWheelEvent arg0 )
-	{
-		parent.scroll( arg0.getWheelRotation() );
+		vt.setSelected( pressX, pressY, dragX, dragY );
+		vt.repaint();
 	}
 	
-	public User( ZVT p, Config c )
+	public User( Application p, VT100 v, Config c )
 	{
 		parent = p;
+		vt = v;
 		config = c;
 		isDefaultCursor = true;
 	}
