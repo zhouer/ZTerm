@@ -8,18 +8,15 @@
 8. IRC client
 9. 調整 tab 順序
 10. 重寫 GUI
-11. VT100 做成符合 Swing 的元件
-12. 游標在全型字上面時變成雙倍寬度
-13. 是否要用一個 Class Common 紀錄共同需要的資訊？
-14. 自訂快速鍵
-15. 彩色複製、貼上的快速鍵
-16. 在 popup 選單中增加複製並貼上
-17. 遇到清除整個畫面時將目前的畫面放入緩衝區中
-18. 在 Gnome 下，double-click 執行 ZTerm.jar 的 working directory 會是當時的目錄，不像 Windows 或 Mac 是 jar 檔所在目錄。
-19. URL 中間有控制碼時，是否要繼續。
-20. 用 synchronized statement 保護 bi
-21. 可用再一次反白清除反白屬性
-22. 改用 SWT
-23. 編譯成 native code
-24. Socks 4, 4a, 5 支援
-25. 中英文獨立字型設定
+11. 游標在全型字上面時變成雙倍寬度
+12. 是否要用一個 Class Common 紀錄共同需要的資訊？
+13. 自訂快速鍵
+14. 彩色複製、貼上的快速鍵
+15. 在 popup 選單中增加複製並貼上
+16. 遇到清除整個畫面時將目前的畫面放入緩衝區中
+17. 在 Gnome 下，double-click 執行 ZTerm.jar 的 working directory 會是當時的目錄，不像 Windows 或 Mac 是 jar 檔所在目錄。
+18. URL 中間有控制碼時，是否要繼續。
+19. 用 synchronized statement 保護 bi
+20. 可用再一次反白清除反白屬性
+21. Socks 4, 4a, 5 支援
+22. 中英文獨立字型設定

@@ -25,7 +25,6 @@ import org.zhouer.protocol.Telnet;
 import org.zhouer.utils.Convertor;
 import org.zhouer.vt.Application;
 import org.zhouer.vt.Config;
-import org.zhouer.vt.User;
 import org.zhouer.vt.VT100;
 
 public class Session extends JPanel implements Runnable, Application, AdjustmentListener, MouseWheelListener
@@ -39,7 +38,6 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	
 	private VT100 vt;
 	private JScrollBar scrollbar;
-	private User user;
 	
 	private String iconname;
 	private String windowtitle;
@@ -149,6 +147,11 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	public void pasteColorText( String str )
 	{
 		vt.pasteColorText( str );
+	}
+	
+	public boolean requestFocusInWindow()
+	{
+		return vt.requestFocusInWindow();
 	}
 	
 	/*
@@ -314,20 +317,16 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		// 通知 vt 停止運作
 		if( vt != null ) {
 			vt.close();
-			
-			vt.removeKeyListener( user );
-			vt.removeMouseListener( user );
-			vt.removeMouseMotionListener( user );
 		}
 		
 		// 將連線 icon 改為斷線
 		setTabIcon( ZTerm.ICON_CLOSED );
 		
 		// 若遠端 server 主動斷線則判斷是否需要重連
-		boolean autoreconnect = resource.getBooleanValue( Config.AUTO_RECONNECT );
+		boolean autoreconnect = resource.getBooleanValue( Resource.AUTO_RECONNECT );
 		if( autoreconnect && fromRemote ) {	
-			long reopenTime = resource.getIntValue( Config.AUTO_RECONNECT_TIME );
-			long reopenInterval = resource.getIntValue( Config.AUTO_RECONNECT_INTERVAL );
+			long reopenTime = resource.getIntValue( Resource.AUTO_RECONNECT_TIME );
+			long reopenInterval = resource.getIntValue( Resource.AUTO_RECONNECT_INTERVAL );
 			long now = new Date().getTime();
 
 			// 判斷連線時間距現在時間是否超過自動重連時間
@@ -353,11 +352,11 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	public void updateAntiIdleTime()
 	{
 		// 更新是否需要啟動防閒置
-		antiidle = resource.getBooleanValue( Config.ANTI_IDLE );
+		antiidle = resource.getBooleanValue( Resource.ANTI_IDLE );
 		
 		// 防閒置的作法是定時檢查距上次輸入是否超過 interval,
 		// 所以這裡只要設定 antiIdleTime 就自動套用新的值了。
-		antiIdleInterval = resource.getIntValue( Config.ANTI_IDLE_INTERVAL ) * 1000 ;
+		antiIdleInterval = resource.getIntValue( Resource.ANTI_IDLE_INTERVAL ) * 1000 ;
 	}
 	
 	public void showMessage( String msg )
@@ -479,7 +478,7 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		iconname = site.host;
 		
 		// FIXME: magic number
-		setBackground( Color.WHITE );
+		setBackground( Color.BLACK );
 		
 		// VT100
 		vt = new VT100( this, resource, conv, bi );
@@ -499,13 +498,7 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		add( vt, BorderLayout.CENTER );
 		add( scrollbar, BorderLayout.EAST );
 		
-		// User
-		user = new User( this, vt, resource );
-		
-		vt.addKeyListener( user );
-		vt.addMouseListener( user );
-		vt.addMouseMotionListener( user );
-		
+		// 處理滑鼠滾輪事件
 		addMouseWheelListener( this );
 	}
 }
