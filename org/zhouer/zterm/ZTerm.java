@@ -76,7 +76,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	private JTabbedPane tabbedPane;
 	
 	// 分頁 icon
-	private ImageIcon connectedIcon, closedIcon, bellIcon;
+	private ImageIcon tryingIcon, connectedIcon, closedIcon, bellIcon;
 	
 	private Vector sessions;
 	private Clip clip;
@@ -97,9 +97,11 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	// 避免同時有數個 thread 修改資料用的 lock object
 	private Object msglock, menulock;
 	
-	public static final int ICON_CONNECTED = 1;
-	public static final int ICON_CLOSED = 2;
-	public static final int ICON_ALERT = 3;
+	public static final int ICON_TRYING = 1;
+	public static final int ICON_CONNECTED = 2;
+	public static final int ICON_CLOSED = 3;
+	public static final int ICON_ALERT = 4;
+	
 	
 	// 建立各種選單，包括 popup 選單也在這裡建立
 	private void makeMenu()
@@ -809,6 +811,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		ImageIcon ii;
 		
 		switch( icon ) {
+			case ICON_TRYING:
+				ii = tryingIcon;
+				break;
 			case ICON_CONNECTED:
 				ii = connectedIcon;
 				break;
@@ -1142,6 +1147,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		updateLookAndFeel();
 		
 		// 初始化各種 icon
+		tryingIcon = new ImageIcon( ZTerm.class.getResource( "icon/trying.png" ) );
 		connectedIcon = new ImageIcon( ZTerm.class.getResource( "icon/connected.png" ) );
 		closedIcon = new ImageIcon( ZTerm.class.getResource( "icon/closed.png" ) );
 		bellIcon = new ImageIcon( ZTerm.class.getResource( "icon/bell.png" ) );
