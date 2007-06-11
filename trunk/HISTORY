@@ -782,4 +782,5 @@
 
 20060611:
 	繼續改架構，細節不寫了。
-	find . -name '*.java' -print0 | xargs -0 wc -l -> 7518
+	新增連線中的 icon。
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7527

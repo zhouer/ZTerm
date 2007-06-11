@@ -421,6 +421,9 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	
 	public void run()
 	{
+		// 設定連線圖示為連線中
+		setTabIcon( ZTerm.ICON_TRYING );
+		
 		// 新建連線
 		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
 			network = new Telnet( site.host, site.port );
