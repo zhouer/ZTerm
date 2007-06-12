@@ -35,6 +35,14 @@
         </javac>
     </target>
 
+	<target name="run" depends="build">
+		<java classname="org/zhouer/zterm/ZTerm" fork="true" />
+	</target>
+
+	<target name="runjar" depends="jar">
+		<java jar="ZTerm.jar" fork="true" />
+	</target>
+
 	<target name="jar" depends="build">
 		<jar destfile="ZTerm.jar">
 			<fileset dir="." includes="org/**" excludes="**/*.java" />
