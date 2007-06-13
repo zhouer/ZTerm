@@ -599,7 +599,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		String host;
 		int port, pos;
 		String prot;
-
+		
    		// 如果開新連線時按了取消則傳回值為 null
 		if( h == null || h.length() == 0 ) {
 			return;
@@ -611,7 +611,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			if( si != null ) {
 				break;
 			}
-
+			
 			pos = h.indexOf( "://" );
 			// Default 就是 telnet
 			prot = Protocol.TELNET;
@@ -655,7 +655,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	private void connect( Site si, int index )
 	{
 		Session s;
-
+		
 		s = new Session( si, resource, conv, bi, this );
 		
 		// index 為連線後放在第幾個分頁，若為 -1 表開新分頁。
@@ -668,7 +668,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			sessions.setElementAt( s, index );
 			tabbedPane.setComponentAt( index, s);
 		}
-
+		
 		// 每個 session 都是一個 thread, 解決主程式被 block 住的問題。
 		new Thread( s ).start();
 	}

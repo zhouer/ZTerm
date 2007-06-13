@@ -303,8 +303,7 @@ public class VT100 extends JComponent
 		
 		// 設定預設大小
 		// FIXME: magic number
-		// XXX: 這個動作很慢，暫時拿掉
-		// setSize( new Dimension( 800, 600 ) );
+		setSize( new Dimension( 800, 600 ) );
 		
 		// User
 		user = new User( parent, this, resource );
@@ -1388,7 +1387,7 @@ public class VT100 extends JComponent
 	
 	private void checkURL( char c )
 	{
-		String W = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ;/?:@&=+$,-_.!~*'%#";
+		String W = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ;/?:@=&{}|^~[]`%#$-_.+!*'(),";
 		
 		addurl = false;
 		switch( urlstate ) {
@@ -2176,7 +2175,7 @@ public class VT100 extends JComponent
 	{
 		// 連線後自動取得 focus
 		requestFocusInWindow();
-
+		
 		// 至此應該所有的初始化動作都完成了
 		init_ready = true;
 		
