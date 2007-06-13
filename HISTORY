@@ -784,3 +784,6 @@
 	繼續改架構，細節不寫了。
 	新增連線中的 icon。
 	find . -name '*.java' -print0 | xargs -0 wc -l -> 7527
+
+20060613:
+	修改 URL 可用的字元。
