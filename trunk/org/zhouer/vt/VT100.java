@@ -280,9 +280,7 @@ public class VT100 extends JComponent
 				bgcolors[i][j] = defBg;
 				attributes[i][j] = defAttr;
 				isurl[i][j] = false;
-				
 				needRepaint[i][j] = false;
-				isurl[i][j] = false;
 			}
  		}
 		
