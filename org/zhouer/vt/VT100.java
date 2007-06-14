@@ -33,13 +33,19 @@ class Pos
 		row = r;
 	}
 	
-	public boolean equals( Object o ) {
+	public boolean equals( Object o )
+	{
 		if( o instanceof Pos ) {
 			Pos p = (Pos)o;
 			return( p.col == col && p.row == row );
-		} else {
-			return false;
 		}
+		return false;
+	}
+	
+	public int hashCode()
+	{
+		// 假設最多 256 columns
+		return (row << 8) & col;
 	}
 }
 
