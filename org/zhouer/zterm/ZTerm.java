@@ -2,6 +2,7 @@ package org.zhouer.zterm;
 
 import java.awt.BorderLayout;
 import java.awt.DefaultKeyboardFocusManager;
+import java.awt.Font;
 import java.awt.KeyEventDispatcher;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -42,6 +43,7 @@ import javax.swing.text.JTextComponent;
 
 import org.zhouer.protocol.Protocol;
 import org.zhouer.utils.Convertor;
+import org.zhouer.vt.Config;
 
 public class ZTerm extends JFrame implements ActionListener, ChangeListener, KeyEventDispatcher, KeyListener, ComponentListener
 {
@@ -507,6 +509,17 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		if( s != null ) {
 			s.setEncoding( enc );
 		}
+	}
+	
+	/**
+	 *  預先讀取 font metrics 以加快未來開啟連線視窗的速度
+	 */
+	private void cacheFont()
+	{
+		String family = resource.getStringValue( Config.FONT_FAMILY );
+		Font font = new Font( family, Font.PLAIN, 0 );
+		// 這個動作很慢
+		getFontMetrics( font );
 	}
 	
 	private Vector getCandidateSites( String term )
@@ -1192,6 +1205,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		
 		// 攔截鍵盤 event 以處理快速鍵
 		DefaultKeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
+		
+		// 在程式啟動時就先讀一次字型，讓使用者開第一個連線視窗時不會感覺太慢。
+		cacheFont();
 		
 		// 自動連線
 		autoconnect();
