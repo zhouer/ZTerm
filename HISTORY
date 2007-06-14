@@ -791,3 +791,5 @@
 20060614:
 	新增 ZTerm.cacheFont()，在程式啟動時就先讀一次字型，
 	讓使用者開第一個連線視窗時不會感覺太慢。
+	VT100.repaintList 改用 LinkedList，
+	並且自己用 repaintLock 保護，不依靠 Collections.synchronizedList(...)

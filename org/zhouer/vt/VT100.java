@@ -12,10 +12,8 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -110,7 +108,8 @@ public class VT100 extends JComponent
 	
 	// 記錄螢幕上何處需要 repaint
 	private boolean[][] needRepaint;
-	private List repaintList;
+	private LinkedList repaintList;
+	private Object repaintLock;
 	
 	// 判斷畫面上的網址
 	private boolean[][] isurl;
@@ -258,7 +257,6 @@ public class VT100 extends JComponent
 		bgcolors = new byte[totalrow][totalcol];
 		attributes = new byte[totalrow][totalcol];
 		selected = new boolean[totalrow][totalcol];
-		
 		needRepaint = new boolean[totalrow][totalcol];
 		isurl = new boolean[totalrow][totalcol];
 		
@@ -269,7 +267,8 @@ public class VT100 extends JComponent
 		textBufPos = 0;
 		
 		// 初始化記載重繪位置用 LinkedList
-		repaintList = Collections.synchronizedList(new LinkedList());
+		repaintList = new LinkedList();
+		repaintLock = new Object();
 		
 		for( i = 0; i < totalrow; i++) {
 			for( j = 0; j < totalcol; j++) {
@@ -280,7 +279,6 @@ public class VT100 extends JComponent
 				bgcolors[i][j] = defBg;
 				attributes[i][j] = defAttr;
 				isurl[i][j] = false;
-				needRepaint[i][j] = false;
 			}
  		}
 		
@@ -525,8 +523,10 @@ public class VT100 extends JComponent
 		
 		int prow = physicalRow( row );
 		if( !needRepaint[prow][col - 1] ) {
-			needRepaint[prow][col - 1] = true;
-			repaintList.add( new Pos( col - 1, prow ) );
+			synchronized( repaintLock ) {
+				needRepaint[prow][col - 1] = true;
+				repaintList.addLast( new Pos( col - 1, prow ) );
+			}
 		}
 	}
 	
@@ -542,8 +542,10 @@ public class VT100 extends JComponent
 		}
 		
 		if( !needRepaint[prow][pcol] ) {
-			needRepaint[prow][pcol] = true;
-			repaintList.add( new Pos( pcol, prow ) );
+			synchronized( repaintLock ) {
+				needRepaint[prow][pcol] = true;
+				repaintList.addLast( new Pos( pcol, prow ) );
+			}
 		}
 	}
 	
@@ -2035,9 +2037,11 @@ public class VT100 extends JComponent
 		while( !repaintList.isEmpty() ) {
 			
 			// 取得下一個需要重繪的位置
-			p = (Pos)repaintList.get(0);
-			repaintList.remove(0);
-			needRepaint[p.row][p.col] = false;
+			synchronized( repaintLock ) {
+				p = (Pos)repaintList.getFirst();
+				repaintList.removeFirst();
+				needRepaint[p.row][p.col] = false;
+			}
 			
 			// 取得待重繪的字在畫面上的位置
 			// 加上捲動的判斷
