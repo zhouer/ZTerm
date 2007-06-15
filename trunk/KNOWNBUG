@@ -1,13 +1,14 @@
-bugs from ZTerm its self
+Bugs from ZTerm its self
 1. 彩色貼上時 reset 應用 *[m, 而不是用 *[37;40m
 2. 一直斷線時無法停止自動重連。
+3. 仍有其他連線時，切斷一個已斷線的視窗有問題。
 
-bugs from JRE (Linux only)
+Bugs from JRE (Linux only)
 1. 有時會完全收不到 KeyEvent
 	http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6506617
 	http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6299259
 
-bugs from JRE (Mac only)
+Bugs from JRE (Mac only)
 1. 沒有分頁時用鍵盤選取我的最愛連線會開兩個分頁
 2. Aqua look and feel 會讓 JComboBox 有問題
 	http://ecerami.blogspot.com/2006/06/jcombobox-autocompletion-on-mac-os-x.html
@@ -16,6 +17,5 @@ bugs from JRE (Mac only)
 	http://lists.apple.com/archives/Java-dev/2007/Feb/msg00251.html
 	http://docs.info.apple.com/article.html?artnum=304586
 
-bugs from Ganymed SSH-2
-1. taiji.csie.ntu.edu.tw ssh 用 keyboard-interactive 失敗，但是 password 成功。
-2. connect 到一半沒辦法 close, 要等到 timeout
+Bugs from Ganymed SSH-2
+1. connect 到一半沒辦法 close, 要等到 timeout
