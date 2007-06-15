@@ -793,3 +793,10 @@
 	讓使用者開第一個連線視窗時不會感覺太慢。
 	VT100.repaintList 改用 LinkedList，
 	並且自己用 repaintLock 保護，不依靠 Collections.synchronizedList(...)
+
+20060615:
+	VT100 紀錄重繪位置改用自己寫的 FIFOSet repaintSet，
+	在 add 及 remove 時仍然用 repaintLock 保護，
+	雖然使用上沒有感覺比較快，但至少不用一直 new Pos(...)，這樣感覺比較有效率。
+	不過要注意目前假設 column 數小於 256。
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7594
