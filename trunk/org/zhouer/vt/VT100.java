@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -22,28 +22,65 @@ import javax.swing.Timer;
 import org.zhouer.utils.Convertor;
 import org.zhouer.utils.TextUtils;
 
-class Pos
+class FIFOSet
 {
-	public int col, row;
+	boolean[] contain;
+	int[] set;
+	int front, rear;
 	
-	public Pos( int c, int r ) {
-		col = c;
-		row = r;
-	}
-	
-	public boolean equals( Object o )
+	public void add( int v )
 	{
-		if( o instanceof Pos ) {
-			Pos p = (Pos)o;
-			return( p.col == col && p.row == row );
+		if( contain[v] == true ) {
+			return;
 		}
-		return false;
+		
+		// XXX: 沒有檢查空間是否足夠
+		
+		set[rear] = v;
+		contain[v] = true;
+		
+		if( ++rear == set.length ) {
+			rear = 0;
+		}
 	}
 	
-	public int hashCode()
+	public int remove()
 	{
-		// 假設最多 256 columns
-		return (row << 8) & col;
+		int v;
+		
+		if( front == rear ) {
+			throw new NoSuchElementException();
+		}
+		
+		v = set[front];
+		contain[v] = false;
+		
+		if( ++front == set.length ) {
+			front = 0;
+		}
+		
+		return v;
+	}
+	
+	public boolean isEmpty()
+	{
+		return (front == rear);
+	}
+	
+	/**
+	 * @param range Set 的值域 1...(range - 1)
+	 */
+	public FIFOSet( int range )
+	{
+		front = rear = 0;
+		
+		// 假設最多 256 column
+		contain = new boolean[range];
+		set = new int[range];
+		
+		for(int i = 0; i < contain.length; i++) {
+			contain[i] = false;
+		}
 	}
 }
 
@@ -107,8 +144,7 @@ public class VT100 extends JComponent
 	private byte cfgcolor, cbgcolor;
 	
 	// 記錄螢幕上何處需要 repaint
-	private boolean[][] needRepaint;
-	private LinkedList repaintList;
+	private FIFOSet repaintSet;
 	private Object repaintLock;
 	
 	// 判斷畫面上的網址
@@ -257,7 +293,6 @@ public class VT100 extends JComponent
 		bgcolors = new byte[totalrow][totalcol];
 		attributes = new byte[totalrow][totalcol];
 		selected = new boolean[totalrow][totalcol];
-		needRepaint = new boolean[totalrow][totalcol];
 		isurl = new boolean[totalrow][totalcol];
 		
 		textBuf = new byte[4];
@@ -266,8 +301,9 @@ public class VT100 extends JComponent
 		bgBuf = new byte[4];
 		textBufPos = 0;
 		
-		// 初始化記載重繪位置用 LinkedList
-		repaintList = new LinkedList();
+		// 初始化記載重繪位置用 FIFOSet
+		// XXX: 假設 column 數小於 256
+		repaintSet = new FIFOSet( totalrow << 8 );
 		repaintLock = new Object();
 		
 		for( i = 0; i < totalrow; i++) {
@@ -317,7 +353,7 @@ public class VT100 extends JComponent
 	
 	/**
 	 *  計算 row 在陣列中真正的 row
-	 * XXX: 這不是 logicalRow 的反函數
+	 * NOTE: 這不是 logicalRow 的反函數
 	 * @param row
 	 * @return
 	 */
@@ -329,7 +365,7 @@ public class VT100 extends JComponent
 	
 	/**
 	 * 計算 prow 在目前畫面中的 row
-	 * XXX: 這不是 physicalRow 的反函數
+	 * NOTE: 這不是 physicalRow 的反函數
 	 * @param prow
 	 * @return
 	 */
@@ -522,11 +558,8 @@ public class VT100 extends JComponent
 		}
 		
 		int prow = physicalRow( row );
-		if( !needRepaint[prow][col - 1] ) {
-			synchronized( repaintLock ) {
-				needRepaint[prow][col - 1] = true;
-				repaintList.addLast( new Pos( col - 1, prow ) );
-			}
+		synchronized( repaintLock ) {
+			repaintSet.add( (prow << 8) | (col - 1) );
 		}
 	}
 	
@@ -541,11 +574,8 @@ public class VT100 extends JComponent
 			return;
 		}
 		
-		if( !needRepaint[prow][pcol] ) {
-			synchronized( repaintLock ) {
-				needRepaint[prow][pcol] = true;
-				repaintList.addLast( new Pos( pcol, prow ) );
-			}
+		synchronized( repaintLock ) {
+			repaintSet.add( (prow << 8) | pcol );
 		}
 	}
 	
@@ -1381,13 +1411,18 @@ public class VT100 extends JComponent
 	
 	private void setURL()
 	{
+		int v, prow, pcol;
 		Iterator iter;
 		
 		iter = probablyurl.iterator();
-		while( iter.hasNext() ) {
-			Pos p = (Pos)iter.next();
-			isurl[p.row][p.col] = true;
-			setRepaintPhysical( p.row, p.col );
+		while( iter.hasNext() )
+		{	
+			v = ((Integer)iter.next()).intValue();
+			prow = v >> 8;
+			pcol = v & 0xff;
+
+			isurl[prow][pcol] = true;
+			setRepaintPhysical( prow, pcol );
 		}
 	}
 	
@@ -1534,8 +1569,8 @@ public class VT100 extends JComponent
 		// 取得以 ';' 分開的參數
 		arg = -1;
 		argc = 0;
-		while ( true ){
-
+		while ( true )
+		{
 			b = getNextByte();
 			
 			if( '0' <= b && b <= '9' ) {
@@ -1721,7 +1756,8 @@ public class VT100 extends JComponent
 
 		count = 0;
 		b = getNextByte();
-		while( b != 0x07 ) {
+		while( b != 0x07 )
+		{
 			text[count++] = b;
 			b = getNextByte();
 		}
@@ -1937,7 +1973,8 @@ public class VT100 extends JComponent
 		
 		// 到這裡我們才知道字元真正被放到陣列中的位置，所以現在才紀錄 url 的位置
 		if( addurl ) {
-			probablyurl.addElement( new Pos( ccol - 1, prow ) );
+			// XXX: 假設 column 數小於 256
+			probablyurl.addElement( new Integer((prow << 8) | ( ccol - 1)) );
 		}
 		
 		// 紀錄暫存的資料，寬字元每個字最多用兩個 bytes，一般字元每字一個 byte
@@ -2017,8 +2054,8 @@ public class VT100 extends JComponent
 	
 	private void draw()
 	{
-		Pos p;
 		int w, h;
+		int v, prow, pcol;
 		int row, col;
 		Graphics2D g;
 		boolean show_cursor, show_text, show_underline;
@@ -2034,19 +2071,19 @@ public class VT100 extends JComponent
 			g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
 		}
 		
-		while( !repaintList.isEmpty() ) {
-			
+		while( !repaintSet.isEmpty() )
+		{	
 			// 取得下一個需要重繪的位置
 			synchronized( repaintLock ) {
-				p = (Pos)repaintList.getFirst();
-				repaintList.removeFirst();
-				needRepaint[p.row][p.col] = false;
+				v = repaintSet.remove();
+				prow = v >> 8;
+				pcol = v & 0xff;
 			}
 			
 			// 取得待重繪的字在畫面上的位置
 			// 加上捲動的判斷
-			row = logicalRow( p.row );
-			col = p.col + 1;
+			row = logicalRow( prow );
+			col = pcol + 1;
 			
 			// 若是需重繪的部份不在顯示範圍內則不理會
 			if( row < 1 || row > maxrow || col < 1 || col > maxcol ) {
@@ -2058,28 +2095,28 @@ public class VT100 extends JComponent
 			w = (col - 1) * fontwidth;
 			
 			// 閃爍控制與色彩屬性
-			show_text = ((attributes[p.row][p.col] & BLINK) == 0) || text_blink;
-			show_cursor = physicalRow(crow) == p.row && ccol == col && cursor_blink;
-			show_underline = (attributes[p.row][p.col] & UNDERLINE) != 0;
+			show_text = ((attributes[prow][pcol] & BLINK) == 0) || text_blink;
+			show_cursor = physicalRow(crow) == prow && ccol == col && cursor_blink;
+			show_underline = (attributes[prow][pcol] & UNDERLINE) != 0;
 			
 			// 填滿背景色
-			g.setColor( getColor( p.row, p.col, BACKGROUND ) );
+			g.setColor( getColor( prow, pcol, BACKGROUND ) );
 			g.fillRect( w, h, fontwidth, fontheight );
 			
 			// 如果是游標所在處就畫出游標
 			if( show_cursor ) {
 				// TODO: 多幾種游標形狀
-				g.setColor( getColor( p.row, p.col, CURSOR ) );
+				g.setColor( getColor( prow, pcol, CURSOR ) );
 				g.fillRect( w, h, fontwidth, fontheight );
 			}
 			
 			// 空白不重繪前景文字，離開
-			if( mbc[p.row][p.col] == 0 ) {
+			if( mbc[prow][pcol] == 0 ) {
 				continue;
 			}
 			
 			// 設為前景色
-			g.setColor( getColor( p.row, p.col, FOREGROUND ) );
+			g.setColor( getColor( prow, pcol, FOREGROUND ) );
 			
 			// 畫出文字
 			if( show_text ) {
@@ -2088,16 +2125,16 @@ public class VT100 extends JComponent
 				Shape oldclip = g.getClip();
 				g.clipRect( w, h, fontwidth, fontheight );
 				g.drawString(
-						Character.toString( text[p.row][p.col - mbc[p.row][p.col] + 1]),
-						w - fontwidth * (mbc[p.row][p.col] - 1),
+						Character.toString( text[prow][pcol - mbc[prow][pcol] + 1]),
+						w - fontwidth * (mbc[prow][pcol] - 1),
 						h + fontheight - fontdescent);
 				g.setClip( oldclip );
 			}
 			
 			// 畫出底線
-			if( show_underline || isurl[p.row][p.col] ) {
-				if( isurl[p.row][p.col] ) {
-					g.setColor( getColor( p.row, p.col, URL ) );
+			if( show_underline || isurl[prow][pcol] ) {
+				if( isurl[prow][pcol] ) {
+					g.setColor( getColor( prow, pcol, URL ) );
 				}
 				g.drawLine( w, h + fontheight - 1, w + fontwidth - 1, h + fontheight - 1 );
 			}
@@ -2187,7 +2224,8 @@ public class VT100 extends JComponent
 		// 至此應該所有的初始化動作都完成了
 		init_ready = true;
 		
-		while( !parent.isClosed() ) {
+		while( !parent.isClosed() )
+		{
 			parse();
 			
 			// buffer 裡的東西都處理完才重繪
