@@ -29,7 +29,7 @@
 
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="." source="${source}" target="${target}">
+        <javac debug="true" debuglevel="${debuglevel}" encoding="UTF-8" destdir="." source="${source}" target="${target}">
             <src path="."/>
             <classpath refid="ZTerm.classpath"/>
         </javac>
