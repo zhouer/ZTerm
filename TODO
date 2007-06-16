@@ -144,3 +144,4 @@
 58. xterm 支援
 59. 修改 CSV 以符合通用的格式
 60. shift-page{up,down} 捲頁
+61. VT100 內的 repaint() 改為 repaint( long tm, int x, int y, int width, int height )
