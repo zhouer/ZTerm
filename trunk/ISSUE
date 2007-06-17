@@ -21,3 +21,4 @@
 21. Socks 4, 4a, 5 支援
 22. 中英文獨立字型設定
 23. 不再用 zip，把 ganymed ssh2 放進同一個 jar
+24. 設定檔改用 xml properties file
