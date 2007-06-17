@@ -8,6 +8,7 @@ Bugs from JRE (Linux only)
 1. 有時會完全收不到 KeyEvent
 	http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6506617
 	http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6299259
+2. 收不到 ctrl-X 之類的 event in JRE 1.6 (unconfirmed)
 
 Bugs from JRE (Mac only)
 1. 沒有分頁時用鍵盤選取我的最愛連線會開兩個分頁
