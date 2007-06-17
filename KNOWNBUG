@@ -3,6 +3,7 @@ Bugs from ZTerm its self
 2. 一直斷線時無法停止自動重連。
 3. 切斷個已斷線的視窗有問題，似乎會做兩次。
 4. 畫面捲到最上面的行為需要再觀察。
+5. 顯示大量資料時比 0.5 版還慢！
 
 Bugs from JRE (Linux only)
 1. 有時會完全收不到 KeyEvent
