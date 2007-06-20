@@ -136,6 +136,7 @@
 	1. newline 字元
 	2. backspace 字元
 53. 根據 locale 判斷使用的語言
+	20070620: Apply H45 的 localization patch
 54. 設定鎖定畫面大小（ex. 80x24）或是鎖定字型大小（ex. 16）
 55. 寫 ant build.xml
 	20070608: 完成
@@ -144,4 +145,3 @@
 58. xterm 支援
 59. 修改 CSV 以符合通用的格式
 60. shift-page{up,down} 捲頁
-61. VT100 內的 repaint() 改為 repaint( long tm, int x, int y, int width, int height )
