@@ -43,7 +43,7 @@ public class Localization
 	{
 		Locale local = Locale.getDefault();
 		
-		if( local == Locale.TAIWAN || local == Locale.TRADITIONAL_CHINESE ) {
+		if( local.equals(Locale.TAIWAN) ) {
 			return "localization.tw";
 		}
 		
