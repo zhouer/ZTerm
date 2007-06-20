@@ -27,12 +27,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JPopupMenu;
-import javax.swing.JTabbedPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
@@ -41,6 +41,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 
+import org.zhouer.localization.LocalizationAdapter;
+import org.zhouer.localization.LocalizationTW;
 import org.zhouer.protocol.Protocol;
 import org.zhouer.utils.Convertor;
 import org.zhouer.vt.Config;
@@ -62,7 +64,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	
 	// popup 選單
 	private JPopupMenu popupMenu;
-	private JMenuItem popupCopyItem, popupPasteItem, popupColorCopyItem, popupColorPasteItem, popupCopyLinkItem;
+	private JMenuItem copyLinkItem;
 	
 	// 連線工具列
 	private JToolBar connectionToolbar;
@@ -104,92 +106,90 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	public static final int ICON_CLOSED = 3;
 	public static final int ICON_ALERT = 4;
 	
+	private LocalizationAdapter localization = new LocalizationTW();
+	
 	
 	// 建立各種選單，包括 popup 選單也在這裡建立
 	private void makeMenu()
 	{
 		menuBar = new JMenuBar();
 		
-		connectMenu = new JMenu("連線");
+		connectMenu = new JMenu(localization.TEXT_CONNECT_MENU());
 		connectMenu.setMnemonic(KeyEvent.VK_N);
-		connectMenu.setToolTipText("meta-n");
+		connectMenu.setToolTipText(localization.TEXT_CONNECT_TOOLTIP_MENU());
 
-		siteMenu = new JMenu("站台");
+		siteMenu = new JMenu(localization.TEXT_SITE_MENU());
 		siteMenu.setMnemonic(KeyEvent.VK_F);
-		siteMenu.setToolTipText("meta-f");
+		siteMenu.setToolTipText(localization.TEXT_SITE_MENU_TOOLTIP());
 		
-		editMenu = new JMenu("編輯");
+		editMenu = new JMenu(localization.TEXT_EDIT_MENU());
 		editMenu.setMnemonic(KeyEvent.VK_E);
-		editMenu.setToolTipText("meta-e");
+		editMenu.setToolTipText(localization.TEXT_EDIT_MENU_TOOLTIP());
 		
-		optionMenu = new JMenu("選項");
+		optionMenu = new JMenu(localization.TEXT_OPTION_MENU());
 		optionMenu.setMnemonic(KeyEvent.VK_O);
-		optionMenu.setToolTipText("meta-o");
+		optionMenu.setToolTipText(localization.TEXT_OPTION_MENU_TOOLTIP());
 		
-		helpMenu = new JMenu("求助");
+		helpMenu = new JMenu(localization.TEXT_HELP_MENU());
 		helpMenu.setMnemonic(KeyEvent.VK_H);		
-		helpMenu.setToolTipText("meta-h");
+		helpMenu.setToolTipText(localization.TEXT_HELP_MENU_TOOLTIP());
 		
-		encodingMenu = new JMenu("編碼");
+		encodingMenu = new JMenu(localization.TEXT_ENCODING_MENU());
 		
-		popupMenu = new JPopupMenu();
-		
-		openItem = new JMenuItem("開新連線");
-		openItem.setToolTipText("meta-q");
+		openItem = new JMenuItem(localization.TEXT_OPEN_ITEM());
+		openItem.setToolTipText(localization.TEXT_OPEN_ITEM_TOOLTIP());
 		openItem.addActionListener( this );
 		
-		closeItem = new JMenuItem("中斷連線");
-		closeItem.setToolTipText("meta-w");
+		closeItem = new JMenuItem(localization.TEXT_CLOSE_ITEM());
+		closeItem.setToolTipText(localization.TEXT_CLOSE_ITEM_TOOLTIP());
 		closeItem.addActionListener( this );
 
-		reopenItem = new JMenuItem("重新連線");
-		reopenItem.setToolTipText("meta-r");
+		reopenItem = new JMenuItem(localization.TEXT_REOPEN_ITEM());
+		reopenItem.setToolTipText(localization.TEXT_REOPEN_ITEM_TOOLTIP());
 		reopenItem.addActionListener( this );
 		
-		quitItem = new JMenuItem("離開");
+		quitItem = new JMenuItem(localization.TEXT_QUIT_ITEM());
 		quitItem.addActionListener( this );
 
-		copyItem = new JMenuItem("複製");
+		copyItem = new JMenuItem(localization.TEXT_COPY_ITEM());
 		copyItem.addActionListener( this );
-		copyItem.setToolTipText("meta-c");
+		copyItem.setToolTipText(localization.TEXT_COPY_ITEM_TOOLTIP());
 		
-		pasteItem = new JMenuItem("貼上");
+		pasteItem = new JMenuItem(localization.TEXT_PASTE_ITEM());
 		pasteItem.addActionListener( this );
-		pasteItem.setToolTipText("meta-v");
+		pasteItem.setToolTipText(localization.TEXT_PASTE_ITEM_TOOLTIP());
 
-		colorCopyItem = new JMenuItem("彩色複製");
+		colorCopyItem = new JMenuItem(localization.TEXT_COLOR_COPY_ITEM());
 		colorCopyItem.addActionListener( this );
 		
-		colorPasteItem = new JMenuItem("彩色貼上");
+		colorPasteItem = new JMenuItem(localization.TEXT_COLOR_PASTE_ITEM());
 		colorPasteItem.addActionListener( this );
 		
-		preferenceItem = new JMenuItem("偏好設定");
+		preferenceItem = new JMenuItem(localization.TEXT_PREFERENCE_ITEM());
 		preferenceItem.addActionListener( this );
-		preferenceItem.setToolTipText("meta-,");
+		preferenceItem.setToolTipText(localization.TEXT_PREFERENCE_ITEM_TOOLTIP());
 		
-		siteManagerItem = new JMenuItem("站台管理");
+		siteManagerItem = new JMenuItem(localization.TEXT_SITE_MANAGER_ITEM());
 		siteManagerItem.addActionListener( this );
-		siteManagerItem.setToolTipText("meta-.");
+		siteManagerItem.setToolTipText(localization.TEXT_SITE_MANAGER_ITEM_TOOLTIP());
 		
-		showToolbarItem = new JMenuItem( showToolbar ? "隱藏工具列" : "顯示工具列" );
+		showToolbarItem = new JMenuItem( showToolbar ? localization.TEXT_SHOW_TOOLBAR_ITEM() : localization.TEXT_HIDE_TOOLBAR_ITEM());
 		showToolbarItem.addActionListener( this );
 		
-		usageItem = new JMenuItem("使用說明");
+		usageItem = new JMenuItem(localization.TEXT_USAGE_ITEM());
 		usageItem.addActionListener( this );
 		
-		faqItem = new JMenuItem( "常見問題" );
+		faqItem = new JMenuItem(localization.TEXT_FAQ_ITEM());
 		faqItem.addActionListener( this );
 		
-		aboutItem = new JMenuItem("關於 ZTerm");
+		aboutItem = new JMenuItem(localization.TEXT_ABOUT_ITEM());
 		aboutItem.addActionListener( this );
 		
-		big5Item = new JMenuItem("Big5");
+		big5Item = new JMenuItem(localization.TEXT_BIG5_ITEM());
 		big5Item.addActionListener( this );
 		
-		utf8Item = new JMenuItem("UTF-8");
+		utf8Item = new JMenuItem(localization.TEXT_UTF8_ITEM());
 		utf8Item.addActionListener( this );
-		
-		setJMenuBar( menuBar);
 		
 		menuBar.add( connectMenu );
 		menuBar.add( siteMenu );
@@ -221,31 +221,21 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		helpMenu.add( usageItem );
 		helpMenu.add( faqItem );
 		helpMenu.add( aboutItem );
-	}
-
-	private void makePopupMenu()
-	{
-		popupCopyItem = new JMenuItem("複製");
-		popupCopyItem.addActionListener( this );
-
-		popupColorCopyItem = new JMenuItem("彩色複製");
-		popupColorCopyItem.addActionListener( this );
 		
-		popupPasteItem = new JMenuItem("貼上");
-		popupPasteItem.addActionListener( this );
+		setJMenuBar( menuBar);
 		
-		popupColorPasteItem = new JMenuItem("彩色貼上");
-		popupColorPasteItem.addActionListener( this );
+		// popup menu
+		popupMenu = new JPopupMenu();
 		
-		popupCopyLinkItem = new JMenuItem("複製連結");
-		popupCopyLinkItem.addActionListener( this );
-		popupCopyLinkItem.setEnabled( false );
+		copyLinkItem = new JMenuItem("複製連結");
+		copyLinkItem.addActionListener( this );
+		copyLinkItem.setEnabled( false );
 		
-		popupMenu.add( popupCopyItem );
-		popupMenu.add( popupPasteItem );
-		popupMenu.add( popupColorCopyItem );
-		popupMenu.add( popupColorPasteItem );
-		popupMenu.add( popupCopyLinkItem );
+		popupMenu.add( copyItem );
+		popupMenu.add( pasteItem );
+		popupMenu.add( colorCopyItem );
+		popupMenu.add( colorPasteItem );
+		popupMenu.add( copyLinkItem );
 	}
 	
 	private void makeTabbedPane()
@@ -299,7 +289,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		sshButton.setToolTipText("meta-s");
 		sshButton.setFocusable( false );
 		sshButton.addActionListener( this );
-
+		
 		// XXX: JComboBox has a bug in the Mac OS X Aqua Look & Feel.
 		LookAndFeel currentLookAndFeel = UIManager.getLookAndFeel();
 		try {
@@ -311,13 +301,13 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		siteField = new JComboBox( siteModel );
 		siteField.setToolTipText("meta-d");
 		siteField.setEditable( true );
-
+		
 		// XXX: Restore Look & Feel.
 		try {
 			UIManager.setLookAndFeel(currentLookAndFeel);
 		} catch (Exception e) {
 		}
-
+		
 		siteText = (JTextComponent)siteField.getEditor().getEditorComponent();
 		siteText.addKeyListener( this );
 		
@@ -585,7 +575,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		Point p = getLocationOnScreen();
 		
 		// TODO: 用 tmpLink 的作法蠻笨的，但暫時想不到好作法
-		popupCopyLinkItem.setEnabled( link != null );
+		copyLinkItem.setEnabled( link != null );
 		tmpLink = link;
 		
 		// 傳進來的是滑鼠相對於視窗左上角的座標，減去主視窗相對於螢幕左上角的座標，可得滑鼠相對於主視窗的座標。
@@ -956,15 +946,15 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			reopenSession( (Session)tabbedPane.getSelectedComponent() );
 		} else if( source == quitItem ) {
 			quit();
-		} else if( source == copyItem || source == copyButton || source == popupCopyItem ) {
+		} else if( source == copyItem || source == copyButton ) {
 			copy();
-		} else if( source == colorCopyItem || source == colorCopyButton || source == popupColorCopyItem ) {
+		} else if( source == colorCopyItem || source == colorCopyButton ) {
 			colorCopy();
-		} else if( source == pasteItem || source == pasteButton || source == popupPasteItem ) {
+		} else if( source == pasteItem || source == pasteButton ) {
 			paste();
-		} else if( source == colorPasteItem || source == colorPasteButton || source == popupColorPasteItem ) {
+		} else if( source == colorPasteItem || source == colorPasteButton ) {
 			colorPaste();
-		} else if( source == popupCopyLinkItem ) {
+		} else if( source == copyLinkItem ) {
 			copyLink();
 		} else if( source == telnetButton ) {
 			siteText.setText( "telnet://" );
@@ -1177,7 +1167,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		getContentPane().setLayout( new BorderLayout() );
 		
 		makeMenu();
-		makePopupMenu();
 		makeTabbedPane();
 		makeToolbar();
 		

@@ -22,3 +22,4 @@
 22. 中英文獨立字型設定
 23. 不再用 zip，把 ganymed ssh2 放進同一個 jar
 24. 設定檔改用 xml properties file
+25. VT100 內的 repaint() 改為 repaint( long tm, int x, int y, int width, int height )
