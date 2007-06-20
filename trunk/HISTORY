@@ -802,5 +802,6 @@
 	find . -name '*.java' -print0 | xargs -0 wc -l -> 7594
 
 20070620:
-	Apply 來自 H45 的 patch，localize 選單內容，
+	Apply 來自 H45 的 patch，localized 選單內容，
 	新增 package org.zhouer.localization
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7797
