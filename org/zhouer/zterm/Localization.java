@@ -1,7 +1,7 @@
 /**
  * @Class: Localization
  */
-package org.zhouer.localization;
+package org.zhouer.zterm;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,10 +44,10 @@ public class Localization
 		Locale local = Locale.getDefault();
 		
 		if( local.equals(Locale.TAIWAN) ) {
-			return "localization.tw";
+			return "lang/zh_TW";
 		}
 		
-		return "localization.us"; 
+		return "lang/en_US"; 
 	}
 	
 	public String TEXT_ABOUT_ITEM() {

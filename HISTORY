@@ -803,5 +803,6 @@
 
 20070620:
 	Apply 來自 H45 的 patch，localized 選單內容，
-	新增 package org.zhouer.localization
-	find . -name '*.java' -print0 | xargs -0 wc -l -> 7797
+	新增 class Localization，中文、英文 localization string file.
+	比較兩個 non-primitive object 是否相等要記得用 equals 不要用 ==.
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7796
