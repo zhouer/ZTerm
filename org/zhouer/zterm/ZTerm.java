@@ -41,8 +41,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 
-import org.zhouer.localization.LocalizationAdapter;
-import org.zhouer.localization.LocalizationTW;
+import org.zhouer.localization.Localization;
 import org.zhouer.protocol.Protocol;
 import org.zhouer.utils.Convertor;
 import org.zhouer.vt.Config;
@@ -64,7 +63,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	
 	// popup 選單
 	private JPopupMenu popupMenu;
-	private JMenuItem copyLinkItem;
+	private JMenuItem popupCopyItem, popupPasteItem, popupColorCopyItem, popupColorPasteItem, popupCopyLinkItem;
 	
 	// 連線工具列
 	private JToolBar connectionToolbar;
@@ -106,8 +105,8 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	public static final int ICON_CLOSED = 3;
 	public static final int ICON_ALERT = 4;
 	
-	private LocalizationAdapter localization = new LocalizationTW();
-	
+	// localization
+	private Localization localization;
 	
 	// 建立各種選單，包括 popup 選單也在這裡建立
 	private void makeMenu()
@@ -227,15 +226,27 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		// popup menu
 		popupMenu = new JPopupMenu();
 		
-		copyLinkItem = new JMenuItem("複製連結");
-		copyLinkItem.addActionListener( this );
-		copyLinkItem.setEnabled( false );
+		popupCopyItem = new JMenuItem( localization.TEXT_COPY_ITEM() );
+		popupCopyItem.addActionListener( this );
 		
-		popupMenu.add( copyItem );
-		popupMenu.add( pasteItem );
-		popupMenu.add( colorCopyItem );
-		popupMenu.add( colorPasteItem );
-		popupMenu.add( copyLinkItem );
+		popupPasteItem = new JMenuItem( localization.TEXT_PASTE_ITEM() );
+		popupPasteItem.addActionListener( this );
+		
+		popupColorCopyItem = new JMenuItem( localization.TEXT_COLOR_COPY_ITEM() );
+		popupColorCopyItem.addActionListener( this );
+		
+		popupColorPasteItem = new JMenuItem( localization.TEXT_COLOR_PASTE_ITEM() );
+		popupColorPasteItem.addActionListener( this );
+		
+		popupCopyLinkItem = new JMenuItem( localization.TEXT_COPY_LINK_ITEM() );
+		popupCopyLinkItem.addActionListener( this );
+		popupCopyLinkItem.setEnabled( false );
+		
+		popupMenu.add( popupCopyItem );
+		popupMenu.add( popupPasteItem );
+		popupMenu.add( popupColorCopyItem );
+		popupMenu.add( popupColorPasteItem );
+		popupMenu.add( popupCopyLinkItem );
 	}
 	
 	private void makeTabbedPane()
@@ -252,31 +263,31 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		connectionToolbar.setVisible( showToolbar );
 		connectionToolbar.setRollover( true );
 		
-		closeButton = new JButton( "斷線");
-		closeButton.setToolTipText("meta-w");
+		closeButton = new JButton( localization.TEXT_CLOSE_ITEM() );
+		closeButton.setToolTipText( localization.TEXT_CLOSE_ITEM_TOOLTIP() );
 		closeButton.setFocusable( false );
 		closeButton.addActionListener( this );
 		
-		reopenButton = new JButton( "重連" );
-		reopenButton.setToolTipText("meta-r");
+		reopenButton = new JButton( localization.TEXT_REOPEN_ITEM() );
+		reopenButton.setToolTipText( localization.TEXT_REOPEN_ITEM_TOOLTIP() );
 		reopenButton.setFocusable( false );
 		reopenButton.addActionListener( this );
 		
-		copyButton = new JButton("複製");
-		copyButton.setToolTipText("meta-c");
+		copyButton = new JButton( localization.TEXT_COPY_ITEM() );
+		copyButton.setToolTipText( localization.TEXT_COPY_ITEM_TOOLTIP() );
 		copyButton.setFocusable( false );
 		copyButton.addActionListener( this );
 		
-		pasteButton = new JButton("貼上");
-		pasteButton.setToolTipText("meta-v");
+		pasteButton = new JButton( localization.TEXT_PASTE_ITEM() );
+		pasteButton.setToolTipText( localization.TEXT_PASTE_ITEM() );
 		pasteButton.setFocusable( false );
 		pasteButton.addActionListener( this );
 		
-		colorCopyButton = new JButton("彩色複製");
+		colorCopyButton = new JButton( localization.TEXT_COLOR_COPY_ITEM() );
 		colorCopyButton.setFocusable( false );
 		colorCopyButton.addActionListener( this );
 		
-		colorPasteButton = new JButton("彩色貼上");
+		colorPasteButton = new JButton(  localization.TEXT_COLOR_PASTE_ITEM() );
 		colorPasteButton.setFocusable( false );
 		colorPasteButton.addActionListener( this );
 		
@@ -311,7 +322,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		siteText = (JTextComponent)siteField.getEditor().getEditorComponent();
 		siteText.addKeyListener( this );
 		
-		openButton = new JButton( "連線" );
+		openButton = new JButton( localization.TEXT_OPEN_ITEM() );
 		openButton.setFocusable( false );
 		openButton.addActionListener( this );
 		
@@ -365,7 +376,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	{
 		synchronized( menulock ) {
 			showToolbar = resource.getBooleanValue( Resource.SHOW_TOOLBAR );
-			showToolbarItem.setText( showToolbar ? "隱藏工具列" : "顯示工具列" );
+			showToolbarItem.setText( showToolbar ? localization.TEXT_HIDE_TOOLBAR_ITEM(): localization.TEXT_SHOW_TOOLBAR_ITEM() );
 			connectionToolbar.setVisible( showToolbar );
 			validate();
 		}
@@ -575,7 +586,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		Point p = getLocationOnScreen();
 		
 		// TODO: 用 tmpLink 的作法蠻笨的，但暫時想不到好作法
-		copyLinkItem.setEnabled( link != null );
+		popupCopyLinkItem.setEnabled( link != null );
 		tmpLink = link;
 		
 		// 傳進來的是滑鼠相對於視窗左上角的座標，減去主視窗相對於螢幕左上角的座標，可得滑鼠相對於主視窗的座標。
@@ -946,15 +957,15 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			reopenSession( (Session)tabbedPane.getSelectedComponent() );
 		} else if( source == quitItem ) {
 			quit();
-		} else if( source == copyItem || source == copyButton ) {
+		} else if( source == copyItem || source == copyButton || source == popupCopyItem ) {
 			copy();
-		} else if( source == colorCopyItem || source == colorCopyButton ) {
+		} else if( source == colorCopyItem || source == colorCopyButton || source == popupColorCopyItem ) {
 			colorCopy();
-		} else if( source == pasteItem || source == pasteButton ) {
+		} else if( source == pasteItem || source == pasteButton || source == popupPasteItem ) {
 			paste();
-		} else if( source == colorPasteItem || source == colorPasteButton ) {
+		} else if( source == colorPasteItem || source == colorPasteButton || source == popupColorPasteItem ) {
 			colorPaste();
-		} else if( source == copyLinkItem ) {
+		} else if( source == popupCopyLinkItem ) {
 			copyLink();
 		} else if( source == telnetButton ) {
 			siteText.setText( "telnet://" );
@@ -1165,6 +1176,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		
 		// 設定主畫面 Layout
 		getContentPane().setLayout( new BorderLayout() );
+		
+		// 取得 localized 對照表
+		localization = new Localization();
 		
 		makeMenu();
 		makeTabbedPane();
