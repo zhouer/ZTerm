@@ -41,7 +41,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 
-import org.zhouer.localization.Localization;
 import org.zhouer.protocol.Protocol;
 import org.zhouer.utils.Convertor;
 import org.zhouer.vt.Config;
