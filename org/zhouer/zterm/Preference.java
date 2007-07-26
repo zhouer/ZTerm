@@ -197,7 +197,9 @@ class ConnectionPanel extends JPanel implements ActionListener
 	public JSpinner reconnectTimeSpinner, reconnectIntervalSpinner;
 	public SpinnerNumberModel reconnectTimeModel, reconnectIntervalModel;
 	
-	public JLabel antiIdleLabel, antiIdleTimeLabel;
+	/* chitsaou.070726: 防閒置字串 */
+	public JLabel antiIdleLabel, antiIdleTimeLabel, antiIdleStringLabel;
+	public JTextField antiIdleStringField;
 	public JCheckBox antiIdleCheckBox;
 	public JSpinner antiIdleTimeSpinner;
 	public SpinnerNumberModel antiIdleModel;
@@ -242,6 +244,10 @@ class ConnectionPanel extends JPanel implements ActionListener
 		antiIdleTimeSpinner = new JSpinner( antiIdleModel );
 		antiIdleTimeSpinner.setEnabled( resource.getBooleanValue(Resource.ANTI_IDLE) );
 		
+		/* chitsaou.070726: 防閒置字串 */
+		antiIdleStringLabel = new JLabel("防閒置字串");
+		antiIdleStringField = new JTextField( resource.getStringValue(Resource.ANTI_IDLE_STRING), 20 );
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
@@ -275,6 +281,13 @@ class ConnectionPanel extends JPanel implements ActionListener
 		add( antiIdleTimeLabel,c );
 		c.gridx = 1;
 		add( antiIdleTimeSpinner,c );
+		
+		/* chitsaou.070726: 防閒置字串 */
+		c.gridx = 0;
+		c.gridy = 5;
+		add( antiIdleStringLabel, c );
+		c.gridx = 1;
+		add( antiIdleStringField, c );
 	}
 }
 
@@ -284,13 +297,18 @@ class ApperancePanel extends JPanel
 
 	private Resource resource;
 	
+	/* chitsaou.070726: 顯示捲軸 */
+	/* chitsaou.070726: 分頁編號 */
+	/* chitsaou.070726: 使用分頁顏色表示狀態 */
+	public JLabel colorTabLabel, tabNumberLabel, showScrollBarLabel; 
+	public JCheckBox colorTabCheckBox, tabNumberCheckBox, showScrollBarCheckBox;
+	
 	public JLabel systemLookFeelLabel, showToolbarLabel;
 	public JCheckBox systemLookFeelCheckBox, showToolbarCheckBox;
 	
 	public JLabel widthLabel, heightLabel;
 	public JSpinner widthSpinner, heightSpinner;
 	public SpinnerNumberModel widthModel, heightModel;
-
 	
 	public JLabel scrollLabel, terminalRowsLabel, terminalColumnsLabel;
 	public JSpinner scrollSpinner, terminalRowsSpinner, terminalColumnsSpinner;
@@ -330,6 +348,23 @@ class ApperancePanel extends JPanel
 		terminalRowsModel = new SpinnerNumberModel( resource.getIntValue(Resource.TERMINAL_ROWS), 24, 200, 1);
 		terminalRowsSpinner = new JSpinner( terminalRowsModel );
 		terminalRowsSpinner.setEnabled( false );
+		
+		/* chitsaou.070726: 分頁使用背景顏色表示狀態 */
+		// TODO: no restart
+		colorTabLabel = new JLabel("分頁用底色表示狀態 (需重新啟動)");
+		colorTabCheckBox = new JCheckBox();
+		colorTabCheckBox.setSelected( resource.getBooleanValue(Resource.TAB_COLOR) );
+
+		/* chitsaou.070726: 分頁編號 */
+		tabNumberLabel = new JLabel("顯示分頁編號 (新分頁生效)");
+		tabNumberCheckBox = new JCheckBox();
+		tabNumberCheckBox.setSelected( resource.getBooleanValue(Resource.TAB_NUMBER) );
+		
+		/* chitsaou.070726: 顯示捲軸 */
+		// TODO: no restart
+		showScrollBarLabel = new JLabel("終端機顯示捲軸 (需重新連線)");
+		showScrollBarCheckBox = new JCheckBox();
+		showScrollBarCheckBox.setSelected( resource.getBooleanValue(Resource.SHOW_SCROLL_BAR) );
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -377,7 +412,27 @@ class ApperancePanel extends JPanel
 		add( terminalRowsLabel, c );
 		c.gridx = 1;
 		add( terminalRowsSpinner, c );
+		
+		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		c.gridx = 0;
+		c.gridy = 7;
+		add( colorTabLabel, c );
+		c.gridx = 1;
+		add( colorTabCheckBox, c );
+		
+		/* chitsaou.070726: 分頁編號 */
+		c.gridx = 0;
+		c.gridy = 8;
+		add( tabNumberLabel, c );
+		c.gridx = 1;
+		add( tabNumberCheckBox, c );
 
+		/* chitsaou.070726: 顯示捲軸 */
+		c.gridx = 0;
+		c.gridy = 9;
+		add( showScrollBarLabel, c );
+		c.gridx = 1;
+		add( showScrollBarCheckBox, c );
 	}
 }
 
@@ -538,6 +593,9 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		resource.setValue( Resource.ANTI_IDLE, cp.antiIdleCheckBox.isSelected() );
 		resource.setValue( Resource.ANTI_IDLE_INTERVAL, cp.antiIdleModel.getValue().toString() );
 		
+		/* chitsaou.070726: 防閒置字串 */
+		resource.setValue( Resource.ANTI_IDLE_STRING, cp.antiIdleStringField.getText() );
+		
 		resource.setValue( Resource.SYSTEM_LOOK_FEEL, ap.systemLookFeelCheckBox.isSelected() );
 		resource.setValue( Resource.SHOW_TOOLBAR, ap.showToolbarCheckBox.isSelected() );
 		resource.setValue( Resource.GEOMETRY_WIDTH, ap.widthModel.getValue().toString() );
@@ -545,6 +603,13 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		resource.setValue( Resource.TERMINAL_SCROLLS, ap.scrollModel.getValue().toString() );
 		resource.setValue( Resource.TERMINAL_COLUMNS, ap.terminalColumnsModel.getValue().toString() );
 		resource.setValue( Resource.TERMINAL_ROWS, ap.terminalRowsModel.getValue().toString() );
+		
+		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		/* chitsaou.070726: 分頁編號 */
+		/* chitsaou.070726: 顯示捲軸 */
+		resource.setValue( Resource.TAB_COLOR, ap.colorTabCheckBox.isSelected() );
+		resource.setValue( Resource.TAB_NUMBER, ap.tabNumberCheckBox.isSelected() );
+		resource.setValue( Resource.SHOW_SCROLL_BAR, ap.showScrollBarCheckBox.isSelected() );
 		
 		resource.setValue( Resource.FONT_FAMILY, fp.familyCombo.getSelectedItem().toString() );
 		resource.setValue( Resource.FONT_SIZE, fp.sizeModel.getValue().toString() );

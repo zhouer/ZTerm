@@ -37,6 +37,13 @@ public class Resource implements Config
 	public static final String USE_CUSTOM_BELL = "use-custom-bell";
 	public static final String CUSTOM_BELL_PATH = "custom-bell-path";
 	public static final String SHOW_TOOLBAR = "show-toolbar";
+
+	/* chitsaou.070726: 使用分頁顏色表示狀態 */
+	public static final String TAB_COLOR = "tab-color";
+	/* chitsaou.070726: 分頁編號 */
+	public static final String TAB_NUMBER = "tab-number";
+	/* chitsaou.070726: 顯示捲軸 */
+	public static final String SHOW_SCROLL_BAR = "show-scroll-bar";
 	
 	private HashMap defmap, map;
 	
@@ -64,6 +71,13 @@ public class Resource implements Config
 		defmap.put( GEOMETRY_WIDTH, "980");
 		defmap.put( GEOMETRY_HEIGHT, "720");
 		defmap.put( SHOW_TOOLBAR, "true");
+
+		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		defmap.put( TAB_COLOR, "false");
+		/* chitsaou.070726: 分頁編號 */
+		defmap.put( TAB_NUMBER, "true");
+		/* chitsaou.070726: 顯示捲軸 */
+		defmap.put( SHOW_SCROLL_BAR, "true" );
 		
 		// 設定模擬終端機大小
 		defmap.put( TERMINAL_COLUMNS, "80");
@@ -73,7 +87,7 @@ public class Resource implements Config
 		// 防閒置設定
 		defmap.put( ANTI_IDLE, "true");
 		defmap.put( ANTI_IDLE_INTERVAL, "120");
-		defmap.put( ANTI_IDLE_STRING, "");
+		defmap.put( ANTI_IDLE_STRING, "\\x1bOA\\x1bOB");
 		
 		// 自動重連設定
 		defmap.put( AUTO_RECONNECT, "true" );
