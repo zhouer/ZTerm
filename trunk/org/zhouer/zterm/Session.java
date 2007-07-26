@@ -23,6 +23,7 @@ import org.zhouer.protocol.Protocol;
 import org.zhouer.protocol.SSH2;
 import org.zhouer.protocol.Telnet;
 import org.zhouer.utils.Convertor;
+import org.zhouer.utils.TextUtils;
 import org.zhouer.vt.Application;
 import org.zhouer.vt.Config;
 import org.zhouer.vt.VT100;
@@ -67,7 +68,13 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	
 	public void setTabIcon( int icon )
 	{
-		parent.setIcon( icon, this );
+		parent.setTabIcon( icon, this );
+	}
+	
+	/* chitsaou.070726: 使用分頁顏色表示狀態 */
+	public void setTabColor( int color )
+	{
+		parent.setTabColor( color, this );
 	}
 	
 	public boolean isTabForeground()
@@ -81,7 +88,14 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		
 		// 如果 tab 不在最前則改變 icon
 		if( !isTabForeground() ) {
-			setTabIcon( ZTerm.ICON_ALERT );
+			
+			/* chitsaou.070726: 使用分頁顏色表示狀態 */
+			if( resource.getBooleanValue( Resource.TAB_COLOR )) {
+				setTabColor( ZTerm.COLOR_ALERT );
+				setTabIcon( ZTerm.ICON_ALERT ); /* chitsaou.070726: bell 時依然顯示圖示 */
+			} else {
+				setTabIcon( ZTerm.ICON_ALERT );
+			}
 		}
 	}
 	
@@ -320,7 +334,12 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		}
 		
 		// 將連線 icon 改為斷線
-		setTabIcon( ZTerm.ICON_CLOSED );
+		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		if (resource.getBooleanValue( Resource.TAB_COLOR )) {
+			setTabColor( ZTerm.COLOR_CLOSED );
+		} else {
+			setTabIcon( ZTerm.ICON_CLOSED );
+		}
 		
 		// 若遠端 server 主動斷線則判斷是否需要重連
 		boolean autoreconnect = resource.getBooleanValue( Resource.AUTO_RECONNECT );
@@ -397,8 +416,14 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 				// System.out.println( "Sent antiidle char" );
 				// TODO: 設定 antiidle 送出的字元
 				if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
-					writeByte( Telnet.IAC );
-					writeByte( Telnet.NOP );
+										
+					String buf = TextUtils.BSStringToString( resource.getStringValue(Resource.ANTI_IDLE_STRING) );
+					char[] ca = buf.toCharArray();
+					writeChars(ca, 0, ca.length);
+
+					// 較正規的防閒置方式
+					// writeByte( Telnet.IAC );
+					// writeByte( Telnet.NOP );
 				}
 			}
 		}
@@ -421,8 +446,13 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	
 	public void run()
 	{
-		// 設定連線圖示為連線中
-		setTabIcon( ZTerm.ICON_TRYING );
+		// 設定連線狀態為 trying
+		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		if( resource.getBooleanValue( Resource.TAB_COLOR ) ) {
+			setTabColor( ZTerm.COLOR_TRYING );
+		} else {
+			setTabIcon( ZTerm.ICON_TRYING );
+		}
 		
 		// 新建連線
 		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
@@ -445,8 +475,13 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		
 		// TODO: 如果需要 input filter or trigger 可以在這邊套上
 		
-		// 設定 icon 為 connected icon
-		setTabIcon( ZTerm.ICON_CONNECTED );
+		//  設定連線狀態為 connected
+		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		if( resource.getBooleanValue( Resource.TAB_COLOR ) ) {
+			setTabColor( ZTerm.COLOR_CONNECTED );
+		} else {
+			setTabIcon( ZTerm.ICON_CONNECTED );
+		}
 		
 		// 連線成功，更新或新增連線紀錄
 		resource.addFavorite( site );
@@ -490,18 +525,21 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		vt.setEncoding( site.encoding );
 		vt.setEmulation( site.emulation );
 		
-		// scrollbar
-		scrolllines = resource.getIntValue( Config.TERMINAL_SCROLLS );
-		// FIXME: magic number
-		scrollbar = new JScrollBar( JScrollBar.VERTICAL, scrolllines - 1, 24, 0, scrolllines + 23 );
-		scrollbar.addAdjustmentListener( this );
-		
 		// 設定 layout 並把 vt 及 scrollbar 放進去，
 		setLayout( new BorderLayout() );
 		add( vt, BorderLayout.CENTER );
-		add( scrollbar, BorderLayout.EAST );
 		
-		// 處理滑鼠滾輪事件
-		addMouseWheelListener( this );
+		/* chitsaou.070726: 顯示捲軸 */
+		if( resource.getBooleanValue( Resource.SHOW_SCROLL_BAR ) ) {
+			scrolllines = resource.getIntValue( Config.TERMINAL_SCROLLS );
+			// FIXME: magic number
+			scrollbar = new JScrollBar( JScrollBar.VERTICAL, scrolllines - 1, 24, 0, scrolllines + 23 );
+			scrollbar.addAdjustmentListener( this );
+
+			add( scrollbar, BorderLayout.EAST );
+			// 處理滑鼠滾輪事件
+			addMouseWheelListener( this );
+		}
+		
 	}
 }

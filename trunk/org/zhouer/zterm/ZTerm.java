@@ -1,6 +1,7 @@
 package org.zhouer.zterm;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.DefaultKeyboardFocusManager;
 import java.awt.Font;
 import java.awt.KeyEventDispatcher;
@@ -80,6 +81,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	// 分頁 icon
 	private ImageIcon tryingIcon, connectedIcon, closedIcon, bellIcon;
 	
+	/* chitsaou.070726: 使用分頁顏色表示狀態 */
+	private Color tryingColor, connectedColor, closedColor, bellColor;
+	
 	private Vector sessions;
 	private Clip clip;
 	private BufferedImage bi;
@@ -103,6 +107,12 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	public static final int ICON_CONNECTED = 2;
 	public static final int ICON_CLOSED = 3;
 	public static final int ICON_ALERT = 4;
+	
+	/* chitsaou.070726: 使用分頁顏色表示狀態 */
+	public static final int COLOR_TRYING = 1;
+	public static final int COLOR_CONNECTED = 2;
+	public static final int COLOR_CLOSED = 3;
+	public static final int COLOR_ALERT = 4;	
 	
 	// localization
 	private Localization localization;
@@ -448,9 +458,22 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			
 			// 切換到已連線的 session 時設定 icon 為 connected, 以取消  bell icon.
 			if( s.isClosed() ) {
-				setIcon( ICON_CLOSED, s );
+				/* chitsaou.070726: 使用分頁顏色表示狀態 */
+				if( resource.getBooleanValue( Resource.TAB_COLOR ) ) {
+					setTabColor( COLOR_CLOSED, s );
+				} else {
+					setTabIcon( ICON_CLOSED, s );
+				}
 			} else {
-				setIcon( ICON_CONNECTED, s );
+				/* chitsaou.070726: 使用分頁顏色表示狀態 */
+				if( resource.getBooleanValue( Resource.TAB_COLOR ) ) {
+					setTabColor( COLOR_CONNECTED, s );
+					/* XXX: 有的時候分頁寬度會不正常 */
+					// FIXME: magic number
+					setTabIcon( 0, s ); /* chitsaou.070726: bell 時依然顯示圖示 */
+				} else {
+					setTabIcon( ICON_CONNECTED, s );
+				}
 			}
 			
 			// 因為全部的連線共用一張 BufferedImage, 切換分頁時需重繪內容。
@@ -475,6 +498,11 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	{
 		for( int i = 0; i < tabbedPane.getTabCount(); i++) {
 			tabbedPane.setTitleAt( i, (i + 1) + ". " + ((Session)sessions.elementAt(i)).getSite().name );
+
+			// FIXME: need revise
+			tabbedPane.setTitleAt( i,
+					( (resource.getBooleanValue (Resource.TAB_NUMBER) ) ? (i + 1) + ". " : "" )
+					+ ((Session)sessions.elementAt(i)).getSite().name );
 		}
 	}
 	
@@ -674,8 +702,25 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		// index 為連線後放在第幾個分頁，若為 -1 表開新分頁。
 		if( index == -1 ) {
 			sessions.add( s );
-			// 分頁 title 會顯示分頁編號加站台名稱，tip 會顯示 hostname.
-			tabbedPane.addTab( (tabbedPane.getTabCount() + 1) + ". " + si.name, closedIcon, s, si.host );
+			
+			ImageIcon icon;
+			
+			/* chitsaou.070726: 分頁顏色 */
+			if( resource.getBooleanValue( Resource.TAB_COLOR )) {
+				icon = null;
+			} else {
+				icon = closedIcon;
+			}
+			
+			/* chitsaou.070726: 分頁編號 */
+			if( resource.getBooleanValue( Resource.TAB_NUMBER )) {
+				// 分頁 title 會顯示分頁編號加站台名稱，tip 會顯示 hostname.
+				tabbedPane.addTab((tabbedPane.getTabCount() + 1) + ". " + si.name, icon, s, si.host );
+			} else {
+				/* chitsaou:070726: 不要標號 */
+				tabbedPane.addTab(si.name, icon, s, si.host );
+			}
+			
 			tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1);
 		} else {
 			sessions.setElementAt( s, index );
@@ -823,7 +868,38 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		}
 	}
 	
-	public void setIcon( int icon, Session s )
+	/* chitsaou.070726: 使用分頁顏色表示狀態 */
+	public void setTabColor(int colorid, Session s)
+	{
+		int index;
+		
+		Color color;
+		
+		switch( colorid ) {
+			case COLOR_TRYING:
+				color = tryingColor;
+				break;
+			case COLOR_CONNECTED:
+				color = connectedColor;
+				break;
+			case COLOR_CLOSED:
+				color = closedColor;
+				break;
+			case COLOR_ALERT:
+				color = bellColor;
+				break;
+
+			default:
+				color = null;
+		}
+		
+		index = tabbedPane.indexOfComponent( s );
+		if( index != -1 ) {
+			tabbedPane.setBackgroundAt( index, color );
+		}
+	}
+	
+	public void setTabIcon( int icon, Session s )
 	{
 		int index;
 		ImageIcon ii;
@@ -1169,6 +1245,12 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		connectedIcon = new ImageIcon( ZTerm.class.getResource( "icon/connected.png" ) );
 		closedIcon = new ImageIcon( ZTerm.class.getResource( "icon/closed.png" ) );
 		bellIcon = new ImageIcon( ZTerm.class.getResource( "icon/bell.png" ) );
+		
+		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		tryingColor = Color.YELLOW;
+		connectedColor = null;
+		closedColor = Color.GRAY;
+		bellColor = Color.RED;
 		
 		// 是否要顯示工具列
 		showToolbar = resource.getBooleanValue( Resource.SHOW_TOOLBAR );
