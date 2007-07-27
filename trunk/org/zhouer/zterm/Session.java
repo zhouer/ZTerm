@@ -59,6 +59,12 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	private Timer ti;
 	private long lastInputTime, antiIdleInterval;
 	
+	// 連線狀態
+	public static final int STATE_TRYING = 1;
+	public static final int STATE_CONNECTED = 2;
+	public static final int STATE_CLOSED = 3;
+	public static final int STATE_ALERT = 4;
+	
 	// 這個 session 是否擁有一個 tab, 可能 session 還沒結束，但 tab 已被關閉。
 	private boolean hasTab;
 	
@@ -66,15 +72,9 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	 * 送往上層的
 	 */
 	
-	public void setTabIcon( int icon )
+	private void setState( int state )
 	{
-		parent.setTabIcon( icon, this );
-	}
-	
-	/* chitsaou.070726: 使用分頁顏色表示狀態 */
-	public void setTabColor( int color )
-	{
-		parent.setTabColor( color, this );
+		parent.setTabState( state, this );
 	}
 	
 	public boolean isTabForeground()
@@ -84,19 +84,7 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	
 	public void bell()
 	{
-		parent.bell();
-		
-		// 如果 tab 不在最前則改變 icon
-		if( !isTabForeground() ) {
-			
-			/* chitsaou.070726: 使用分頁顏色表示狀態 */
-			if( resource.getBooleanValue( Resource.TAB_COLOR )) {
-				setTabColor( ZTerm.COLOR_ALERT );
-				setTabIcon( ZTerm.ICON_ALERT ); /* chitsaou.070726: bell 時依然顯示圖示 */
-			} else {
-				setTabIcon( ZTerm.ICON_ALERT );
-			}
-		}
+		parent.bell( this );
 	}
 	
 	public void copy()
@@ -333,13 +321,8 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 			vt.close();
 		}
 		
-		// 將連線 icon 改為斷線
-		/* chitsaou.070726: 使用分頁顏色表示狀態 */
-		if (resource.getBooleanValue( Resource.TAB_COLOR )) {
-			setTabColor( ZTerm.COLOR_CLOSED );
-		} else {
-			setTabIcon( ZTerm.ICON_CLOSED );
-		}
+		// 將連線狀態改為斷線
+		setState( STATE_CLOSED );
 		
 		// 若遠端 server 主動斷線則判斷是否需要重連
 		boolean autoreconnect = resource.getBooleanValue( Resource.AUTO_RECONNECT );
@@ -447,12 +430,7 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	public void run()
 	{
 		// 設定連線狀態為 trying
-		/* chitsaou.070726: 使用分頁顏色表示狀態 */
-		if( resource.getBooleanValue( Resource.TAB_COLOR ) ) {
-			setTabColor( ZTerm.COLOR_TRYING );
-		} else {
-			setTabIcon( ZTerm.ICON_TRYING );
-		}
+		setState( STATE_TRYING );
 		
 		// 新建連線
 		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
@@ -476,12 +454,7 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		// TODO: 如果需要 input filter or trigger 可以在這邊套上
 		
 		//  設定連線狀態為 connected
-		/* chitsaou.070726: 使用分頁顏色表示狀態 */
-		if( resource.getBooleanValue( Resource.TAB_COLOR ) ) {
-			setTabColor( ZTerm.COLOR_CONNECTED );
-		} else {
-			setTabIcon( ZTerm.ICON_CONNECTED );
-		}
+		setState( STATE_CONNECTED );
 		
 		// 連線成功，更新或新增連線紀錄
 		resource.addFavorite( site );
@@ -529,14 +502,16 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		setLayout( new BorderLayout() );
 		add( vt, BorderLayout.CENTER );
 		
-		/* chitsaou.070726: 顯示捲軸 */
-		if( resource.getBooleanValue( Resource.SHOW_SCROLL_BAR ) ) {
+		// chitsaou.070726: 顯示捲軸
+		if( resource.getBooleanValue( Resource.SHOW_SCROLL_BAR ) )
+		{
 			scrolllines = resource.getIntValue( Config.TERMINAL_SCROLLS );
 			// FIXME: magic number
 			scrollbar = new JScrollBar( JScrollBar.VERTICAL, scrolllines - 1, 24, 0, scrolllines + 23 );
 			scrollbar.addAdjustmentListener( this );
-
+			
 			add( scrollbar, BorderLayout.EAST );
+			
 			// 處理滑鼠滾輪事件
 			addMouseWheelListener( this );
 		}
