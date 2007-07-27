@@ -103,17 +103,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	// 避免同時有數個 thread 修改資料用的 lock object
 	private Object msglock, menulock;
 	
-	public static final int ICON_TRYING = 1;
-	public static final int ICON_CONNECTED = 2;
-	public static final int ICON_CLOSED = 3;
-	public static final int ICON_ALERT = 4;
-	
-	/* chitsaou.070726: 使用分頁顏色表示狀態 */
-	public static final int COLOR_TRYING = 1;
-	public static final int COLOR_CONNECTED = 2;
-	public static final int COLOR_CLOSED = 3;
-	public static final int COLOR_ALERT = 4;	
-	
 	// localization
 	private Localization localization;
 	
@@ -456,24 +445,11 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			siteText.select( 0, 0 );
 			siteField.hidePopup();
 			
-			// 切換到已連線的 session 時設定 icon 為 connected, 以取消  bell icon.
+			// 切換到已連線的 session 時設定狀態為 connected, 以取消 bell.
 			if( s.isClosed() ) {
-				/* chitsaou.070726: 使用分頁顏色表示狀態 */
-				if( resource.getBooleanValue( Resource.TAB_COLOR ) ) {
-					setTabColor( COLOR_CLOSED, s );
-				} else {
-					setTabIcon( ICON_CLOSED, s );
-				}
+				setTabState( Session.STATE_CLOSED, s );
 			} else {
-				/* chitsaou.070726: 使用分頁顏色表示狀態 */
-				if( resource.getBooleanValue( Resource.TAB_COLOR ) ) {
-					setTabColor( COLOR_CONNECTED, s );
-					/* XXX: 有的時候分頁寬度會不正常 */
-					// FIXME: magic number
-					setTabIcon( 0, s ); /* chitsaou.070726: bell 時依然顯示圖示 */
-				} else {
-					setTabIcon( ICON_CONNECTED, s );
-				}
+				setTabState( Session.STATE_CONNECTED, s );
 			}
 			
 			// 因為全部的連線共用一張 BufferedImage, 切換分頁時需重繪內容。
@@ -762,7 +738,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		}	
 	}
 	
-	public void bell()
+	public void bell( Session s )
 	{	
 		if( resource.getBooleanValue( Resource.USE_CUSTOM_BELL) ) {
 			try {
@@ -774,7 +750,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			java.awt.Toolkit.getDefaultToolkit().beep();
 		}
 		
-		// TODO: 該讓使用者知道這個視窗有 bell
+		setTabState( Session.STATE_ALERT, s );
+		
+		// TODO: 該讓使用者知道這個視窗有 bell，好比閃爍工作列圖示
 	}
 	
 	public void open()
@@ -868,62 +846,41 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		}
 	}
 	
-	/* chitsaou.070726: 使用分頁顏色表示狀態 */
-	public void setTabColor(int colorid, Session s)
+	public void setTabState( int state, Session s )
 	{
 		int index;
-		
+		ImageIcon ii;
 		Color color;
 		
-		switch( colorid ) {
-			case COLOR_TRYING:
+		switch( state ) {
+			case Session.STATE_TRYING:
+				ii = tryingIcon;
 				color = tryingColor;
 				break;
-			case COLOR_CONNECTED:
+			case Session.STATE_CONNECTED:
+				ii = connectedIcon;
 				color = connectedColor;
 				break;
-			case COLOR_CLOSED:
+			case Session.STATE_CLOSED:
+				ii = closedIcon;
 				color = closedColor;
 				break;
-			case COLOR_ALERT:
+			case Session.STATE_ALERT:
+				ii = bellIcon;
 				color = bellColor;
 				break;
-
 			default:
+				ii = null;
 				color = null;
 		}
 		
 		index = tabbedPane.indexOfComponent( s );
 		if( index != -1 ) {
-			tabbedPane.setBackgroundAt( index, color );
-		}
-	}
-	
-	public void setTabIcon( int icon, Session s )
-	{
-		int index;
-		ImageIcon ii;
-		
-		switch( icon ) {
-			case ICON_TRYING:
-				ii = tryingIcon;
-				break;
-			case ICON_CONNECTED:
-				ii = connectedIcon;
-				break;
-			case ICON_CLOSED:
-				ii = closedIcon;
-				break;
-			case ICON_ALERT:
-				ii = bellIcon;
-				break;
-			default:
-				ii = null;
-		}
-		
-		index = tabbedPane.indexOfComponent( s );
-		if( index != -1 ) {
-			tabbedPane.setIconAt( index, ii );
+			if( resource.getBooleanValue(Resource.TAB_COLOR) ) {
+				tabbedPane.setBackgroundAt( index, color );
+			} else {
+				tabbedPane.setIconAt( index, ii );
+			}
 		}
 	}
 	
@@ -1246,7 +1203,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		closedIcon = new ImageIcon( ZTerm.class.getResource( "icon/closed.png" ) );
 		bellIcon = new ImageIcon( ZTerm.class.getResource( "icon/bell.png" ) );
 		
-		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		// chitsaou.070726: 使用分頁顏色表示狀態
 		tryingColor = Color.YELLOW;
 		connectedColor = null;
 		closedColor = Color.GRAY;
