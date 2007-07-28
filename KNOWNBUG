@@ -4,7 +4,9 @@ Bugs from ZTerm its self
 3. 切斷個已斷線的視窗有問題，似乎會做兩次。
 4. 畫面捲到最上面的行為需要再觀察。
 5. 顯示大量資料時比 0.5 版還慢！（把 synchronized 拿掉就變得超快了）
+
 6. 連線中分頁顏色不會正確顯示。
+7. 前景中的分頁不會顯示顏色，沒辦法區分連線狀態。
 
 Bugs from JRE (Linux only)
 1. 有時會完全收不到 KeyEvent
