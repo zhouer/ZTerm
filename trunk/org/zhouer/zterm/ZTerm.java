@@ -681,19 +681,19 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			
 			ImageIcon icon;
 			
-			/* chitsaou.070726: 分頁顏色 */
+			// chitsaou.070726: 分頁顏色
 			if( resource.getBooleanValue( Resource.TAB_COLOR )) {
 				icon = null;
 			} else {
 				icon = closedIcon;
 			}
 			
-			/* chitsaou.070726: 分頁編號 */
+			// chitsaou.070726: 分頁編號
 			if( resource.getBooleanValue( Resource.TAB_NUMBER )) {
 				// 分頁 title 會顯示分頁編號加站台名稱，tip 會顯示 hostname.
 				tabbedPane.addTab((tabbedPane.getTabCount() + 1) + ". " + si.name, icon, s, si.host );
 			} else {
-				/* chitsaou:070726: 不要標號 */
+				// chitsaou:070726: 不要標號
 				tabbedPane.addTab(si.name, icon, s, si.host );
 			}
 			
@@ -750,7 +750,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			java.awt.Toolkit.getDefaultToolkit().beep();
 		}
 		
-		setTabState( Session.STATE_ALERT, s );
+		if( !isTabForeground(s) ) {
+			setTabState( Session.STATE_ALERT, s );
+		}
 		
 		// TODO: 該讓使用者知道這個視窗有 bell，好比閃爍工作列圖示
 	}
