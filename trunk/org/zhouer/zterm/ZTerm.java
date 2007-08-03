@@ -1,7 +1,6 @@
 package org.zhouer.zterm;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.DefaultKeyboardFocusManager;
 import java.awt.Font;
 import java.awt.KeyEventDispatcher;
@@ -80,9 +79,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	
 	// 分頁 icon
 	private ImageIcon tryingIcon, connectedIcon, closedIcon, bellIcon;
-	
-	/* chitsaou.070726: 使用分頁顏色表示狀態 */
-	private Color tryingColor, connectedColor, closedColor, bellColor;
 	
 	private Vector sessions;
 	private Clip clip;
@@ -445,10 +441,8 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			siteText.select( 0, 0 );
 			siteField.hidePopup();
 			
-			// 切換到已連線的 session 時設定狀態為 connected, 以取消 bell.
-			if( s.isClosed() ) {
-				setTabState( Session.STATE_CLOSED, s );
-			} else {
+			// 切換到 alert 的 session 時設定狀態為 connected, 以取消 bell.
+			if( s.state == Session.STATE_ALERT ) {
 				setTabState( Session.STATE_CONNECTED, s );
 			}
 			
@@ -680,13 +674,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			sessions.add( s );
 			
 			ImageIcon icon;
-			
-			// chitsaou.070726: 分頁顏色
-			if( resource.getBooleanValue( Resource.TAB_COLOR )) {
-				icon = null;
-			} else {
-				icon = closedIcon;
-			}
+
+			// 一開始預設 icon 是連線中斷
+			icon = closedIcon;
 			
 			// chitsaou.070726: 分頁編號
 			if( resource.getBooleanValue( Resource.TAB_NUMBER )) {
@@ -852,37 +842,27 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	{
 		int index;
 		ImageIcon ii;
-		Color color;
 		
 		switch( state ) {
 			case Session.STATE_TRYING:
 				ii = tryingIcon;
-				color = tryingColor;
 				break;
 			case Session.STATE_CONNECTED:
 				ii = connectedIcon;
-				color = connectedColor;
 				break;
 			case Session.STATE_CLOSED:
 				ii = closedIcon;
-				color = closedColor;
 				break;
 			case Session.STATE_ALERT:
 				ii = bellIcon;
-				color = bellColor;
 				break;
 			default:
 				ii = null;
-				color = null;
 		}
 		
 		index = tabbedPane.indexOfComponent( s );
 		if( index != -1 ) {
-			if( resource.getBooleanValue(Resource.TAB_COLOR) ) {
-				tabbedPane.setBackgroundAt( index, color );
-			} else {
-				tabbedPane.setIconAt( index, ii );
-			}
+			tabbedPane.setIconAt( index, ii );
 		}
 	}
 	
@@ -1204,12 +1184,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		connectedIcon = new ImageIcon( ZTerm.class.getResource( "icon/connected.png" ) );
 		closedIcon = new ImageIcon( ZTerm.class.getResource( "icon/closed.png" ) );
 		bellIcon = new ImageIcon( ZTerm.class.getResource( "icon/bell.png" ) );
-		
-		// chitsaou.070726: 使用分頁顏色表示狀態
-		tryingColor = Color.YELLOW;
-		connectedColor = null;
-		closedColor = Color.GRAY;
-		bellColor = Color.RED;
 		
 		// 是否要顯示工具列
 		showToolbar = resource.getBooleanValue( Resource.SHOW_TOOLBAR );
