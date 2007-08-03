@@ -6,9 +6,6 @@ Bugs from ZTerm its self
 5. 顯示大量資料時比 0.5 版還慢！（把 synchronized 拿掉就變得超快了）
 6. 有時連線成功，但畫面卻是之前連線的畫面，並且畫面沒置中，也不能操作。
 
-7. 連線中分頁顏色不會正確顯示。
-8. 前景中的分頁不會顯示顏色，沒辦法區分連線狀態。
-
 Bugs from JRE (Linux only)
 1. 有時會完全收不到 KeyEvent
 	http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6506617

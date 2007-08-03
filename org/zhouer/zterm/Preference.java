@@ -197,7 +197,7 @@ class ConnectionPanel extends JPanel implements ActionListener
 	public JSpinner reconnectTimeSpinner, reconnectIntervalSpinner;
 	public SpinnerNumberModel reconnectTimeModel, reconnectIntervalModel;
 	
-	/* chitsaou.070726: 防閒置字串 */
+	// chitsaou.070726: 防閒置字串
 	public JLabel antiIdleLabel, antiIdleTimeLabel, antiIdleStringLabel;
 	public JTextField antiIdleStringField;
 	public JCheckBox antiIdleCheckBox;
@@ -244,7 +244,7 @@ class ConnectionPanel extends JPanel implements ActionListener
 		antiIdleTimeSpinner = new JSpinner( antiIdleModel );
 		antiIdleTimeSpinner.setEnabled( resource.getBooleanValue(Resource.ANTI_IDLE) );
 		
-		/* chitsaou.070726: 防閒置字串 */
+		// chitsaou.070726: 防閒置字串
 		antiIdleStringLabel = new JLabel("防閒置字串");
 		antiIdleStringField = new JTextField( resource.getStringValue(Resource.ANTI_IDLE_STRING), 20 );
 
@@ -282,7 +282,7 @@ class ConnectionPanel extends JPanel implements ActionListener
 		c.gridx = 1;
 		add( antiIdleTimeSpinner,c );
 		
-		/* chitsaou.070726: 防閒置字串 */
+		// chitsaou.070726: 防閒置字串
 		c.gridx = 0;
 		c.gridy = 5;
 		add( antiIdleStringLabel, c );
@@ -296,12 +296,11 @@ class ApperancePanel extends JPanel
 	private static final long serialVersionUID = -2051345281384271839L;
 
 	private Resource resource;
-	
-	/* chitsaou.070726: 顯示捲軸 */
-	/* chitsaou.070726: 分頁編號 */
-	/* chitsaou.070726: 使用分頁顏色表示狀態 */
-	public JLabel colorTabLabel, tabNumberLabel, showScrollBarLabel; 
-	public JCheckBox colorTabCheckBox, tabNumberCheckBox, showScrollBarCheckBox;
+
+	// chitsaou.070726: 分頁編號	
+	// chitsaou.070726: 顯示捲軸
+	public JLabel tabNumberLabel, showScrollBarLabel; 
+	public JCheckBox tabNumberCheckBox, showScrollBarCheckBox;
 	
 	public JLabel systemLookFeelLabel, showToolbarLabel;
 	public JCheckBox systemLookFeelCheckBox, showToolbarCheckBox;
@@ -349,18 +348,12 @@ class ApperancePanel extends JPanel
 		terminalRowsSpinner = new JSpinner( terminalRowsModel );
 		terminalRowsSpinner.setEnabled( false );
 		
-		/* chitsaou.070726: 分頁使用背景顏色表示狀態 */
-		// TODO: no restart
-		colorTabLabel = new JLabel("分頁用底色表示狀態 (需重新啟動)");
-		colorTabCheckBox = new JCheckBox();
-		colorTabCheckBox.setSelected( resource.getBooleanValue(Resource.TAB_COLOR) );
-
-		/* chitsaou.070726: 分頁編號 */
+		// chitsaou.070726: 分頁編號
 		tabNumberLabel = new JLabel("顯示分頁編號 (新分頁生效)");
 		tabNumberCheckBox = new JCheckBox();
 		tabNumberCheckBox.setSelected( resource.getBooleanValue(Resource.TAB_NUMBER) );
 		
-		/* chitsaou.070726: 顯示捲軸 */
+		// chitsaou.070726: 顯示捲軸
 		// TODO: no restart
 		showScrollBarLabel = new JLabel("終端機顯示捲軸 (需重新連線)");
 		showScrollBarCheckBox = new JCheckBox();
@@ -413,23 +406,16 @@ class ApperancePanel extends JPanel
 		c.gridx = 1;
 		add( terminalRowsSpinner, c );
 		
-		/* chitsaou.070726: 使用分頁顏色表示狀態 */
+		// chitsaou.070726: 分頁編號
 		c.gridx = 0;
 		c.gridy = 7;
-		add( colorTabLabel, c );
-		c.gridx = 1;
-		add( colorTabCheckBox, c );
-		
-		/* chitsaou.070726: 分頁編號 */
-		c.gridx = 0;
-		c.gridy = 8;
 		add( tabNumberLabel, c );
 		c.gridx = 1;
 		add( tabNumberCheckBox, c );
 
-		/* chitsaou.070726: 顯示捲軸 */
+		// chitsaou.070726: 顯示捲軸
 		c.gridx = 0;
-		c.gridy = 9;
+		c.gridy = 8;
 		add( showScrollBarLabel, c );
 		c.gridx = 1;
 		add( showScrollBarCheckBox, c );
@@ -593,7 +579,7 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		resource.setValue( Resource.ANTI_IDLE, cp.antiIdleCheckBox.isSelected() );
 		resource.setValue( Resource.ANTI_IDLE_INTERVAL, cp.antiIdleModel.getValue().toString() );
 		
-		/* chitsaou.070726: 防閒置字串 */
+		// chitsaou.070726: 防閒置字串
 		resource.setValue( Resource.ANTI_IDLE_STRING, cp.antiIdleStringField.getText() );
 		
 		resource.setValue( Resource.SYSTEM_LOOK_FEEL, ap.systemLookFeelCheckBox.isSelected() );
@@ -604,10 +590,8 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		resource.setValue( Resource.TERMINAL_COLUMNS, ap.terminalColumnsModel.getValue().toString() );
 		resource.setValue( Resource.TERMINAL_ROWS, ap.terminalRowsModel.getValue().toString() );
 		
-		/* chitsaou.070726: 使用分頁顏色表示狀態 */
-		/* chitsaou.070726: 分頁編號 */
-		/* chitsaou.070726: 顯示捲軸 */
-		resource.setValue( Resource.TAB_COLOR, ap.colorTabCheckBox.isSelected() );
+		// chitsaou.070726: 分頁編號
+		// chitsaou.070726: 顯示捲軸
 		resource.setValue( Resource.TAB_NUMBER, ap.tabNumberCheckBox.isSelected() );
 		resource.setValue( Resource.SHOW_SCROLL_BAR, ap.showScrollBarCheckBox.isSelected() );
 		

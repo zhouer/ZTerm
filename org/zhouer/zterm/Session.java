@@ -60,6 +60,9 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	private long lastInputTime, antiIdleInterval;
 	
 	// 連線狀態
+	public int state;
+	
+	// 連線狀態常數
 	public static final int STATE_TRYING = 1;
 	public static final int STATE_CONNECTED = 2;
 	public static final int STATE_CLOSED = 3;
@@ -72,9 +75,10 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	 * 送往上層的
 	 */
 	
-	private void setState( int state )
+	private void setState( int s )
 	{
-		parent.setTabState( state, this );
+		state = s;
+		parent.setTabState( s, this );
 	}
 	
 	public boolean isTabForeground()
@@ -443,7 +447,10 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 			System.err.println( "Unknown protocol: " + site.protocol );
 		}
 		
+		// 連線失敗
 		if( network.connect() == false ) {
+			//  設定連線狀態為 closed
+			setState( STATE_CLOSED );
 			showMessage( "連線失敗！" );
 			return;
 		}
