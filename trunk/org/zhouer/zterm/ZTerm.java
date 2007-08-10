@@ -729,7 +729,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	}
 	
 	public void bell( Session s )
-	{	
+	{
 		if( resource.getBooleanValue( Resource.USE_CUSTOM_BELL) ) {
 			try {
 				java.applet.Applet.newAudioClip( new File( resource.getStringValue( Resource.CUSTOM_BELL_PATH ) ).toURI().toURL() ).play();
@@ -743,8 +743,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		if( !isTabForeground(s) ) {
 			setTabState( Session.STATE_ALERT, s );
 		}
-		
-		// TODO: 該讓使用者知道這個視窗有 bell，好比閃爍工作列圖示
 	}
 	
 	public void open()

@@ -1,9 +1,11 @@
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
 import com.apple.eawt.Application;
+import com.apple.cocoa.application.NSApplication;
 
 import javax.swing.JFrame;
 
+import org.zhouer.zterm.Session;
 import org.zhouer.zterm.ZTerm;
 
 class MacOSQuitHandler extends Application
@@ -16,16 +18,22 @@ class MacOSQuitHandler extends Application
 		{
 			callback = cbin;
 		}
-
-		public void handleQuit(ApplicationEvent event)
-		{
-			callback.quit();
-		}
-
+		
 		public void handleAbout(ApplicationEvent event)
 		{
 			event.setHandled(true);
 			callback.showAbout();
+		}
+		
+		public void handlePreferences(ApplicationEvent event)
+		{
+			event.setHandled(true);
+			callback.showPreference();
+		}
+		
+		public void handleQuit(ApplicationEvent event)
+		{
+			callback.quit();
 		}
 	}
 
@@ -38,11 +46,20 @@ class MacOSQuitHandler extends Application
 
 public class MacZTerm extends ZTerm
 {
+	public void bell( Session s )
+	{
+		super.bell(s);
+
+		// 跳動 icon
+		NSApplication app = NSApplication.sharedApplication();      
+		app.requestUserAttention( NSApplication.UserAttentionRequestCritical );
+	}
+	
 	public MacZTerm()
 	{        
 		super();
 
-		// Meta+Q
+		// 處理 meta-q
 		new MacOSQuitHandler(this);
 	}
 
