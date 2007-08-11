@@ -1,11 +1,11 @@
 #include <assert.h>
 
-#include "WindowsUtils.h"
+#include "win32_WindowsUtils.h"
 
 #include "jni_md.h"
 #include "jawt_md.h"
 
-JNIEXPORT void JNICALL Java_WindowsUtils_flash
+JNIEXPORT void JNICALL Java_win32_WindowsUtils_flash
 (JNIEnv *env, jobject f, jobject component, jboolean bool)
 {
 	JAWT awt;
