@@ -1538,6 +1538,20 @@ public class VT100 extends JComponent
 		}
 	}
 	
+	private void save_cursor_position()
+	{
+		scol = ccol;
+		srow = crow;
+		// System.out.println( "Save cursor position." );
+	}
+	
+	private void restore_cursor_position()
+	{
+		ccol = scol;
+		crow = srow;
+		// System.out.println( "Restore cursor position." );
+	}
+	
 	private void reset_mode( int m )
 	{
 		// TODO
@@ -1629,14 +1643,10 @@ public class VT100 extends JComponent
 				// System.out.println( "Set scroll margin: " + argv[0] + ", " + argv[1] );
 				break;
 			case 's':
-				scol = ccol;
-				srow = crow;
-				// System.out.println( "Save cursor position." );
+				save_cursor_position();
 				break;
 			case 'u':
-				ccol = scol;
-				crow = srow;
-				// System.out.println( "Restore cursor position." );
+				restore_cursor_position();
 				break;
 			case 'A':
 				if( argv[0] == -1 ) {
@@ -1835,6 +1845,12 @@ public class VT100 extends JComponent
 			case '(': // 0x28
 			case ')': // 0x29
 				parse_scs( b );
+				break;
+			case '7': // 0x37
+				save_cursor_position();
+				break;
+			case '8': // 0x38
+				restore_cursor_position();
 				break;
 			case '=': // 0x3d 
 				keypadmode = APPLICATION_KEYPAD;

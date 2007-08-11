@@ -75,10 +75,10 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	 * 送往上層的
 	 */
 	
-	private void setState( int s )
+	public void setState( int s )
 	{
 		state = s;
-		parent.setTabState( s, this );
+		parent.updateTabState( s, this );
 	}
 	
 	public boolean isTabForeground()
