@@ -23,22 +23,26 @@
 		</delete>
     </target>
 
-    <target depends="init" name="build">
+    <target name="build" depends="init">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" encoding="UTF-8" destdir="." source="${source}" target="${target}">
             <src path="."/>
-			<exclude name="macos/**"/>
-			<exclude name="win32/**"/>
+            <exclude name="macos/**"/>
+            <exclude name="win32/**"/>
+            <classpath refid="ZTerm.classpath"/>
+        </javac>
+    </target>
+
+    <target name="win32-build" depends="build">
+        <javac debug="true" debuglevel="${debuglevel}" encoding="UTF-8" destdir="." source="${source}" target="${target}">
+            <src path="."/>
+            <include name="win32/**"/>
             <classpath refid="ZTerm.classpath"/>
         </javac>
     </target>
 
 	<target name="run" depends="build">
 		<java classname="org/zhouer/zterm/ZTerm" fork="true" />
-	</target>
-
-	<target name="runjar" depends="jar">
-		<java jar="ZTerm.jar" fork="true" />
 	</target>
 
 	<target name="jar" depends="build">
@@ -50,10 +54,26 @@
 			</manifest>
 		</jar>
 	</target>
-
+	
+	<target name="win32-jar" depends="win32-build">
+		<jar destfile="WindowsZTerm.jar">
+			<fileset dir="." includes="org/**, win32/**" excludes="**/*.java, **/*.c, **/*.h, **/*.dev" />
+			<manifest>
+				<attribute name="Main-Class" value="win32.WindowsZTerm" />
+				<attribute name="Class-Path" value="${ganymed}" />
+			</manifest>
+		</jar>
+	</target>
+	
 	<target name="zip" depends="jar">
 		<zip destfile="ZTerm.zip">
 			<fileset dir="." includes="${ganymed}, ${ganymed-license}, ZTerm.jar, README, LICENSE" />
+		</zip>
+	</target>
+
+	<target name="win32-zip" depends="win32-jar">
+		<zip destfile="WindowsZTerm.zip">
+			<fileset dir="." includes="${ganymed}, ${ganymed-license}, WindowsUtils.dll, WindowsZTerm.jar, README, LICENSE" />
 		</zip>
 	</target>
 

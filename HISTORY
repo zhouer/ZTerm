@@ -821,3 +821,7 @@
 20070810:
 	恢復 Windows 下閃爍工具列的功能。
 	恢復 Mac 下跳動 icon 的功能。
+
+20070811:
+	新增 ant build.xml 中 win32 的部份，
+	以後在 Windows 上可用 ant win32-jar 產生 WindowsZTerm.jar
