@@ -431,8 +431,8 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		// 為了下面 invokeLater 的關係，這邊改成 final
 		final Session s = (Session)tabbedPane.getSelectedComponent();
 		
-		if( s != null ) {
-			
+		if( s != null )
+		{	
 			// 修改視窗標題列
 			setTitle( "ZTerm - " + s.getWindowTitle() );
 			
@@ -443,7 +443,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			
 			// 切換到 alert 的 session 時設定狀態為 connected, 以取消 bell.
 			if( s.state == Session.STATE_ALERT ) {
-				setTabState( Session.STATE_CONNECTED, s );
+				s.setState( Session.STATE_CONNECTED );
 			}
 			
 			// 因為全部的連線共用一張 BufferedImage, 切換分頁時需重繪內容。
@@ -455,15 +455,42 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 				public void run() {
 					s.requestFocusInWindow();
 				}
-			});
-			
+			});	
 		} else {
 			// FIXME: magic number
 			setTitle("ZTerm");
 			siteText.setText("");
 		}
 	}
-
+	
+	public void updateTabState( int state, Session s )
+	{
+		int index;
+		ImageIcon ii;
+		
+		switch( state ) {
+			case Session.STATE_TRYING:
+				ii = tryingIcon;
+				break;
+			case Session.STATE_CONNECTED:
+				ii = connectedIcon;
+				break;
+			case Session.STATE_CLOSED:
+				ii = closedIcon;
+				break;
+			case Session.STATE_ALERT:
+				ii = bellIcon;
+				break;
+			default:
+				ii = null;
+		}
+		
+		index = tabbedPane.indexOfComponent( s );
+		if( index != -1 ) {
+			tabbedPane.setIconAt( index, ii );
+		}
+	}
+	
 	public void updateTabTitle()
 	{
 		for( int i = 0; i < tabbedPane.getTabCount(); i++) {
@@ -741,7 +768,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		}
 		
 		if( !isTabForeground(s) ) {
-			setTabState( Session.STATE_ALERT, s );
+			s.setState( Session.STATE_ALERT );
 		}
 	}
 	
@@ -833,34 +860,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		Session s = (Session)tabbedPane.getSelectedComponent();
 		if( s != null && colorText != null ) {
 			s.pasteColorText( colorText );
-		}
-	}
-	
-	public void setTabState( int state, Session s )
-	{
-		int index;
-		ImageIcon ii;
-		
-		switch( state ) {
-			case Session.STATE_TRYING:
-				ii = tryingIcon;
-				break;
-			case Session.STATE_CONNECTED:
-				ii = connectedIcon;
-				break;
-			case Session.STATE_CLOSED:
-				ii = closedIcon;
-				break;
-			case Session.STATE_ALERT:
-				ii = bellIcon;
-				break;
-			default:
-				ii = null;
-		}
-		
-		index = tabbedPane.indexOfComponent( s );
-		if( index != -1 ) {
-			tabbedPane.setIconAt( index, ii );
 		}
 	}
 	
