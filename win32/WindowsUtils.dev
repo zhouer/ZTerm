@@ -30,7 +30,7 @@ CompilerSet=0
 CompilerSettings=0000000000000000000000
 
 [Unit1]
-FileName=WindowsUtils.c
+FileName=win32_WindowsUtils.c
 CompileCpp=0
 Folder=WindowsUtils
 Compile=1
@@ -40,7 +40,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=WindowsUtils.h
+FileName=win32_WindowsUtils.h
 CompileCpp=0
 Folder=WindowsUtils
 Compile=1

@@ -1,3 +1,5 @@
+package win32;
+
 import java.awt.Component;
 
 public class WindowsUtils
