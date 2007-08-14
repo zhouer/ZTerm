@@ -831,3 +831,5 @@
 20070814:
 	可用 ant jar-win32 以及 zip-win32 產生 Windows 用的 jar 及 zip 檔。
 	zip 檔中的檔案都放在 ZTerm 資料夾內，方便直接解開。
+	拿掉 JCombobox 對 MacOS 的 workaround.
+	新增是否閃爍游標的設定。

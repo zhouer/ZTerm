@@ -2171,10 +2171,12 @@ public class VT100 extends JComponent
 			
 			// FIXME: magic number
 			// 游標閃爍
-			if( cursor_blink_count % 2 == 0 ) {
-				cursor_blink = !cursor_blink;
-				setRepaint( crow, ccol );
-				r = true;
+			if( resource.getBooleanValue( Config.CURSOR_BLINK ) ) {
+				if( cursor_blink_count % 2 == 0 ) {
+					cursor_blink = !cursor_blink;
+					setRepaint( crow, ccol );
+					r = true;
+				}
 			}
 			
 			// FIXME: magic number

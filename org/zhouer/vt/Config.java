@@ -15,6 +15,9 @@ public interface Config
 	public static final String FONT_HORIZONTAL_GAP = "font.hoizontal-gap";
 	public static final String FONT_DESCENT_ADJUST = "font.descent-adjust";
 	
+	public static final String CURSOR_BLINK = "cursor.blink";
+	public static final String CURSOR_SHAPE = "cursor.shape";
+	
 	public static final String COPY_ON_SELECT = "copy-on-select";
 	public static final String CLEAR_AFTER_COPY = "clear-after-copy";
 	public static final String AUTO_LINE_BREAK = "auto-line-break";
