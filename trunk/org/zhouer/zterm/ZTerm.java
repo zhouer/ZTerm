@@ -34,7 +34,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
-import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -295,23 +294,10 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		sshButton.setFocusable( false );
 		sshButton.addActionListener( this );
 		
-		// XXX: JComboBox has a bug in the Mac OS X Aqua Look & Feel.
-		LookAndFeel currentLookAndFeel = UIManager.getLookAndFeel();
-		try {
-			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-		} catch (Exception e) {
-		}
-		
 		siteModel = new DefaultComboBoxModel();
 		siteField = new JComboBox( siteModel );
 		siteField.setToolTipText("meta-d");
 		siteField.setEditable( true );
-		
-		// XXX: Restore Look & Feel.
-		try {
-			UIManager.setLookAndFeel(currentLookAndFeel);
-		} catch (Exception e) {
-		}
 		
 		siteText = (JTextComponent)siteField.getEditor().getEditorComponent();
 		siteText.addKeyListener( this );

@@ -100,6 +100,10 @@ public class Resource implements Config
 		defmap.put( FONT_HORIZONTAL_GAP, "0");
 		defmap.put( FONT_DESCENT_ADJUST, "0");
 		
+		// 游標設定
+		defmap.put( CURSOR_BLINK, "true" );
+		defmap.put( CURSOR_SHAPE, "block" );
+		
 		// 一般設定
 		defmap.put( EXTERNAL_BROWSER, "explorer \"%u\"");
 		defmap.put( SYSTEM_LOOK_FEEL, "false");

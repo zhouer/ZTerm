@@ -35,7 +35,7 @@ import javax.swing.tree.TreeSelectionModel;
 class GeneralPanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 290521402254313069L;
-
+	
 	private Resource resource;
 	
 	public JLabel browserLabel;
@@ -97,11 +97,11 @@ class GeneralPanel extends JPanel implements ActionListener
 		clearAfterCopyLabel = new JLabel("複製後取消選取");
 		clearAfterCopyCheckBox = new JCheckBox();
 		clearAfterCopyCheckBox.setSelected( resource.getBooleanValue(Resource.CLEAR_AFTER_COPY) );
-
+		
 		removeManualLabel = new JLabel("手動斷線時移除分頁");
 		removeManualCheckBox = new JCheckBox();
 		removeManualCheckBox.setSelected( resource.getBooleanValue(Resource.REMOVE_MANUAL_DISCONNECT) );
-
+		
 		linebreakLabel = new JLabel("貼上文字時自動換行");
 		linebreakCheckBox = new JCheckBox();
 		linebreakCheckBox.setSelected( resource.getBooleanValue(Resource.AUTO_LINE_BREAK) );
@@ -189,7 +189,7 @@ class GeneralPanel extends JPanel implements ActionListener
 class ConnectionPanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 5706390056762240339L;
-
+	
 	private Resource resource;
 	
 	public JLabel autoReconnectLabel, reconnectTimeLabel, reconnectIntervalLabel;
@@ -247,7 +247,7 @@ class ConnectionPanel extends JPanel implements ActionListener
 		// chitsaou.070726: 防閒置字串
 		antiIdleStringLabel = new JLabel("防閒置字串");
 		antiIdleStringField = new JTextField( resource.getStringValue(Resource.ANTI_IDLE_STRING), 20 );
-
+		
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
@@ -294,16 +294,16 @@ class ConnectionPanel extends JPanel implements ActionListener
 class ApperancePanel extends JPanel
 {
 	private static final long serialVersionUID = -2051345281384271839L;
-
+	
 	private Resource resource;
-
+	
 	// chitsaou.070726: 分頁編號	
 	// chitsaou.070726: 顯示捲軸
 	public JLabel tabNumberLabel, showScrollBarLabel; 
 	public JCheckBox tabNumberCheckBox, showScrollBarCheckBox;
 	
-	public JLabel systemLookFeelLabel, showToolbarLabel;
-	public JCheckBox systemLookFeelCheckBox, showToolbarCheckBox;
+	public JLabel systemLookFeelLabel, showToolbarLabel, cursorBlinkLabel;
+	public JCheckBox systemLookFeelCheckBox, showToolbarCheckBox, cursorBlinkCheckBox;
 	
 	public JLabel widthLabel, heightLabel;
 	public JSpinner widthSpinner, heightSpinner;
@@ -321,10 +321,14 @@ class ApperancePanel extends JPanel
 		systemLookFeelLabel = new JLabel("系統 Look and Feel（需重新啟動）");
 		systemLookFeelCheckBox = new JCheckBox();
 		systemLookFeelCheckBox.setSelected( resource.getBooleanValue(Resource.SYSTEM_LOOK_FEEL) );
-	
+		
 		showToolbarLabel = new JLabel("顯示工具列");
 		showToolbarCheckBox = new JCheckBox();
-		showToolbarCheckBox.setSelected( resource.getBooleanValue( Resource.SHOW_TOOLBAR ) );
+		showToolbarCheckBox.setSelected( resource.getBooleanValue(Resource.SHOW_TOOLBAR) );
+		
+		cursorBlinkLabel = new JLabel("閃爍游標");
+		cursorBlinkCheckBox = new JCheckBox();
+		cursorBlinkCheckBox.setSelected( resource.getBooleanValue(Resource.CURSOR_BLINK) );
 		
 		widthLabel = new JLabel("視窗寬度");
 		widthModel = new SpinnerNumberModel( resource.getIntValue(Resource.GEOMETRY_WIDTH), 0, 4096, 1);
@@ -368,54 +372,59 @@ class ApperancePanel extends JPanel
 		add( systemLookFeelLabel, c );
 		c.gridx = 1;
 		add( systemLookFeelCheckBox, c );
-
+		
 		c.gridx = 0;
 		c.gridy = 1;
 		add( showToolbarLabel, c );
 		c.gridx = 1;
 		add( showToolbarCheckBox, c );
-
 		
 		c.gridx = 0;
 		c.gridy = 2;
+		add( cursorBlinkLabel, c );
+		c.gridx = 1;
+		add( cursorBlinkCheckBox, c );
+		
+		c.gridx = 0;
+		c.gridy = 3;
 		add( widthLabel, c );
 		c.gridx = 1;
 		add( widthSpinner, c );
 		
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 4;
 		add( heightLabel, c );
 		c.gridx = 1;
 		add( heightSpinner, c );
 		
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = 5;
 		add( scrollLabel, c );
 		c.gridx = 1;
 		add( scrollSpinner, c );
 		
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 6;
 		add( terminalColumnsLabel, c );
 		c.gridx = 1;
 		add( terminalColumnsSpinner, c );
 		
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 7;
 		add( terminalRowsLabel, c );
 		c.gridx = 1;
 		add( terminalRowsSpinner, c );
 		
 		// chitsaou.070726: 分頁編號
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = 8;
 		add( tabNumberLabel, c );
 		c.gridx = 1;
 		add( tabNumberCheckBox, c );
-
+		
 		// chitsaou.070726: 顯示捲軸
 		c.gridx = 0;
-		c.gridy = 8;
+		c.gridy = 9;
 		add( showScrollBarLabel, c );
 		c.gridx = 1;
 		add( showScrollBarCheckBox, c );
@@ -425,7 +434,7 @@ class ApperancePanel extends JPanel
 class FontPanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 1511310874988772350L;
-
+	
 	private Resource resource;
 	
 	public JLabel familyLabel;
@@ -460,7 +469,7 @@ class FontPanel extends JPanel implements ActionListener
 		sizeLabel = new JLabel("大小（0 則自動配置）");
 		sizeModel = new SpinnerNumberModel( resource.getIntValue(Resource.FONT_SIZE), 0, 64, 1);
 		sizeSpinner = new JSpinner( sizeModel );
-
+		
 		boldLabel = new JLabel("粗體");
 		boldCheck = new JCheckBox();
 		boldCheck.setSelected( resource.getBooleanValue( Resource.FONT_BOLD ) );
@@ -519,7 +528,6 @@ class FontPanel extends JPanel implements ActionListener
 		c.gridx = 1;
 		add( aaCheck, c );
 		
-		
 		c.gridx = 0;
 		c.gridy = 5;
 		add( fontVerticalGapLabel, c );
@@ -544,7 +552,7 @@ class FontPanel extends JPanel implements ActionListener
 public class Preference extends JDialog implements ActionListener, TreeSelectionListener
 {
 	private static final long serialVersionUID = -1892496769315626958L;
-
+	
 	private ZTerm parent;
 	private Resource resource;
 	
@@ -584,6 +592,7 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		
 		resource.setValue( Resource.SYSTEM_LOOK_FEEL, ap.systemLookFeelCheckBox.isSelected() );
 		resource.setValue( Resource.SHOW_TOOLBAR, ap.showToolbarCheckBox.isSelected() );
+		resource.setValue( Resource.CURSOR_BLINK, ap.cursorBlinkCheckBox.isSelected() );
 		resource.setValue( Resource.GEOMETRY_WIDTH, ap.widthModel.getValue().toString() );
 		resource.setValue( Resource.GEOMETRY_HEIGHT, ap.heightModel.getValue().toString() );
 		resource.setValue( Resource.TERMINAL_SCROLLS, ap.scrollModel.getValue().toString() );
