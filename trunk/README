@@ -25,9 +25,9 @@ ZTerm 是一個專為 BBS 設計的連線軟體。
 
 安裝：
 
-	下載 ZTerm.zip 後解壓縮，
-	若您使用 Windows 或 Mac 則滑鼠雙擊 ZTerm.jar 啟動，
-	若您使用 Linux 或其它 UNIX-like 平台則在命令列執行 java -jar ZTerm.jar
+	下載 ZTerm-xxx.zip 後解壓縮，
+	在視窗環境下以滑鼠雙擊 ZTerm.jar 啟動，
+	在命令列環境則執行 java -jar ZTerm.jar
 
 使用方法：
 
