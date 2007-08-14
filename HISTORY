@@ -827,3 +827,7 @@
 	以後在 Windows 上可用 ant win32-jar 產生 WindowsZTerm.jar
 	修正連線狀態處理。
 	改進 vt100 控制碼處理（解決 ptt 閒置時游標亂跳的問題）
+
+20070814:
+	可用 ant jar-win32 以及 zip-win32 產生 Windows 用的 jar 及 zip 檔。
+	zip 檔中的檔案都放在 ZTerm 資料夾內，方便直接解開。

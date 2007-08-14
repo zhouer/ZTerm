@@ -33,7 +33,7 @@
         </javac>
     </target>
 
-    <target name="win32-build" depends="build">
+    <target name="build-win32" depends="build">
         <javac debug="true" debuglevel="${debuglevel}" encoding="UTF-8" destdir="." source="${source}" target="${target}">
             <src path="."/>
             <include name="win32/**"/>
@@ -55,8 +55,8 @@
 		</jar>
 	</target>
 	
-	<target name="win32-jar" depends="win32-build">
-		<jar destfile="WindowsZTerm.jar">
+	<target name="jar-win32" depends="build-win32">
+		<jar destfile="ZTerm-win32.jar">
 			<fileset dir="." includes="org/**, win32/**" excludes="**/*.java, **/*.c, **/*.h, **/*.dev" />
 			<manifest>
 				<attribute name="Main-Class" value="win32.WindowsZTerm" />
@@ -67,13 +67,14 @@
 	
 	<target name="zip" depends="jar">
 		<zip destfile="ZTerm.zip">
-			<fileset dir="." includes="${ganymed}, ${ganymed-license}, ZTerm.jar, README, LICENSE" />
+			<zipfileset dir="." includes="${ganymed}, ${ganymed-license}, ZTerm.jar, README, LICENSE" prefix="ZTerm" />
 		</zip>
 	</target>
 
-	<target name="win32-zip" depends="win32-jar">
-		<zip destfile="WindowsZTerm.zip">
-			<fileset dir="." includes="${ganymed}, ${ganymed-license}, WindowsUtils.dll, WindowsZTerm.jar, README, LICENSE" />
+	<target name="zip-win32" depends="jar-win32">
+		<zip destfile="ZTerm-win32.zip">
+			<zipfileset dir="." includes="${ganymed}, ${ganymed-license}, WindowsUtils.dll, README, LICENSE" prefix="ZTerm" />
+			<zipfileset dir="." includes="ZTerm-win32.jar" fullpath="ZTerm/ZTerm.jar" />
 		</zip>
 	</target>
 
