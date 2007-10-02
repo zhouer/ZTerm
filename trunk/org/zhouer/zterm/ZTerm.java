@@ -98,89 +98,86 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	// 避免同時有數個 thread 修改資料用的 lock object
 	private Object msglock, menulock;
 	
-	// localization
-	private Localization localization;
-	
 	// 建立各種選單，包括 popup 選單也在這裡建立
 	private void makeMenu()
 	{
 		menuBar = new JMenuBar();
 		
-		connectMenu = new JMenu(localization.TEXT_CONNECT_MENU());
+		connectMenu = new JMenu(Messages.getString("ZTerm.Connect_Menu_Text")); //$NON-NLS-1$
 		connectMenu.setMnemonic(KeyEvent.VK_N);
-		connectMenu.setToolTipText(localization.TEXT_CONNECT_TOOLTIP_MENU());
+		connectMenu.setToolTipText(Messages.getString("ZTerm.Connect_Menu_ToolTip")); //$NON-NLS-1$
 
-		siteMenu = new JMenu(localization.TEXT_SITE_MENU());
+		siteMenu = new JMenu(Messages.getString("ZTerm.Site_Menu_Text")); //$NON-NLS-1$
 		siteMenu.setMnemonic(KeyEvent.VK_F);
-		siteMenu.setToolTipText(localization.TEXT_SITE_MENU_TOOLTIP());
+		siteMenu.setToolTipText(Messages.getString("ZTerm.Site_Menu_ToolTip")); //$NON-NLS-1$
 		
-		editMenu = new JMenu(localization.TEXT_EDIT_MENU());
+		editMenu = new JMenu(Messages.getString("ZTerm.Edit_Menu_Text")); //$NON-NLS-1$
 		editMenu.setMnemonic(KeyEvent.VK_E);
-		editMenu.setToolTipText(localization.TEXT_EDIT_MENU_TOOLTIP());
+		editMenu.setToolTipText(Messages.getString("ZTerm.Edit_Menu_ToolTip")); //$NON-NLS-1$
 		
-		optionMenu = new JMenu(localization.TEXT_OPTION_MENU());
+		optionMenu = new JMenu(Messages.getString("ZTerm.Option_Menu_Text")); //$NON-NLS-1$
 		optionMenu.setMnemonic(KeyEvent.VK_O);
-		optionMenu.setToolTipText(localization.TEXT_OPTION_MENU_TOOLTIP());
+		optionMenu.setToolTipText(Messages.getString("ZTerm.Option_Menu_ToolTip")); //$NON-NLS-1$
 		
-		helpMenu = new JMenu(localization.TEXT_HELP_MENU());
+		helpMenu = new JMenu(Messages.getString("ZTerm.Help_Menu_Text")); //$NON-NLS-1$
 		helpMenu.setMnemonic(KeyEvent.VK_H);		
-		helpMenu.setToolTipText(localization.TEXT_HELP_MENU_TOOLTIP());
+		helpMenu.setToolTipText(Messages.getString("ZTerm.Help_Menu_ToolTip")); //$NON-NLS-1$
 		
-		encodingMenu = new JMenu(localization.TEXT_ENCODING_MENU());
+		encodingMenu = new JMenu(Messages.getString("ZTerm.Encoding_Menu_Text")); //$NON-NLS-1$
 		
-		openItem = new JMenuItem(localization.TEXT_OPEN_ITEM());
-		openItem.setToolTipText(localization.TEXT_OPEN_ITEM_TOOLTIP());
+		openItem = new JMenuItem(Messages.getString("ZTerm.Open_MenuItem_Text")); //$NON-NLS-1$
+		openItem.setToolTipText(Messages.getString("ZTerm.Open_MenuItem_ToolTip")); //$NON-NLS-1$
 		openItem.addActionListener( this );
 		
-		closeItem = new JMenuItem(localization.TEXT_CLOSE_ITEM());
-		closeItem.setToolTipText(localization.TEXT_CLOSE_ITEM_TOOLTIP());
+		closeItem = new JMenuItem(Messages.getString("ZTerm.Close_MenuItem_Text")); //$NON-NLS-1$
+		closeItem.setToolTipText(Messages.getString("ZTerm.Close_MenuItem_ToolTip")); //$NON-NLS-1$
 		closeItem.addActionListener( this );
 
-		reopenItem = new JMenuItem(localization.TEXT_REOPEN_ITEM());
-		reopenItem.setToolTipText(localization.TEXT_REOPEN_ITEM_TOOLTIP());
+		reopenItem = new JMenuItem(Messages.getString("ZTerm.Reopen_Item_Text")); //$NON-NLS-1$
+		reopenItem.setToolTipText(Messages.getString("ZTerm.Reopen_Item_ToolTip")); //$NON-NLS-1$
 		reopenItem.addActionListener( this );
 		
-		quitItem = new JMenuItem(localization.TEXT_QUIT_ITEM());
+		quitItem = new JMenuItem(Messages.getString("ZTerm.Quit_Item_Text")); //$NON-NLS-1$
 		quitItem.addActionListener( this );
 
-		copyItem = new JMenuItem(localization.TEXT_COPY_ITEM());
+		copyItem = new JMenuItem(Messages.getString("ZTerm.Copy_MenuItem_Text")); //$NON-NLS-1$
 		copyItem.addActionListener( this );
-		copyItem.setToolTipText(localization.TEXT_COPY_ITEM_TOOLTIP());
+		copyItem.setToolTipText(Messages.getString("ZTerm.Copy_MenuItem_ToolTip")); //$NON-NLS-1$
 		
-		pasteItem = new JMenuItem(localization.TEXT_PASTE_ITEM());
+		pasteItem = new JMenuItem(Messages.getString("ZTerm.Paste_MenuItem_Text")); //$NON-NLS-1$
 		pasteItem.addActionListener( this );
-		pasteItem.setToolTipText(localization.TEXT_PASTE_ITEM_TOOLTIP());
+		pasteItem.setToolTipText(Messages.getString("ZTerm.Paste_MenuItem_ToolTip")); //$NON-NLS-1$
 
-		colorCopyItem = new JMenuItem(localization.TEXT_COLOR_COPY_ITEM());
+		colorCopyItem = new JMenuItem(Messages.getString("ZTerm.ColorCopy_MenuItem_Text")); //$NON-NLS-1$
 		colorCopyItem.addActionListener( this );
 		
-		colorPasteItem = new JMenuItem(localization.TEXT_COLOR_PASTE_ITEM());
+		colorPasteItem = new JMenuItem(Messages.getString("ZTerm.ColorPaste_MenuItem_Text")); //$NON-NLS-1$
 		colorPasteItem.addActionListener( this );
 		
-		preferenceItem = new JMenuItem(localization.TEXT_PREFERENCE_ITEM());
+		preferenceItem = new JMenuItem(Messages.getString("ZTerm.Preference_MenuItem_Text")); //$NON-NLS-1$
 		preferenceItem.addActionListener( this );
-		preferenceItem.setToolTipText(localization.TEXT_PREFERENCE_ITEM_TOOLTIP());
+		preferenceItem.setToolTipText(Messages.getString("ZTerm.Preference_MenuItem_ToolTip")); //$NON-NLS-1$
 		
-		siteManagerItem = new JMenuItem(localization.TEXT_SITE_MANAGER_ITEM());
+		siteManagerItem = new JMenuItem(Messages.getString("ZTerm.SiteManager_MenuItem_Text")); //$NON-NLS-1$
 		siteManagerItem.addActionListener( this );
-		siteManagerItem.setToolTipText(localization.TEXT_SITE_MANAGER_ITEM_TOOLTIP());
+		siteManagerItem.setToolTipText(Messages.getString("ZTerm.SiteManager_MenuItem_ToolTip")); //$NON-NLS-1$
 		
-		showToolbarItem = new JMenuItem( showToolbar ? localization.TEXT_SHOW_TOOLBAR_ITEM() : localization.TEXT_HIDE_TOOLBAR_ITEM());
+		showToolbarItem = new JMenuItem( showToolbar ? Messages.getString("ZTerm.ToggleToolbar_MenuItem_Show_Text") : Messages.getString("ZTerm.ToggleToolbar_MenuItem_Hide_Text")); //$NON-NLS-1$ //$NON-NLS-2$
 		showToolbarItem.addActionListener( this );
 		
-		usageItem = new JMenuItem(localization.TEXT_USAGE_ITEM());
+		usageItem = new JMenuItem(Messages.getString("ZTerm.Usage_MenuItem_Text")); //$NON-NLS-1$
 		usageItem.addActionListener( this );
 		
-		faqItem = new JMenuItem(localization.TEXT_FAQ_ITEM());
+		faqItem = new JMenuItem(Messages.getString("ZTerm.FAQ_MenuItem_Text")); //$NON-NLS-1$
 		faqItem.addActionListener( this );
 		
-		aboutItem = new JMenuItem(localization.TEXT_ABOUT_ITEM());
+		aboutItem = new JMenuItem(Messages.getString("ZTerm.About_MenuItem_Text")); //$NON-NLS-1$
 		aboutItem.addActionListener( this );
 		
-		big5Item = new JMenuItem(localization.TEXT_BIG5_ITEM());
+		big5Item = new JMenuItem(Messages.getString("ZTerm.Big5_MenuItem_Text")); //$NON-NLS-1$
 		big5Item.addActionListener( this );
 		
-		utf8Item = new JMenuItem(localization.TEXT_UTF8_ITEM());
+		utf8Item = new JMenuItem(Messages.getString("ZTerm.UTF8_MenuItem_Text")); //$NON-NLS-1$
 		utf8Item.addActionListener( this );
 		
 		menuBar.add( connectMenu );
@@ -219,19 +216,19 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		// popup menu
 		popupMenu = new JPopupMenu();
 		
-		popupCopyItem = new JMenuItem( localization.TEXT_COPY_ITEM() );
+		popupCopyItem = new JMenuItem( Messages.getString("ZTerm.Popup_Copy_MenuItem_Text") ); //$NON-NLS-1$
 		popupCopyItem.addActionListener( this );
 		
-		popupPasteItem = new JMenuItem( localization.TEXT_PASTE_ITEM() );
+		popupPasteItem = new JMenuItem( Messages.getString("ZTerm.Popup_Paste_MenuItem_Text") ); //$NON-NLS-1$
 		popupPasteItem.addActionListener( this );
 		
-		popupColorCopyItem = new JMenuItem( localization.TEXT_COLOR_COPY_ITEM() );
+		popupColorCopyItem = new JMenuItem( Messages.getString("ZTerm.Popup_ColorCopy_MenuItem_Text") ); //$NON-NLS-1$
 		popupColorCopyItem.addActionListener( this );
 		
-		popupColorPasteItem = new JMenuItem( localization.TEXT_COLOR_PASTE_ITEM() );
+		popupColorPasteItem = new JMenuItem( Messages.getString("ZTerm.Popup_ColorPaste_MenuItem_Text") ); //$NON-NLS-1$
 		popupColorPasteItem.addActionListener( this );
 		
-		popupCopyLinkItem = new JMenuItem( localization.TEXT_COPY_LINK_ITEM() );
+		popupCopyLinkItem = new JMenuItem( Messages.getString("ZTerm.Popup_CopyLink_MenuItem_Text") ); //$NON-NLS-1$
 		popupCopyLinkItem.addActionListener( this );
 		popupCopyLinkItem.setEnabled( false );
 		
@@ -256,53 +253,53 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		connectionToolbar.setVisible( showToolbar );
 		connectionToolbar.setRollover( true );
 		
-		closeButton = new JButton( localization.TEXT_CLOSE_ITEM() );
-		closeButton.setToolTipText( localization.TEXT_CLOSE_ITEM_TOOLTIP() );
+		closeButton = new JButton( Messages.getString("ZTerm.Close_Button_Text") ); //$NON-NLS-1$
+		closeButton.setToolTipText( Messages.getString("ZTerm.Close_Button_ToolTip") ); //$NON-NLS-1$
 		closeButton.setFocusable( false );
 		closeButton.addActionListener( this );
 		
-		reopenButton = new JButton( localization.TEXT_REOPEN_ITEM() );
-		reopenButton.setToolTipText( localization.TEXT_REOPEN_ITEM_TOOLTIP() );
+		reopenButton = new JButton( Messages.getString("ZTerm.Reopen_Button_Text") ); //$NON-NLS-1$
+		reopenButton.setToolTipText( Messages.getString("ZTerm.Reopen_Button_ToolTip") ); //$NON-NLS-1$
 		reopenButton.setFocusable( false );
 		reopenButton.addActionListener( this );
 		
-		copyButton = new JButton( localization.TEXT_COPY_ITEM() );
-		copyButton.setToolTipText( localization.TEXT_COPY_ITEM_TOOLTIP() );
+		copyButton = new JButton( Messages.getString("ZTerm.Copy_Button_Text") ); //$NON-NLS-1$
+		copyButton.setToolTipText( Messages.getString("ZTerm.Copy_Button_ToolTip") ); //$NON-NLS-1$
 		copyButton.setFocusable( false );
 		copyButton.addActionListener( this );
 		
-		pasteButton = new JButton( localization.TEXT_PASTE_ITEM() );
-		pasteButton.setToolTipText( localization.TEXT_PASTE_ITEM() );
+		pasteButton = new JButton( Messages.getString("ZTerm.Paste_Button_Text") ); //$NON-NLS-1$
+		pasteButton.setToolTipText( Messages.getString("ZTerm.Paste_Button_ToolTip") ); //$NON-NLS-1$
 		pasteButton.setFocusable( false );
 		pasteButton.addActionListener( this );
 		
-		colorCopyButton = new JButton( localization.TEXT_COLOR_COPY_ITEM() );
+		colorCopyButton = new JButton( Messages.getString("ZTerm.ColorCopy_Button_Text") ); //$NON-NLS-1$
 		colorCopyButton.setFocusable( false );
 		colorCopyButton.addActionListener( this );
 		
-		colorPasteButton = new JButton(  localization.TEXT_COLOR_PASTE_ITEM() );
+		colorPasteButton = new JButton( Messages.getString("ZTerm.ColorPaste_Button_Text") ); //$NON-NLS-1$
 		colorPasteButton.setFocusable( false );
 		colorPasteButton.addActionListener( this );
 		
-		telnetButton = new JButton("Telnet");
-		telnetButton.setToolTipText("meta-t");
+		telnetButton = new JButton(Messages.getString("ZTerm.Telnet_Button_Text")); //$NON-NLS-1$
+		telnetButton.setToolTipText(Messages.getString("ZTerm.Telnet_Button_ToolTip")); //$NON-NLS-1$
 		telnetButton.setFocusable( false );
 		telnetButton.addActionListener( this );
 		
-		sshButton = new JButton("SSH");
-		sshButton.setToolTipText("meta-s");
+		sshButton = new JButton(Messages.getString("ZTerm.SSH_Button_Text")); //$NON-NLS-1$
+		sshButton.setToolTipText(Messages.getString("ZTerm.SSH_Button_ToolTip")); //$NON-NLS-1$
 		sshButton.setFocusable( false );
 		sshButton.addActionListener( this );
 		
 		siteModel = new DefaultComboBoxModel();
 		siteField = new JComboBox( siteModel );
-		siteField.setToolTipText("meta-d");
+		siteField.setToolTipText(Messages.getString("ZTerm.Site_ComboBox_ToolTip")); //$NON-NLS-1$
 		siteField.setEditable( true );
 		
 		siteText = (JTextComponent)siteField.getEditor().getEditorComponent();
 		siteText.addKeyListener( this );
 		
-		openButton = new JButton( localization.TEXT_OPEN_ITEM() );
+		openButton = new JButton( Messages.getString("ZTerm.Open_Button_Text") ); //$NON-NLS-1$
 		openButton.setFocusable( false );
 		openButton.addActionListener( this );
 		
@@ -345,7 +342,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			for( int i = 0; i < f.size(); i++ ) {
 				fa = (Site)f.elementAt(i);
 				favoriteItems[i] = new JMenuItem( fa.name );
-				favoriteItems[i].setToolTipText( fa.host + ":" + fa.port );
+				favoriteItems[i].setToolTipText( fa.host + ":" + fa.port ); //$NON-NLS-1$
 				favoriteItems[i].addActionListener( this );
 				siteMenu.add( favoriteItems[i] );
 			}
@@ -356,7 +353,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	{
 		synchronized( menulock ) {
 			showToolbar = resource.getBooleanValue( Resource.SHOW_TOOLBAR );
-			showToolbarItem.setText( showToolbar ? localization.TEXT_HIDE_TOOLBAR_ITEM(): localization.TEXT_SHOW_TOOLBAR_ITEM() );
+			showToolbarItem.setText( showToolbar ? Messages.getString("ZTerm.ToggleToolbar_MenuItem_Hide_Text"): Messages.getString("ZTerm.ToggleToolbar_MenuItem_Show_Text") ); //$NON-NLS-1$ //$NON-NLS-2$
 			connectionToolbar.setVisible( showToolbar );
 			validate();
 		}
@@ -420,7 +417,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		if( s != null )
 		{	
 			// 修改視窗標題列
-			setTitle( "ZTerm - " + s.getWindowTitle() );
+			setTitle( "ZTerm - " + s.getWindowTitle() ); //$NON-NLS-1$
 			
 			// 修改位置列
 			siteText.setText( s.getURL() );
@@ -444,8 +441,8 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			});	
 		} else {
 			// FIXME: magic number
-			setTitle("ZTerm");
-			siteText.setText("");
+			setTitle("ZTerm"); //$NON-NLS-1$
+			siteText.setText(""); //$NON-NLS-1$
 		}
 	}
 	
@@ -480,11 +477,11 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	public void updateTabTitle()
 	{
 		for( int i = 0; i < tabbedPane.getTabCount(); i++) {
-			tabbedPane.setTitleAt( i, (i + 1) + ". " + ((Session)sessions.elementAt(i)).getSite().name );
+			tabbedPane.setTitleAt( i, (i + 1) + ". " + ((Session)sessions.elementAt(i)).getSite().name ); //$NON-NLS-1$
 
 			// FIXME: need revise
 			tabbedPane.setTitleAt( i,
-					( (resource.getBooleanValue (Resource.TAB_NUMBER) ) ? (i + 1) + ". " : "" )
+					( (resource.getBooleanValue (Resource.TAB_NUMBER) ) ? (i + 1) + ". " : "" ) //$NON-NLS-1$ //$NON-NLS-2$
 					+ ((Session)sessions.elementAt(i)).getSite().name );
 		}
 	}
@@ -636,7 +633,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 				break;
 			}
 			
-			pos = h.indexOf( "://" );
+			pos = h.indexOf( "://" ); //$NON-NLS-1$
 			// Default 就是 telnet
 			prot = Protocol.TELNET;
 			if( pos != -1 ) {
@@ -645,7 +642,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 				} else if( h.substring( 0, pos).equalsIgnoreCase( Protocol.TELNET ) ) {
 					prot = Protocol.TELNET;
 				} else {
-					showMessage("通訊協定錯誤！");
+					showMessage(Messages.getString("ZTerm.Message_Wrong_Protocal")); //$NON-NLS-1$
 					return;
 				}
 				// 將 h 重設為 :// 後的東西
@@ -694,7 +691,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			// chitsaou.070726: 分頁編號
 			if( resource.getBooleanValue( Resource.TAB_NUMBER )) {
 				// 分頁 title 會顯示分頁編號加站台名稱，tip 會顯示 hostname.
-				tabbedPane.addTab((tabbedPane.getTabCount() + 1) + ". " + si.name, icon, s, si.host );
+				tabbedPane.addTab((tabbedPane.getTabCount() + 1) + ". " + si.name, icon, s, si.host ); //$NON-NLS-1$
 			} else {
 				// chitsaou:070726: 不要標號
 				tabbedPane.addTab(si.name, icon, s, si.host );
@@ -716,14 +713,14 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		
 		String cmd = resource.getStringValue( Resource.EXTERNAL_BROWSER );
 		if( cmd == null ) {
-			showMessage( "瀏覽器啟動命令錯誤！" );
+			showMessage( Messages.getString("ZTerm.Message_Wrong_Explorer_Command") ); //$NON-NLS-1$
 			return;
 		}
 		
 		// 把 %u 置換成給定的 url
 		pos = cmd.indexOf( "%u" );
 		if( pos == -1 ) {
-			showMessage( "瀏覽器啟動命令錯誤！" );
+			showMessage( Messages.getString("ZTerm.Message_Wrong_Explorer_Command") ); //$NON-NLS-1$
 			return;
 		}
 		cmd = cmd.substring( 0, pos ) + url + cmd.substring( pos + 2 );
@@ -760,7 +757,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	
 	public void open()
 	{
-		String host = JOptionPane.showInputDialog( this, "請輸入連線位置：");
+		String host = JOptionPane.showInputDialog( this, Messages.getString("ZTerm.Message_Input_Site")); //$NON-NLS-1$
 		connect(host);
 	}
 	
@@ -768,7 +765,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	{
 		for( int i = 0; i < sessions.size(); i++) {
 			if( !((Session)sessions.elementAt(i)).isClosed() ) {
-				if( showConfirm( "還有連線尚未中斷，您確定要關閉程式嗎？", "連線中", JOptionPane.YES_NO_OPTION ) != JOptionPane.YES_OPTION ) {
+				if( showConfirm( Messages.getString("ZTerm.Message_Confirm_Exit"), Messages.getString("ZTerm.Title_Confirm_Exit"), JOptionPane.YES_NO_OPTION ) != JOptionPane.YES_OPTION ) { //$NON-NLS-1$ //$NON-NLS-2$
 					return;
 				} else {
 					break;
@@ -869,7 +866,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			
 			// 連線中則詢問是否要斷線
 			if( !s.isClosed() ) {
-				if( showConfirm( "您確定要結束連線嗎？", "連線中", JOptionPane.YES_NO_OPTION ) != JOptionPane.YES_OPTION ) {
+				if( showConfirm( Messages.getString("ZTerm.Message_Confirm_Close"), Messages.getString("ZTerm.Title_Confirm_Close"), JOptionPane.YES_NO_OPTION ) != JOptionPane.YES_OPTION ) { //$NON-NLS-1$ //$NON-NLS-2$
 					return;
 				}
 				
@@ -926,18 +923,18 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	
 	private void showUsage()
 	{
-		new HtmlDialog( this, "使用說明", ZTerm.class.getResource( "docs/usage.html" ) );
+		new HtmlDialog( this, Messages.getString("ZTerm.Title_Manual"), ZTerm.class.getResource( "docs/usage.html" ) ); //$NON-NLS-1$
 	}
 	
 	private void showFAQ()
 	{
-		new HtmlDialog( this, "常見問題", ZTerm.class.getResource( "docs/faq.html" ) );
+		new HtmlDialog( this, Messages.getString("ZTerm.Title_FAQ"), ZTerm.class.getResource( "docs/faq.html" ) ); //$NON-NLS-1$
 	}
 	
 	private void showAbout()
 	{
 		// FIXME: magic number
-		showMessage( "ZTerm current 版\n專案網頁：http://zhouer.org/ZTerm/" );
+		showMessage( Messages.getString("ZTerm.Message_About") ); //$NON-NLS-1$
 	}
 	
 	public void actionPerformed( ActionEvent ae )
@@ -1141,7 +1138,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	public ZTerm()
 	{
 		// FIXME: magic number
-		super("ZTerm");
+		super("ZTerm"); //$NON-NLS-1$
 		
 		// 初始化 lock object
 		msglock = new Object();
@@ -1173,9 +1170,6 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		
 		// 設定主畫面 Layout
 		getContentPane().setLayout( new BorderLayout() );
-		
-		// 取得 localized 對照表
-		localization = new Localization();
 		
 		makeMenu();
 		makeTabbedPane();

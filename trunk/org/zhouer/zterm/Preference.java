@@ -87,40 +87,40 @@ class GeneralPanel extends JPanel implements ActionListener
 		super();
 		resource = r;
 		
-		browserLabel = new JLabel("外部瀏覽器啟動命令（%u 將替換為網址）：");
+		browserLabel = new JLabel(Messages.getString("Preference.BrowserCommand_Label_Text")); //$NON-NLS-1$
 		browserField = new JTextField( resource.getStringValue(Resource.EXTERNAL_BROWSER), 20 );
 		
-		copyOnSelectLabel = new JLabel("選取後立即複製");
+		copyOnSelectLabel = new JLabel(Messages.getString("Preference.CopyOnSelect_Label_Text")); //$NON-NLS-1$
 		copyOnSelectCheckBox = new JCheckBox();
 		copyOnSelectCheckBox.setSelected( resource.getBooleanValue(Resource.COPY_ON_SELECT) );
 		
-		clearAfterCopyLabel = new JLabel("複製後取消選取");
+		clearAfterCopyLabel = new JLabel(Messages.getString("Preference.ClearAfterCopy_Label_Text")); //$NON-NLS-1$
 		clearAfterCopyCheckBox = new JCheckBox();
 		clearAfterCopyCheckBox.setSelected( resource.getBooleanValue(Resource.CLEAR_AFTER_COPY) );
 		
-		removeManualLabel = new JLabel("手動斷線時移除分頁");
+		removeManualLabel = new JLabel(Messages.getString("Preference.RemoveManual_Label_Text")); //$NON-NLS-1$
 		removeManualCheckBox = new JCheckBox();
 		removeManualCheckBox.setSelected( resource.getBooleanValue(Resource.REMOVE_MANUAL_DISCONNECT) );
 		
-		linebreakLabel = new JLabel("貼上文字時自動換行");
+		linebreakLabel = new JLabel(Messages.getString("Preference.LineBreak_Label_Text")); //$NON-NLS-1$
 		linebreakCheckBox = new JCheckBox();
 		linebreakCheckBox.setSelected( resource.getBooleanValue(Resource.AUTO_LINE_BREAK) );
 		linebreakCheckBox.addActionListener( this );
 		
-		breaklengthLabel = new JLabel("每行最多幾個字");
+		breaklengthLabel = new JLabel(Messages.getString("Preference.BreakLength_Label_Text")); //$NON-NLS-1$
 		breaklengthModel = new SpinnerNumberModel( resource.getIntValue(Resource.AUTO_LINE_BREAK_LENGTH), 1, 512, 1);
 		breaklengthSpinner = new JSpinner( breaklengthModel );
 		breaklengthSpinner.setEnabled( resource.getBooleanValue(Resource.AUTO_LINE_BREAK) );
 		
-		customBellLabel = new JLabel("使用自訂的音效");
+		customBellLabel = new JLabel(Messages.getString("Preference.CustomBell_Label_Text")); //$NON-NLS-1$
 		customBellCheckBox = new JCheckBox();
 		customBellCheckBox.setSelected( resource.getBooleanValue( Resource.USE_CUSTOM_BELL) );
 		customBellCheckBox.addActionListener( this );
 		
-		bellPathLabel = new JLabel("音效檔路徑");
-		bellPathField = new JTextField( resource.getStringValue(Resource.CUSTOM_BELL_PATH), 15 );
+		bellPathLabel = new JLabel(Messages.getString("Preference.BellPath_Label_Text")); //$NON-NLS-1$
+		bellPathField = new JTextField( resource.getStringValue(Resource.CUSTOM_BELL_PATH), 8 );
 		bellPathField.setEnabled( resource.getBooleanValue( Resource.USE_CUSTOM_BELL) );
-		bellPathButton = new JButton("瀏覽");
+		bellPathButton = new JButton(Messages.getString("Preference.BellPath_Button_Text")); //$NON-NLS-1$
 		bellPathButton.setEnabled( resource.getBooleanValue(Resource.USE_CUSTOM_BELL) );
 		bellPathButton.addActionListener( this );
 		
@@ -219,34 +219,34 @@ class ConnectionPanel extends JPanel implements ActionListener
 		resource = r;
 		
 		boolean autoReconnect = resource.getBooleanValue(Resource.AUTO_RECONNECT);
-		autoReconnectLabel = new JLabel("斷線自動重連");
+		autoReconnectLabel = new JLabel(Messages.getString("Preference.AutoReconnect_Label_Text")); //$NON-NLS-1$
 		autoReconnectCheckBox = new JCheckBox();
 		autoReconnectCheckBox.setSelected( autoReconnect );
 		autoReconnectCheckBox.addActionListener( this );
 
-		reconnectTimeLabel = new JLabel("多久時間內重連（秒）");
+		reconnectTimeLabel = new JLabel(Messages.getString("Preference.ReconnectTime_Label_Text")); //$NON-NLS-1$
 		reconnectTimeModel = new SpinnerNumberModel( resource.getIntValue( Resource.AUTO_RECONNECT_TIME ), 0, 3600, 1);
 		reconnectTimeSpinner = new JSpinner( reconnectTimeModel );
 		reconnectTimeSpinner.setEnabled( autoReconnect );
 		
-		reconnectIntervalLabel = new JLabel("重連前等待時間（毫秒）");
+		reconnectIntervalLabel = new JLabel(Messages.getString("Preference.ReconnectInterval_Label_Text")); //$NON-NLS-1$
 		reconnectIntervalModel = new SpinnerNumberModel( resource.getIntValue( Resource.AUTO_RECONNECT_INTERVAL ), 0, 60000, 1);
 		reconnectIntervalSpinner = new JSpinner( reconnectIntervalModel);
 		reconnectIntervalSpinner.setEnabled( autoReconnect );
 		
-		antiIdleLabel = new JLabel("自動防閒置");
+		antiIdleLabel = new JLabel(Messages.getString("Preference.AntiIdle_Label_Text")); //$NON-NLS-1$
 		antiIdleCheckBox = new JCheckBox();
 		antiIdleCheckBox.setSelected( resource.getBooleanValue(Resource.ANTI_IDLE) );
 		antiIdleCheckBox.addActionListener( this );
 		
-		antiIdleTimeLabel = new JLabel("防閒置時間（秒）");
+		antiIdleTimeLabel = new JLabel(Messages.getString("Preference.AntiIdleTime_Label_Text")); //$NON-NLS-1$
 		antiIdleModel = new SpinnerNumberModel( resource.getIntValue(Resource.ANTI_IDLE_INTERVAL), 0, 3600, 1);
 		antiIdleTimeSpinner = new JSpinner( antiIdleModel );
 		antiIdleTimeSpinner.setEnabled( resource.getBooleanValue(Resource.ANTI_IDLE) );
 		
 		// chitsaou.070726: 防閒置字串
-		antiIdleStringLabel = new JLabel("防閒置字串");
-		antiIdleStringField = new JTextField( resource.getStringValue(Resource.ANTI_IDLE_STRING), 20 );
+		antiIdleStringLabel = new JLabel(Messages.getString("Preference.AntiIdleString_Label_Text")); //$NON-NLS-1$
+		antiIdleStringField = new JTextField( resource.getStringValue(Resource.ANTI_IDLE_STRING), 15 );
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -318,48 +318,48 @@ class ApperancePanel extends JPanel
 		super();
 		resource = r;
 		
-		systemLookFeelLabel = new JLabel("系統 Look and Feel（需重新啟動）");
+		systemLookFeelLabel = new JLabel(Messages.getString("Preference.SystemLookFeel_Label_Text")); //$NON-NLS-1$
 		systemLookFeelCheckBox = new JCheckBox();
 		systemLookFeelCheckBox.setSelected( resource.getBooleanValue(Resource.SYSTEM_LOOK_FEEL) );
 		
-		showToolbarLabel = new JLabel("顯示工具列");
+		showToolbarLabel = new JLabel(Messages.getString("Preference.ShowToolbar_Label_Text")); //$NON-NLS-1$
 		showToolbarCheckBox = new JCheckBox();
 		showToolbarCheckBox.setSelected( resource.getBooleanValue(Resource.SHOW_TOOLBAR) );
 		
-		cursorBlinkLabel = new JLabel("閃爍游標");
+		cursorBlinkLabel = new JLabel(Messages.getString("Preference.CursorBlink_Label_Text")); //$NON-NLS-1$
 		cursorBlinkCheckBox = new JCheckBox();
 		cursorBlinkCheckBox.setSelected( resource.getBooleanValue(Resource.CURSOR_BLINK) );
 		
-		widthLabel = new JLabel("視窗寬度");
+		widthLabel = new JLabel(Messages.getString("Preference.WindowWidth_Label_Text")); //$NON-NLS-1$
 		widthModel = new SpinnerNumberModel( resource.getIntValue(Resource.GEOMETRY_WIDTH), 0, 4096, 1);
 		widthSpinner = new JSpinner( widthModel );
 		
-		heightLabel = new JLabel("視窗長度");
+		heightLabel = new JLabel(Messages.getString("Preference.WindowHeight_Label_Text")); //$NON-NLS-1$
 		heightModel = new SpinnerNumberModel( resource.getIntValue(Resource.GEOMETRY_HEIGHT), 0, 4096, 1);
 		heightSpinner = new JSpinner( heightModel );
 		
-		scrollLabel = new JLabel("捲頁緩衝區行數（需重新啟動）");
+		scrollLabel = new JLabel(Messages.getString("Preference.Scroll_Label_Text")); //$NON-NLS-1$
 		scrollModel = new SpinnerNumberModel( resource.getIntValue(Resource.TERMINAL_SCROLLS), 0, 10000, 1);
 		scrollSpinner = new JSpinner( scrollModel );
 		
-		terminalColumnsLabel = new JLabel("模擬終端機行數（需重新啟動）");
+		terminalColumnsLabel = new JLabel(Messages.getString("Preference.TerminalColumns_Label_Text")); //$NON-NLS-1$
 		terminalColumnsModel = new SpinnerNumberModel( resource.getIntValue(Resource.TERMINAL_COLUMNS), 80, 200, 1);
 		terminalColumnsSpinner = new JSpinner( terminalColumnsModel );
 		terminalColumnsSpinner.setEnabled( false );
 		
-		terminalRowsLabel = new JLabel("模擬終端機列數（需重新啟動）");
+		terminalRowsLabel = new JLabel(Messages.getString("Preference.TerminalRows_Label_Text")); //$NON-NLS-1$
 		terminalRowsModel = new SpinnerNumberModel( resource.getIntValue(Resource.TERMINAL_ROWS), 24, 200, 1);
 		terminalRowsSpinner = new JSpinner( terminalRowsModel );
 		terminalRowsSpinner.setEnabled( false );
 		
 		// chitsaou.070726: 分頁編號
-		tabNumberLabel = new JLabel("顯示分頁編號 (新分頁生效)");
+		tabNumberLabel = new JLabel(Messages.getString("Preference.TabNumber_Label_Text")); //$NON-NLS-1$
 		tabNumberCheckBox = new JCheckBox();
 		tabNumberCheckBox.setSelected( resource.getBooleanValue(Resource.TAB_NUMBER) );
 		
 		// chitsaou.070726: 顯示捲軸
 		// TODO: no restart
-		showScrollBarLabel = new JLabel("終端機顯示捲軸 (需重新連線)");
+		showScrollBarLabel = new JLabel(Messages.getString("Preference.ShowScrollBar_Label_Text")); //$NON-NLS-1$
 		showScrollBarCheckBox = new JCheckBox();
 		showScrollBarCheckBox.setSelected( resource.getBooleanValue(Resource.SHOW_SCROLL_BAR) );
 		
@@ -460,37 +460,37 @@ class FontPanel extends JPanel implements ActionListener
 		super();
 		resource = r;
 		
-		familyLabel = new JLabel("字型");
+		familyLabel = new JLabel(Messages.getString("Preference.FontFamily_Label_Text")); //$NON-NLS-1$
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] familyList = ge.getAvailableFontFamilyNames();
 		familyCombo = new JComboBox( familyList );
 		familyCombo.setSelectedItem( resource.getStringValue( Resource.FONT_FAMILY ) );
 		
-		sizeLabel = new JLabel("大小（0 則自動配置）");
+		sizeLabel = new JLabel(Messages.getString("Preference.FontSize_Label_Text")); //$NON-NLS-1$
 		sizeModel = new SpinnerNumberModel( resource.getIntValue(Resource.FONT_SIZE), 0, 64, 1);
 		sizeSpinner = new JSpinner( sizeModel );
 		
-		boldLabel = new JLabel("粗體");
+		boldLabel = new JLabel(Messages.getString("Preference.FontBold_Label_Text")); //$NON-NLS-1$
 		boldCheck = new JCheckBox();
 		boldCheck.setSelected( resource.getBooleanValue( Resource.FONT_BOLD ) );
 		
-		italyLabel = new JLabel("斜體");
+		italyLabel = new JLabel(Messages.getString("Preference.FontItaly_Label_Text")); //$NON-NLS-1$
 		italyCheck = new JCheckBox();
 		italyCheck.setSelected( resource.getBooleanValue( Resource.FONT_ITALY ) );
 		
-		aaLabel = new JLabel("反鋸齒");
+		aaLabel = new JLabel(Messages.getString("Preference.FontAntiAliasing_Label_Text")); //$NON-NLS-1$
 		aaCheck = new JCheckBox();
 		aaCheck.setSelected( resource.getBooleanValue( Resource.FONT_ANTIALIAS ) );
 		
-		fontVerticalGapLabel = new JLabel("垂直間距");
+		fontVerticalGapLabel = new JLabel(Messages.getString("Preference.FontVerticalGap_Label_Text")); //$NON-NLS-1$
 		fontVerticalGapModel = new SpinnerNumberModel( resource.getIntValue(Resource.FONT_VERTICLAL_GAP), -10, 10, 1);
 		fontVerticalGapSpinner = new JSpinner( fontVerticalGapModel );
 		
-		fontHorizontalGapLabel = new JLabel("水平間距");
+		fontHorizontalGapLabel = new JLabel(Messages.getString("Preference.FontHorizontalGap_Label_Text")); //$NON-NLS-1$
 		fontHorizontalGapModel = new SpinnerNumberModel( resource.getIntValue(Resource.FONT_HORIZONTAL_GAP), -10, 10, 1);
 		fontHorizontalGapSpinner = new JSpinner( fontHorizontalGapModel );
 		
-		fontDescentAdjustLabel = new JLabel("Descent 微調");
+		fontDescentAdjustLabel = new JLabel(Messages.getString("Preference.FontDescentAdjust_Label_Text")); //$NON-NLS-1$
 		fontDescentAdjustModel = new SpinnerNumberModel( resource.getIntValue(Resource.FONT_DESCENT_ADJUST), -10, 10, 1);
 		fontDescentAdjustSpinner = new JSpinner( fontDescentAdjustModel );
 		
@@ -628,11 +628,11 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 
 	private void makeCategoryTree()
 	{
-		rootNode = new DefaultMutableTreeNode("設定");
-		generalNode = new DefaultMutableTreeNode("一般");
-		connectionNode = new DefaultMutableTreeNode("連線");
-		appearanceNode = new DefaultMutableTreeNode("外觀");
-		fontNode = new DefaultMutableTreeNode("字型");
+		rootNode = new DefaultMutableTreeNode(Messages.getString("Preference.Tree_RootNode_Text")); //$NON-NLS-1$
+		generalNode = new DefaultMutableTreeNode(Messages.getString("Preference.Tree_GeneralNode_Text")); //$NON-NLS-1$
+		connectionNode = new DefaultMutableTreeNode(Messages.getString("Preference.Tree_ConnectionNode_Text")); //$NON-NLS-1$
+		appearanceNode = new DefaultMutableTreeNode(Messages.getString("Preference.Tree_AppearanceNode_Text")); //$NON-NLS-1$
+		fontNode = new DefaultMutableTreeNode(Messages.getString("Preference.Tree_FontNode_Text")); //$NON-NLS-1$
 		
 		rootNode.add( generalNode );
 		rootNode.add( connectionNode );
@@ -672,12 +672,12 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		} else {
 			jsp.setRightComponent( welcome );
 		}
-		jsp.setDividerLocation( 150 );
+		jsp.setDividerLocation( 120 );
 	}
 	
 	public Preference( Resource re, ZTerm pa )
 	{
-		super( pa, "偏好設定", true );
+		super( pa, "偏好設定", true ); //$NON-NLS-1$
 	
 		parent = pa;
 		resource = re;
@@ -692,11 +692,11 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		makeCategoryTree();
 		
 		welcome = new JPanel();
-		welcome.add( new JLabel("偏好設定") );
+		welcome.add( new JLabel(Messages.getString("Preference.Welcome_Label_Text")) ); //$NON-NLS-1$
 		
 		jsp = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, categoryTree, welcome );
 		jsp.setOneTouchExpandable(true);
-		jsp.setDividerLocation( 150 );
+		jsp.setDividerLocation( 120 );
 		getContentPane().add( jsp, BorderLayout.CENTER );
 		
 		gp = new GeneralPanel( resource );
@@ -704,13 +704,13 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		ap = new ApperancePanel( resource );
 		fp = new FontPanel( resource );
 		
-		okButton = new JButton("確定");
+		okButton = new JButton(Messages.getString("Preference.OK_Button_Text")); //$NON-NLS-1$
 		okButton.addActionListener( this );
 		
-		cancelButton = new JButton("取消");
+		cancelButton = new JButton(Messages.getString("Preference.Cancel_Button_Text")); //$NON-NLS-1$
 		cancelButton.addActionListener( this );
 		
-		applyButton = new JButton("套用");
+		applyButton = new JButton(Messages.getString("Preference.Apply_Button_Text")); //$NON-NLS-1$
 		applyButton.addActionListener( this );
 		
 		controlPanel = new JPanel();
@@ -728,10 +728,10 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 			public void actionPerformed( ActionEvent ae ) {
 				dispose();
 			}};
-		getRootPane().getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW ).put( escape, "ESCAPE" );
-		getRootPane().getActionMap().put( "ESCAPE", escapeAction );
+		getRootPane().getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW ).put( escape, "ESCAPE" ); //$NON-NLS-1$
+		getRootPane().getActionMap().put( "ESCAPE", escapeAction ); //$NON-NLS-1$
 		
-		setSize( 600, 450 );
+		setSize( 620, 450 );
 		setLocationRelativeTo( null );
 		setVisible( true );
 	}
