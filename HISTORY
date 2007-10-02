@@ -833,3 +833,6 @@
 	zip 檔中的檔案都放在 ZTerm 資料夾內，方便直接解開。
 	拿掉 JCombobox 對 MacOS 的 workaround.
 	新增是否閃爍游標的設定。
+
+20071003:
+	Apply H45 的 localization patch.
