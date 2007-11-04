@@ -21,7 +21,7 @@ public class Messages {
 	public static String getString(String key) {
 		try {
 			if (Locale.getDefault().equals(Locale.TAIWAN)) {
-			return RESOURCE_BUNDLE.getString(key);
+				return RESOURCE_BUNDLE.getString(key);
 			} else {
 				return EN_RESOURCE_BUNDLE.getString(key);
 			}
