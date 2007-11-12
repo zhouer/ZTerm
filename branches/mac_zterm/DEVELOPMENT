@@ -1,0 +1,30 @@
+* 程式架構：
+
+class ZTerm 就是 top level 的 JFrame，裡面除了 menu, toolbar 之外，最主
+要的元件就是一個 JTabbedPane, 用來裝數個連線的視窗。
+
+每個連線則以 class Session 代表，Session extends from JPanel, new 起來
+之後會放進 tabbedPane 中，每個 Session 裡面包含了一個 JComponent VT100
+與一個 JScrollBar，Session 除了要裝這兩個 component 外還要負責網路連線，
+VT100 會不斷的跟 Session 要從網路來的資料並且顯示出來。
+
+VT100 就是主要負責顯示的 component，他的 keyboard, mouse event 都透過
+class User 處理，class User 接收到 keyboard event 後就會透過上層的
+Session 送出，收到 mouse event 也會做出相應的處理，例如選取一段文字之類
+的。為了降低 VT100, User 與其他上層元件的耦合性，我用了一個 Interface
+Application，只要是有implement Application 的 class 裡面都可以放 VT100。
+
+class Telnet, SSH2 分別用來處理 telnet 以及 ssh2 的連線，Session 建立連
+線後會把 input/output stream 交由 Telnet/SSH2 處理，讓資料先經過它們後
+再讀進來。
+
+package utils 內的就是一些會使用到的工具，主要有 Convertor 負責轉碼，
+CSV 負責處理 csv data ...
+
+* 編譯：
+
+可使用 ant 編譯，ant jar 可編出 jar 檔，ant zip 可編出發行用的 zip 檔。
+
+* 注意事項：
+
+1. 釋出時記得在「關於」視窗中修改版本編號

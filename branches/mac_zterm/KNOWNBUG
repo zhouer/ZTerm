@@ -1,0 +1,25 @@
+Bugs from ZTerm its self
+1. 彩色貼上時 reset 應用 *[m, 而不是用 *[37;40m
+2. 一直斷線時無法停止自動重連。
+3. 切斷個已斷線的視窗有問題，似乎會做兩次。
+4. 畫面捲到最上面的行為需要再觀察。
+5. 顯示大量資料時比 0.5 版還慢！（把 synchronized 拿掉就變得超快了）
+6. 有時連線成功，但畫面卻是之前連線的畫面，並且畫面沒置中，也不能操作。
+
+Bugs from JRE (Linux only)
+1. 有時會完全收不到 KeyEvent
+	http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6506617
+	http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6299259
+2. 收不到 ctrl-X 之類的 event in JRE 1.6 (unconfirmed)
+
+Bugs from JRE (Mac only)
+1. 沒有分頁時用鍵盤選取我的最愛連線會開兩個分頁
+2. Aqua look and feel 會讓 JComboBox 有問題（popup menu 會蓋住 textfield）
+	解法是使用 default look and fell.
+3. 中文輸入時不會組字而是直接顯示按鍵（像 Input Method Framework non-client）
+	裝完下面這個更新就壞掉了：
+	http://lists.apple.com/archives/Java-dev/2007/Feb/msg00251.html
+	http://docs.info.apple.com/article.html?artnum=304586
+
+Bugs from Ganymed SSH-2
+1. connect 到一半沒辦法 close, 要等到 timeout

@@ -1,0 +1,37 @@
+ZTerm current
+
+ZTerm 是一個專為 BBS 設計的連線軟體。
+
+特色：
+
+	* 支援模擬終端機 vt100（較完整）, xterm（部份）
+    * 支援通訊協定 Telnet, SSH2
+	* 支援文字編碼 Big5, UTF-8
+	* 支援分頁 (Tab)
+	* 支援捲軸
+	* 支援彩色複製、貼上
+	* 支援寬字元雙色字
+	* 免安裝 Unicode 補完計畫可顯示、輸入 Big5 日文漢字、簡體字...
+	* 免安裝，解壓縮後即可使用
+	* 開放原始碼（GPL version 2）
+	* 以純 Java 編寫
+	* 跨平台 (tested on Linux, Mac OS X, Windows)
+	* 其他...
+
+安裝前的準備：
+
+	* 您必須要有 JRE(Java Runtime Environment) 1.4 或以上的版本。
+	* Linux 下必須確認您的 Java 環境可以正確顯示中文。
+
+安裝：
+
+	下載 ZTerm-xxx.zip 後解壓縮，
+	在視窗環境下以滑鼠雙擊 ZTerm.jar 啟動，
+	在命令列環境則執行 java -jar ZTerm.jar
+
+使用方法：
+
+	請參照程式啟動後的「求助」選單內的「使用說明」
+
+專案網頁：http://zhouer.org/ZTerm/
+作者：zhouer at gmail dot com

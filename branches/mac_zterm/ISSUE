@@ -1,0 +1,26 @@
+1: 增加 unit test
+2. copy raw, paste raw
+3. scp
+4. ssh port forwarding
+5. 矩形區塊選取
+6: 自動判斷編碼
+7. 可作為本地端的 shell terminal
+8. IRC client
+9. 調整 tab 順序
+10. 重寫 GUI
+11. 游標在全型字上面時變成雙倍寬度
+12. 是否要用一個 Class Common 紀錄共同需要的資訊？
+13. 自訂快速鍵
+14. 彩色複製、貼上的快速鍵
+15. 在 popup 選單中增加複製並貼上
+16. 遇到清除整個畫面時將目前的畫面放入緩衝區中
+17. 在 Gnome 下，double-click 執行 ZTerm.jar 的 working directory 會是當時的目錄，不像 Windows 或 Mac 是 jar 檔所在目錄。
+18. URL 中間有控制碼時，是否要繼續。
+19. 用 synchronized statement 保護 bi
+20. 可用再一次反白清除反白屬性
+21. Socks 4, 4a, 5 支援
+22. 中英文獨立字型設定
+23. 設定檔改用 xml properties file
+24. VT100 內的 repaint() 改為 repaint( long tm, int x, int y, int width, int height )
+25. 檔名中 / 應該換成 Path.separator
+26. Mac 上使用 ctrl-click 模擬右鍵

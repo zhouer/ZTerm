@@ -1,0 +1,838 @@
+20041220:
+	ZTerm-0.0.1 release
+
+20051226:
+	將 ZTerm 從 Java Applet 改寫為 Application
+	中文處理
+	速度大幅提升
+	其他小 bug 修正
+
+20051228:
+	把看不爽很久的 display_queue 拿掉了，現在由 VT100 直接跟 NVT 要資料。
+	版號提升至 version 0.1
+	wc -l *.java, total: 1381
+
+20051229:
+	把看不爽很久的 ConsoleStruct 拿掉了，
+	把螢幕相關的東西全部整合進 Console,
+	不論是 data 或是 method.
+	
+	Console 成為 abstract class, 提供所有螢幕基本功能，
+	VT100 則繼承 Console, 並補上 VT100 特有的功能。
+	
+	從 server 端讀取資料不再使用 InputStreamReader,
+	改用 BufferedInputStream,
+	螢幕上的文字全部用 byte 儲存，
+	只有在顯示時才轉成 UTF-8 畫出來，
+	不再透過 InputStreamReader 作轉碼的工作，
+	轉碼用 String(..., String enc) 處理，
+	輸出依然保留使用 OutputStreamWriter.
+	
+	文字用 byte 儲存的好處是大幅降低了處理游標位置的難度，
+	雙色字也可以被當成單色字顯示。
+
+20051230:
+	新增 Class Clip 與系統剪貼簿溝通，完成複製、貼上功能。
+	收到訊息會發出嗶聲。
+	包裝成 jar 檔。
+	
+20051231:
+	把 VT100 的顏色控制碼獨立成 Class VTColor.
+	只重畫游標經過的 row, 不再重畫整個畫面，加速不少。
+
+20060101:
+	完成彩色複製貼上。
+	
+20060102:
+	修正重繪會留下殘影的問題。
+
+20060103:
+	在 Windows 下時寫死字型參數（dirty hack）
+	整行文字一次轉碼成 UTF-8, 不再一個一個轉。
+	使用系統 Look and Feel.
+
+20060104:
+	加上 Control Panel, 有 JToolBar, 以及輸入連線位置的 TJextField.
+	加上重新連線功能。
+	可用 host:port 連線。
+	使用 GPL license.
+	wc -l *.java, total: 2267
+
+20060105:
+	Class ZTerm implements KeyEventDispatcher, 處理快速鍵。
+	Double, triple click 選取單字、整行。
+	Ctrl-click 開啟網頁連結。
+	新增 Class PreferenceDialog, 處理設定。
+	防閒置，在 Session 中擺 Timer, 檢查發現一段時間沒有送出資料後就送出防閒置字元。
+	Alt-left, Alt-right 切換前後分頁。
+
+20060106:
+	實做讀寫設定檔的功能，
+	起動時會讀取 home 目錄下的 .ztermrc, 若不存在則自己產生，
+	關閉時會寫回設定檔，
+	變數名與值以 :: 格開。
+	wc -l *.java, total: 2664
+
+20060113:
+	每次只重繪游標經過處，不再重繪整行。
+
+20060114:
+	從 Class Network, Class NVT 讀取資料時改為一次讀取一個陣列，不再一次一 byte.
+	連線時關閉視窗時會先確認。
+	
+20060116:
+	新增 Class Pos 記錄螢幕上的座標。
+	用 TreeSet 記錄需要重繪的座標，不再自己實做環狀佇列實做。
+	Class Console 中新增 char[][] ctext 記錄轉碼後的 UTF-8 字元，
+	int[][] mbc 記錄該 byte 是 multibyte character 的第幾 byte.
+	
+20060117:
+	PreferenceDialog 改名為 Preference.
+	新增 Class Setting, 處理各種設定值以及設定檔。
+
+20060123:
+	Network 中建立連線時 disable Nagle's algorithm,
+	sock.setTcpNoDelay( true );
+	此舉大大改善連續快速輸入時的顯示效果。
+	
+	產生 build.xml, build-user,xml 供 ant 使用。
+
+20060129:
+	Session implements Runnable, 希望能解決開新連線會 block 住 ZTerm 的問題，
+	但似乎沒有用，再研究看看。
+	選單中文化。
+	新增我的最愛。
+	複製貼上行為改為：複製、彩色複製、貼上。
+	Class Setting 改名為 Resource.
+	新增 Class Site.
+	新稱 Class Favorite.
+	wc -l *.java, total: 2984.
+	
+20060130:
+	開新連線會 block 的問題解決了，不只要 implements Runnable 還要 new 一個 Thread.
+	tab 增加 icon, 可顯示連線狀態及收到訊息。
+	wc -l *.java, total: 3082.
+
+20060131:
+	新增 Class SiteManager.
+	Session 自動取得 focus 的部分忽然正常了。
+
+20060203:
+	修正必須用 ctrl-i 輸入 tab 的問題。
+	
+20060206:
+	主要修改 Preference 以及 SiteManager 的設定介面，以及 Favorite, Site 的細部處理，
+	Favorite 紀錄每個我的最愛的詳細資訊，Site 只紀錄連線資訊 host:port.
+	wc -l *.java, total: 3518.
+
+20060207:
+	Favorite 改名為 Site, 原來的 Site 不用了。
+	主要還是修改 reference 以及 SiteManager 的設定介面，大致上都正常運作了。
+	.ztermrc 跟過去的不相容，要砍掉。
+	wc -l *.java, total: 3655.
+
+20060214:
+	新增 Class Usage, usage.html 使用說明。
+	closeCurrentTab 功能改為：連線中則切斷連線，已斷線則移除分頁。
+	wc -l *.java, total: 3681.
+	在 opensvn 上第 100 commition.
+	ZTerm Version 0.2
+	
+	選取後立即貼上。
+	自訂字體水平、垂直間距。
+
+20060215:
+	字型設定介面，現可微調許多字型細節。
+	色彩修正，參考 PCMan 色彩預設值。
+
+20060216:
+	把看不爽很久的 VTColor 拿掉了，原功能併入 VT100, 應該可以節省了不少記憶體。
+	del 按鍵會一次刪除兩個字的 bug 修正了，
+	在處理 keyTyped 事件時略過，因為 keyPressed 時處理過了。
+
+20060217:
+	Class Console 不再 extends Thread, 因為 Session 本身就已 implements
+	了 Runnable, 不會 block 住 ZTerm.
+	重新連線時若分頁連線中則開新分頁，已斷線則重連。
+	重新連線的作法不再由 Session.reconnect() 負責，
+	改為每次產生新的 Session, 並塞回原來的位置。
+	因此解決了開新連線、重新連線會 block 住 ZTerm 的問題。
+
+20060218:
+	新增 Class CSV, 用來產生與解譯 comma separated vector.
+	Site 使用 csv 儲存，因此舊設定檔將不相容。
+	完成啟動時自動連線。
+	用滑鼠選了一個區塊，在放開滑鼠時，
+	若有 copy on select 則按住 meta 代表不複製，
+	若沒有 copy on select 則按住 meta 代表要複製。
+	wc -l *.java, total: 4109
+
+20060221:
+	可以畫出 ANSI control sequence 的底線、URL 的底線，
+	URL 也可以 single-click 就啟動了。
+	wc -l *.java, total: 4291
+
+20060222:
+	修正捲動頁面的 bug. (implement <esc>[ Pn L and <esc> M)
+	修正一些 ANSI control sequence 的預設值處理。
+	wc -l *.java, total: 4347
+
+	收到 Backspace 不需要清除文字，只要做游標往前？
+	之前按左方向鍵字會被清掉，現在不會了。
+
+20060224:
+	加入了 Big5 造字區的轉碼表（Convertor.java），因此可以看見日文漢字了。
+	轉碼表的來源是：建立一個檔案內容為 BIg5 造字區的全部字元，
+	在安裝了 Unicode 補完計畫的機器上使用 Notepad 轉成 Unicode,
+	再自己寫了一小程式把內容轉成 Java code.
+	（在 Windows 裡 Unicode 即為 UCS-2 故可直接拿進 Java 使用）
+
+	拿掉了 Console, NVT 裡的 buffer, 每次都從底層一次讀一個 byte,
+	這是因為懷疑有時一次顯示一個字是因為有迴圈一直空轉（這之前發生過）
+	但似乎不是很有效，而且還沒到慢一點的機器上比較過。
+	這是 opensvn revision 146 做的修改。
+	
+	支援閃爍字。
+	wc -l *.java, total: 5011
+
+	Console, NVT 是否使用 buffer 的效果不是很明顯，
+	現在還原成使用 buffer 的作法，不用 buffer 的先註解起來了。
+	wc -l *.java, total: 5121
+
+20060225:
+	修正游標離開前半個中文字後字會只剩一半的問題，
+	原先的作法是只在最後一 byte 畫字，現在改為首 byte 畫字。
+	wc -l *.java, total: 5121
+
+	看來各家 bbs 都比較喜歡 '\r' (0x0d) 不喜歡 '\n' (0x0a)
+	有的送 "\n\r" 出去會只當一個換行，有的會當兩個，因此就統一只用 '\r' 了。
+
+	彩色貼上修好了，不過又變回了 複製、貼上、彩色複製、彩色貼上 的機制，
+	因為複製到系統剪貼簿的內容必須是 Unicode, 但若用 Unicode 則無法紀錄雙色字。
+	wc -l *.java, total: 5094
+
+	ZTerm Version 0.3
+
+20060226:
+	使用自己的轉碼表的部份從 0x8140-0xA0FE 擴大到 0x8140-0xA3FE,
+	因此一些原來無法顯示的符號也可以正確顯示了。
+	Big5 常用漢字區也試著使用自己轉碼表，不過沒有比較快，所以放棄了。
+
+20060227:
+	可使用名稱或別名連線。
+	新增複製後取消選取的設定選項。
+	紀錄結束時的視窗位置與大小。
+	
+	紀錄重繪位置的資料結構應該用 queue 而不是 set,
+	當初用 set 的原因是要在 constant time 判斷是否已經設為需重繪了，
+	現在改用自己寫的 hash (boolean[][] needRepaint) 紀錄。
+	註：如果用 List.contains(Object) 判斷是否存在是非常慢的。
+
+20060301:
+	新開啟的設定視窗會顯示在程式中央。
+
+20060302:
+	支援 ssh2 連線（port 為 22 時即自動使用 ssh 連線）。
+	ssh2 使用 Ganymed SSH-2 for Java (http://www.ganymed.ethz.ch/ssh2/)
+	新增 Class Auth
+
+20060303:
+	Class Console 跟 Class VT100 分野實在是太難界定了，
+	因此決定把 Console 刪掉，全部的內容移往 VT100,
+	反正 VT100 本來就是繼承自 Console 的，很好處理。
+	
+	Mac 下 keyTyped 收不到 Esc, 要在 keyPressed 處理。
+	如果是因為控制碼（移位碼）造成游標超過 margin 則不捲頁。
+
+20060304:
+	新增、修正一些控制碼的處理。
+	新增 NVT 對 terminal speed 的處理。
+	視窗置中可用 setLocationRelativeTo( null )
+
+	使用者可自訂站台列表的順序，也修正了順序會亂跳的問題。
+	各種介面細部修飾，主要改了主畫面與連線管理員，讓操作更 user friendly.
+	wc -l *.java, total: 5622
+
+20060305:
+	因為沒辦法取得 Frame resize 的 event,
+	只好讓畫面都跟螢幕一樣大，確保視窗 resize 時看到的背景都是黑色的。
+	新增許多 ToolTip, ToolTip 對於接觸新軟體時快速學習快速鍵很重要。
+
+20060306:
+	之前一直因為畫面要設成 81x24 而困擾，今天終於解決了，
+	該注意的地方是：
+	
+	一般而言游標都在下一個字將會出現的地方，但若最後一個字在行尾（下一個字應該出現在行首）時，
+	游標會在最後一個字上，也就是當最後一個字出現在行尾時並不會影響游標位置，
+	游標會等到下一個字出現時才移到下行行首。
+	
+	捲頁時要一併更新 probablyurl 裡的資料。
+	更新偏好設定後會動態更新字型。
+	偏好設定提供套用功能。
+	重整一些已有的程式碼。
+	Class Usage 改名為 HtmlDialog.
+	JFrame setBounds 後應該 validate();
+	JFrame setLookAndFee 後應該 SwingUtilities.updateComponentTreeUI( ... );
+	
+	wc -l *.java, total: 5741
+
+	ZTerm Version 0.31
+
+20060307:
+	修正印出不合法的 big5 字元會當掉的問題。
+	關閉分頁不一定會觸發 stateChanged(...), 所以在關閉分頁時手動處理。
+	修正一些修改設定後沒有立即套用的 bug.
+
+20060308:
+	svn 整理為 trunk & brenches, 目前只有 0.314 branch.
+	開始支援部份的 xterm control sequence.
+
+20060309:
+	在網址列按 esc 會回復原來的網址。
+	
+20060310:
+	VT100 merge 0.314 branch 的控制碼處理。
+	現在建立連線用的預設 terminal type 是 xterm.
+
+20060312:
+	把選取後立即複製的預設值改為 false, 避免大家不知道怎麼彩色複製。
+	更新使用說明與常見問題。
+
+20060313:
+	修正 VT100 控制碼的小問題。
+	修改 User 在 Application, Numeric Keypad 時送出的東西。
+	新增、修正滑鼠的複製、貼上動作。
+	wc -l *.java, total: 5954
+
+20060314:
+	修正 ptt, ptt2 只吃 0x0d 當換行的問題。
+
+20060315:
+	修正複製時換行字元的問題，遇到換行一律 append("\n")
+	修正貼上時換行字元的問題，遇到 0x0a 一律送出 0x0d
+	修正視窗太大時無法開啟偏好設定的問題。
+	新增自動換行。
+
+20060317:
+	HTTP URL 中可能會出現 #.
+	建立連線用的預設 terminal type 改回 vt100.
+	
+	Convertor 裡的 static table 拿掉了，改成啟動程式時才讀入轉碼表 ucs2.txt,
+	ucs2.txt 的內容為在裝有 Unicode 補完計畫的電腦把裝滿 big5 的檔案轉成 unicode.
+	Class Network 只處理 byte 相關的事，不再處理 char.
+	從 server 端接收的 big5 在 VT100::bytesTochar 被轉成 ucs2,
+	從 local 端送出的 ucs2 在 Session::writeChar 被轉成 big5,
+	不過底層都是靠 Convertor 轉的。
+	因為以上的變動，傳送與接收的部份修改了許多地方，不再細述。
+
+20060318:
+	ucs2ToBig5Bytes 因為 big5 charset 在 ucs2 中不是連續的，
+	因此要從 ucs2 轉成 big5 要用查表的，昨天用 linear search 測試成功，
+	今天改寫成 binary search, 速度顯然（比 linear search）快多了。
+
+	即使包了整個 unicode 補完計畫但還是有些字是沒辦法顯示的，
+	畢竟 unicode 的字集還是比 big5 + unicode 補完計畫的大。
+
+	開啟 SSH2 連線時忘記傳 port 進去。
+	
+	滑鼠右鍵開啟 popup 選單。
+
+	NVT 收到 do echo 時應該送出 wont echo,
+	不然有些站會一個字重覆顯示兩次，不知道為什麼。
+
+20060319:
+	addComponentListener( ... ); 就可以收到視窗大小改變的事件了。
+	VT100 現在可以跟據視窗大小動態調整字型了。
+	一些專為 Windows 與 Mac 而寫的字型參數 dirty hack 也都拿掉了。
+	收穫頗豐！
+
+20060320:
+	修正判斷視窗大小的部份，讓大小判斷更準確。
+	修正 popup menu 的部份，讓 JRE 1.4.2 也能用，不過顯示的位置還不太對。
+	conv/ucs2.txt 是按 Big5+UAO 順序排列的 UCS2, 從 Big5 0x8140 開始，
+	conv/big5.txt 是按 UCS2 順序排列的 Big5+UAO, 從 UCS2 0x80 開始。
+	這樣應該就可以正常雙向對應 Big5+UAO <-> Unicode 了。
+
+20060323:
+	設定 ssh 連線時的 timeout 值，希望連線有問題時不會一直 block 住程式。
+	修該一下 faq.html, 有些東西寫好了 :)
+
+20060327:
+	今天試用了 NetBeans Profiler, 發現每個連線結束後都還有兩個 thread 繼續在執行，
+	應該是 Session::AntiIdleTask 與 VT100::RepaintTask, 應該想辦法獨立出來，
+	看看能不能正常結束。
+
+20060328:
+	昨天發現連線後會有兩個 thread 繼續在執行，分別是重繪與防閒置的 timer,
+	只要在中斷連時 cancel 掉就可以了，修正後 garbage collection 就正常了，
+	中斷連線就會正常釋放記憶體，解決了 memory leak 的問題。
+	
+	重繪與防閒置的 timer 都改用 javax.swing.Timer 了，新的 Timer 可以共用 thread
+	以節省 thread 用量，也改用 event driven 的模式，比較方便。改寫後 thread 用量
+	大幅減少，一個連線只需要新增一個 thread.
+
+	對下層做 read, write 動作時會產生 IOException,
+	把這些 Exception 的判斷提到比較上層的地方，免得需要把連線狀況一路往上傳，
+	讓每一層都 throw IOException, 到合適的地方再 catch 即可，
+	這樣應該可以減少 if 的使用量。
+
+	設定檔讀取與寫入時 encoding 都設為 UTF8, 以免使用英文語系的使用者看不見中文，
+	但設定檔中原有的中文內容可能會變成亂碼。
+
+	meta-, 開啟偏好設定，meta-. 開啟站台管理
+	新增一些原本沒顯示的 tooltip.
+
+	今天進度也很不錯 :)
+	wc -l *.java, total: 5423
+
+20060407:
+	全部的 Session 共用一個 BufferedImage, 現在開一百個 tab 也只用了不到 20MB
+	的 heap，所以不會有 out of heap memory 的錯誤了！
+	總算解決了這個心腹大患 :)
+
+20060408:
+	因為用 KeyEventDispatcher 處理快速鍵的關係，所以 modal dialog 也沒辦法
+	block 住 keyEvent, 所以會因連續按很多次 meta-w, meta-q 而造成錯誤，
+	現在用 isShowingDialog 紀錄是否有 dialog, 如果有則不處理 keyEvent.
+
+	修改了一些地方，讓斷線後保留畫面。
+	wc -l *.java, total: 5473
+
+20060410:
+	刪除分頁後 focus 會跑到位置列的 bug 修好了，
+	解法是把 ZTerm::updateTab 裡的 requestFocusInWindow 放進 invokeLater.
+	又解決了一個眼中釘 :)
+
+20060411:
+	昨天後來又寫了一些 code 以減少重繪次數，
+	VT100 每次從下層一次讀一堆資料進 buffer 但仍然 parse 一次就重繪一次，
+	現在改成 buffer 空了才重繪一次，
+	原本 Linux 上常常會發生一次出現一個字的 bug 總算是修掉了 :)
+	
+	Code 其實昨晚就寫好了，但在家裡沒辦法測試，
+	因此一直等到今天到學校來測試才確定解決了這個 bug,
+	昨晚的心情真是「既期待又怕受傷害」:p
+	這幾天一口氣清掉了好幾個陳年 bug, 也算豐收 :)
+	wc -l *.java, total: 5488
+
+20060414:
+	可自訂收到訊息時的音效。
+	改進偏好設定。
+
+20060416:
+	利用 clip 的功能實做出了雙色字，
+	但目前的寫法會使得每個中文字的畫兩次，對效能的影響要再觀察看看。
+
+20060417:
+	實做了收到訊息會閃爍工具列或是有跳動圖示的功能，
+	在 Linux 上用 requestFocus(),
+	在 Mac 上用 Cocoa-Java 提供的系統 library,
+	在 Windows 上使用 JNI.
+
+20060418:
+	一方面要包裝 dll 檔，一方面也順便把 ganymed ssh 從 code 中獨立出來，
+	以後 ZTerm 就以 zip 檔的形式散佈，不再是只需要一個 jar 檔了，
+	zip 檔解開後就是數個 jar 檔、各平台用的啟動 script, dll 以及一些文件。
+
+20060420:
+	Jar 檔中的 manifest 修改了，不需要各平台都有各自的啟動 script 了，
+	啟動 ZTerm.jar 即可。
+	
+20060422:
+	修正關閉分頁後還會跳出錯誤訊息的 bug,
+	在送訊息前會先檢查分頁是否仍存在。
+
+	快速鍵 meta-q 改為開新連線（參考 PCMan）（不過 Mac 下按 cmd-q 就結束程式了），
+	沒有分頁的情況下 meta-w 會結束程式（參考 Firefox），
+	取消立即關閉程式的快速鍵（原為 meta-q）
+
+	實做了斷線自動重連的功能，
+	不過重連的寫法有點糟（蠻久了），有空應該改成更好的寫法。
+	
+	ZTerm Version 0.319
+	wc -l *.java, total: 5730
+
+20060423:
+	貼上文字時本來是一次送一個 char, 但這樣貼上大量文字時會造成斷線，
+	改成一次送出一個 char array.
+	改進貼上文字的斷行演算法（雖然還是很弱）。
+
+	寫好了滑鼠右鍵複製連結，
+	因為一直都沒辦法很精確得取得滑鼠所在位置，所以作法蠻糟的，
+	同樣受這個問題影響的還有 popup menu 的位置不太正確。
+
+	參考 fmt 改進貼上文字時的斷行作法，
+	斷行部份的程式碼從 VT100 中獨立出來，新增 class TextUtils.
+
+20060424:
+	修正 URL 可能出現的字元。
+	修正總是會自動連線。
+
+20060425:
+	在選項以及偏好設定中加入了是否要顯示工具列的選項。
+	
+	修正當斷線需要重連的分頁不在前景時會重連在前景的分頁，
+	reopenCurrentTab() 改為 reopenSession(Session),
+	reopen 必須指定是那個 session 重連。
+	
+	Session 的 paintComponent(...) 設成 synchronized,
+	並刪除 VT100::cleanScreen(), repaintAll() 就夠了。
+	因多個 session 共用同一張 image, 因此要小心不在前景的分頁修改畫面，
+	會修改畫面的部份應該集中管理並做好檢查。
+	
+	Session 背景設為黑的，開新分頁時不會閃一下灰色的畫面。
+	改進防閒置的處理。
+	
+	wc -l *.java, total: 5794
+
+20060427:
+	分頁加上編號。
+	換行字元總是送出 0x0d (for ptt)
+	branch to branches/0.32
+
+20060501:
+	加上 scrollbar, 只有外觀，功能還沒寫。
+	VT100 extends JComponent, 外觀就是 terminal 畫面。
+	VT100 讀取資料統一跟 parent 拿，不再跟 nvt 拿。
+
+20060502:
+	Convertor 跟 Resource 的 instance 改寫為 Singleton 模式，不再一層層傳遞，
+	這是我第一次用了知道名稱的 design pattern.
+	
+	減少參數傳遞，如有需要自己去取得（ex. getImage()）。
+	
+	修正開啟偏好設定或是站台管理時使用快速鍵貼上會貼到連線視窗的問題。
+	偏好設定與站台管理按 Esc 可直接關閉視窗。
+	
+	整體架構重整，一個 Session 主要構成的元件就是：
+		Protocol 負責跟遠端 server 溝通，
+		VT100 負責顯示，
+		User 負責使用者輸入，
+		Session 則居中協調。
+	Class Telnet, Class SSH2 都 implement Interface Protocol.
+	
+	wc -l *.java, total: 5871
+
+20060503:
+	當視窗大小有變動，或是 subcomponent 有改變時要記得呼叫 validate();
+	現在調整視窗大小或是隱藏、顯示工具列會動態調整字型。
+
+20060510:
+	xeon 用 dk.brics.automaton 重寫了 Trigger,
+	不過現在 new Automaton 的速度還很慢，要想辦法改進。
+
+	wc -l *.java, total: 6150
+
+20060513:
+	新增 Class History, Resource 中也加入了相應的處理函式，
+	連線時會留紀錄在設定檔中，主要由 xeon 完成。
+
+	位置列改用 JComboBox, 會動態更新。
+
+	wc -l *.java, total: 6368
+
+20060514:
+	xeon 修好了 fmt 的 bug.
+
+20060516:
+	新增 TextUtils.getCsvParameters(...)
+	修改位置列的一些 code.
+	記住上一次開啟 JFileChooser 的目錄。
+
+20060518:
+	修正 trigger 只有在前景才正常的 bug,	
+	Trigger 只有 pattern, message 是 static, states 不是。
+	
+	修正 Convertor.StringToBig5Bytes(...) 的 bug,
+	解決 trigger 誤判的問題。
+
+20060519:
+	xeon 修正 fmt 的 bug.
+	wc -l *.java, total: 6466
+
+20050526:
+	加上 private static final long serialVersionUID = xxx;
+
+	在 ZTerm 用
+	getRootPane().getInputMap().put(
+		KeyStroke.getKeyStroke( KeyEvent.VK_Q, InputEvent.ALT_MASK ), "open" );
+	getRootPane().getActionMap().put(
+		"open", new AbstractAction() {...} );
+	這種形式是沒辦法攔截到快速鍵的。
+
+20060604:
+	設定檔存在則從設定檔讀取設定，若不存在則讀取預設值。
+	
+	Telnet, SSH2 都 implements Protocol interface,
+	並新增 getInputStream(), getOutputStream() 讓程式更清晰。
+	
+	Class Filter 因功能與 FilterInputStream/FilterOutputStream 重疊故刪除，
+	Class Trigger 則以 Class InputTrigger (extends FilterInputStream) 取代。
+
+	實做 ESC[s 與 ESC[u save, restore cursor position.
+	
+	wc -l *.java, total: 6654
+
+20060605:
+	位置列不對快速鍵起反應 (isAltDown() || isMetaDown())
+
+20060610:
+	新增 Updater, 可手動更新程式，
+	但須在 ZTerm 尚未開啟時執行。
+
+20060612:
+	修正 SiteManager 不能更新的 bug.
+
+20060713:
+	修正一些 warning.
+	File.toURL -> File.toURI().toURL()
+
+20060719:
+	修改紀錄畫面內容的方式，不再紀錄讀入的原始資料，只紀錄轉換後的 UTF-16 結果，
+	這是為了支援多種編碼所做的準備。
+	目前與複製相關的功能都暫時無法使用。
+
+20060726:
+	xeon: 暫時解決了 Mac 下無法用鍵盤選擇歷史清單連線的問題。
+
+	取消了 20060719 (rev. 396) 的修改，恢復成可用的版本，再想想更好的作法。
+
+20060904:
+	只有在啟動時會設定 look and feel, 因為位置列會爛掉。
+	新增「觸發管理」，目前只有空殼。
+	新增「檢查更新」，尚未完成。
+
+20060905:
+	完成檢查更新的大多數功能。
+	修改 Pair 的 constructor.
+	新增 FileUtils 處理檔案相關的工作，如 copy, rm.
+	wc -l *.java, total: 7169
+
+20060907:
+	JDialog.setDefaultCloseOperation( ... )
+	必須是 DISPOSE_ON_CLOSE 不可以是 EXIT_ON_CLOSE.
+
+20060917:
+	只有滑鼠游標改變時才重新設定，修正滑鼠移動時會閃爍的問題。
+
+20060918:
+	選擇反白區域時只重繪改變的部份。
+
+20060920:
+	修改紀錄畫面內容的方式，不再紀錄讀入的原始資料，只紀錄轉換後的 char,
+	目前已可以同時支援 Big5 與 UTF-8.
+	複製相關的功能都暫時無法使用。
+	wc -l *.java, total: 7392
+
+20060921:
+	重寫複製與彩色複製的功能，順便修正因移位碼造成的無資料部份用空白取代。
+	轉換表格內有些 multi-bytes char 會轉換成 '?', 因此會誤判，已修正。
+	VT100 的 linefull 變數用於處理文字到畫面最右端時碰到換行的問題，
+	此時只應捲動一行，而不是因為到行尾所以捲動一行，遇到換行又捲動一行。
+
+20060922:
+	新增 TODO2 檔案，記錄未決定要做的功能。
+
+20060926:
+	把 Pair 去掉 separator, 跟常用的 Pair 一樣了。
+	函數參數統一 row 在前，col 在後。
+	
+	紀錄螢幕資料的陣列不再直接存取，
+	改用 getXXX( row, col ), setXXX( row, col, v )
+	row, col 則透過 realRow, realCol 轉換為真正紀錄在陣列中的位置。
+	注：實測結果顯示這樣做非常慢，已取消此項修改。
+
+20060927:
+	畫面置中，記得置中後所有的座標處理都需要先 translate.
+
+20061012:
+	解決在位置列中插入文字後會跑到最後的問題，每次要 setCaretPosition(...)
+
+20061111:
+	可在站台管理設定文字編碼、模擬終端機。
+	分頁 title 會顯示分頁編號加站台名稱，tip 會顯示 hostname.
+	Session 統一用 Site 當 constructor 參數。
+	wc -l *.java, total: 7594
+
+20061115:
+	啟動時會先讀入預設值，當設定值沒有被設定時則以預設值取代。
+	字型設定可以讀取系統字型，這樣順便解決了會產生暫存字型的問題，啟動應該也會變快。
+	字型可設定粗體、斜體、anti-alias.
+	wc -l *.java, total: 7602
+
+20061116:
+	設定的終端機類型會真的送給遠端了，不過還不能動態調整。
+	設定檔及程式中的 protocol 紀錄及判斷改用字串，不再用數值查表。
+	vt100 的 vt 必須是小寫的，大寫的某些系統不吃。
+	取消了站台列表與觸發列表的預設值，以免數量少於預設時總是會出現預設的。
+	wc -l *.java, total: 7623
+
+20061118:
+	將 Big5-UAO 改為 Big5, 將來需要區分再改。
+
+20061120:
+	游標移動後應立刻顯示，閃爍時間重計。
+
+20061122:
+	將 TelnetInputStream, TelnetOutputStream 併入 Telnet.java.
+	將 SSH2InputStream, SSH2OutputStream 併入 SSH2.java.
+	設定 keep alive.
+
+20061203:
+	把 getRepaint() 及 isRepaintListEmpty() 手工 inline,
+	setRepaint() 設成 final, 如此可得到小幅的加速。
+	先畫字才畫底線，底線才不會被字遮住，影響美觀。
+	VT100 也會存一份 encoding, 不必每次都從 Session 拿。
+	wc -l *.java, total: 7630
+
+20061211:
+	拿掉了 InputTrigger, 以後有需要再加上。
+	Ganymed SSH-2 從 build 211 beta4 開始支援 "none" authentication method,
+	因此可以連上不需認證就直接登入的站台了，例如用 bbs 登入 ptt.cc
+	取消 setRepaint() 的 final, 反正沒什麼用。
+	VT100 裡的 protected method 都改成 private.
+	VT100 裡的資料真的放進 circular queue,
+	可用 physicalRow 來取得畫面上的 row 對應到陣列的 row.
+	VT100 改進一些色彩處理的程式碼。
+	使用 circular queue 實做底層儲存的資料結構。
+
+20061212:
+	大致可用捲軸顯示捲頁頁緩衝區。
+	wc -l *.java, total: 7566
+
+20061213:
+	捲頁緩衝區大致完成。
+	在偏好設定中增加捲頁緩衝區行數的設定。
+	刪除 class History, 連線紀錄使用 Site 儲存。
+	當捲頁發生時若捲軸不在最下方，捲軸會自動往上捲，以免影響閱讀。
+	wc -l *.java, total: 7541
+
+20061214:
+	捲軸的 bug 修得差不多了。
+	加強對 xterm 控制碼的支援。
+	修正 popup menu 顯示位置錯誤的問題，用 Component.getLocationOnScreen 解決。
+	模擬終端機增加 ansi.
+	wc -l *.java, total: 7715
+
+20061215:
+	細部修正，把一些不必是 public method 改成 private, 移除一些不必要的 method.
+	修正 URL 過常會判斷錯誤的問題。
+	修正捲軸不在最下方時切換分頁會重繪錯誤的問題。
+	wc -l *.java, total: 7699
+
+20061218:
+	有時會遇到 ESC ESC 的狀況，當成是 ESC 處理。
+	Session 加入 VT100 後就有可能 call VT100.paint()
+	但此時字型可能尚未設定，畫面也尚未設定需重繪，
+	增加 init_ready 紀錄是否初始化動作皆已完成，並在 paint() 之前先檢查，
+	修正後解決了開有時新分頁時會閃一下舊分頁的畫面，
+	與有時一開始會印出字型有誤的畫面的問題。
+	wc -l *.java, total: 7720
+	branch 0.5 start from here.
+
+20061219:
+	用 Observer pattern 改寫 updater.
+
+20061220:
+	Updater 已經可以正常運作了。
+	改寫 FileUtils 以及 Converter 用到 FileUtils 的部份。
+	因發現有時快速新增連線會產生 null pointer exception,
+	class Resource 部份 method 改為 synchronized.
+	class ZTerm 中加了一個 lock object 避免同時多個 thread 顯示 message dialog.
+	class Telnet 細部修改。
+	class VT100 的 paint 設為 synchronized method 是沒有用的，取消。
+	wc -l *.java, total: 7770
+
+20061223:
+	修改 faq.html
+	細部修改 VT100
+
+20061225:
+	收到不完整的字時會暫存在 textBuf 中，但游標移動後就應清空 textBuf,
+	以減少收到不完整的字所造成的異狀（新的游標位置字被吃掉）。
+
+20061227:
+	class ZTerm 中加了一個 lock object menulock 避免同時多個 thread 修改選單。
+	class Resource 中修改了需要 synchronized 的 method.
+	wc -l *.java, total: 7777
+
+20061231:
+	遇到兩次反白應回到正常狀況，而不是繼續保持反白。
+	改寫畫出文字 (VT100.draw()) 與取得色彩 (VT100.getColor()) 的部份。
+
+20070607:
+	新增數個 packages，並把各 class 分類好。
+	Telnet 防閒置字串送出 IAC NOP
+	移除 Windows/MAC alerter, Linux 不搶 focus。
+	移除 Updater。
+	改用 ant。
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7426
+
+20070608:
+	新增 class Standalone 可讓 Telnet, SSH2 獨立運作。
+	org.zhouer.vt 內新增 Interface Application 與 Config，
+	讓 User 與 VT100 可以獨立運作。
+
+20070609:
+	把 VT 的部份跟 ZTerm 切乾淨，改了很多東西，目前還有 bug.
+
+20070610:
+	Code hosting 從 OpenSVN 移到 Google code.
+	因為重整架構帶來的 bug 修得差不多了。
+
+20070611:
+	繼續改架構，細節不寫了。
+	新增連線中的 icon。
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7527
+
+20070613:
+	修改 URL 可用的字元。
+
+20070614:
+	新增 ZTerm.cacheFont()，在程式啟動時就先讀一次字型，
+	讓使用者開第一個連線視窗時不會感覺太慢。
+	VT100.repaintList 改用 LinkedList，
+	並且自己用 repaintLock 保護，不依靠 Collections.synchronizedList(...)
+
+20070615:
+	VT100 紀錄重繪位置改用自己寫的 FIFOSet repaintSet，
+	在 add 及 remove 時仍然用 repaintLock 保護，
+	雖然使用上沒有感覺比較快，但至少不用一直 new Pos(...)，這樣感覺比較有效率。
+	不過要注意目前假設 column 數小於 256。
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7594
+
+20070620:
+	Apply 來自 H45 的 patch，localized 選單內容，
+	新增 class Localization，中文、英文 localization string file.
+	比較兩個 non-primitive object 是否相等要記得用 equals 不要用 ==.
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7796
+
+20070727:
+	Apply 來自 chitsaou 的 patch,
+	1. 可以設定是否顯示分頁編號
+	2. 可以選擇是要用分頁背景顏色還是 icon 顯示連線狀態
+	3. 可以設定是否要顯示右方捲軸（取消的話，scrolling 的功能也會停止）
+	4. 可以自訂防閒置字串
+
+20070803:
+	移除使用背景顏色表示連線狀態的功能。
+	修正連線狀態處理。
+
+20070810:
+	恢復 Windows 下閃爍工具列的功能。
+	恢復 Mac 下跳動 icon 的功能。
+
+20070811:
+	新增 ant build.xml 中 win32 的部份，
+	以後在 Windows 上可用 ant win32-jar 產生 WindowsZTerm.jar
+	修正連線狀態處理。
+	改進 vt100 控制碼處理（解決 ptt 閒置時游標亂跳的問題）
+
+20070814:
+	可用 ant jar-win32 以及 zip-win32 產生 Windows 用的 jar 及 zip 檔。
+	zip 檔中的檔案都放在 ZTerm 資料夾內，方便直接解開。
+	拿掉 JCombobox 對 MacOS 的 workaround.
+	新增是否閃爍游標的設定。
+
+20071003:
+	Apply H45 的 localization patch.
