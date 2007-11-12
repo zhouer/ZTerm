@@ -22,6 +22,9 @@ import javax.swing.Timer;
 import org.zhouer.utils.Convertor;
 import org.zhouer.utils.TextUtils;
 
+// add by ericsk
+import java.awt.im.InputMethodRequests;
+
 class FIFOSet
 {
 	boolean[] contain;
@@ -349,6 +352,11 @@ public class VT100 extends JComponent
 		addKeyListener( user );
 		addMouseListener( user );
 		addMouseMotionListener( user );
+		
+		// add by ericsk 2007/11/12
+		enableInputMethods(true);
+		addInputMethodListener( user );
+		// end of adding by ericsk
 	}
 	
 	/**
@@ -2232,6 +2240,10 @@ public class VT100 extends JComponent
 		removeKeyListener( user );
 		removeMouseListener( user );
 		removeMouseMotionListener( user );
+		
+		// add by ericsk 2007/11/12
+		enableInputMethods(false);
+		removeInputMethodListener( user );
 	}
 	
 	public void run()
@@ -2267,6 +2279,11 @@ public class VT100 extends JComponent
 		draw();
 		
 		g.drawImage( bi, 0, 0, null );
+	}
+	
+	// add by ericsk 2007/11/12
+	public InputMethodRequests getInputMethodRequests() {
+	  return user;
 	}
 	
 	public VT100( Application p, Config c, Convertor cv, BufferedImage b )
