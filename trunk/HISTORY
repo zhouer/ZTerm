@@ -842,3 +842,4 @@
 	ssh dynamic port forwarding 連線。
 	SSH 自動送出使用者帳號。
 	修正連上遠端 server 後立即被斷線，手動關掉分頁仍會一直重連的 bug.
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 7908
