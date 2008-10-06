@@ -1,8 +1,11 @@
 package org.zhouer.protocol;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -61,6 +64,10 @@ public class Telnet implements Protocol
 {
 	private String host;
 	private int port;
+	
+	private String socks_host;
+	private int socks_port;
+	private boolean using_socks;
 	
 	private Socket sock;
 	private InputStream is;
@@ -324,11 +331,48 @@ public class Telnet implements Protocol
 		os.flush();
 	}
 	
+	private Socket doConnect() throws IOException
+	{
+		Socket s;
+		
+		if( using_socks ) {
+			
+			s = new Socket( socks_host, socks_port );
+			
+			InetAddress inet = InetAddress.getByName( host );
+			
+			DataInputStream dis = new DataInputStream( s.getInputStream() );
+			DataOutputStream dos = new DataOutputStream( s.getOutputStream() );
+			
+		    dos.writeByte( 0x05 );	// socks version (must be 0x05)
+		    dos.writeByte( 0x01 );	// number of supported authentication methods
+		    dos.writeByte( 0x00 );	// using ``no auth''
+
+		    dis.readByte();	// server should return 0x05
+		    dis.readByte();	// server should return 0x00
+		    
+		    dos.writeByte( 0x05 );	// socks version (must be 0x05)
+		    dos.writeByte( 0x01 );	// 0x01: TCP connect
+		    dos.writeByte( 0x00 );	// reserved
+		    dos.writeByte( 0x01 );	// 0x01: IPv4 address
+
+		    dos.write( inet.getAddress() );			// send host
+		    dos.writeByte( (byte)((port >> 8) & 0xff) );		// send port
+		    dos.writeByte( (byte)(port & 0xff) );
+
+		} else {
+			// System.out.println("Connecting to host: " + host + ", port: " + port + " ...");
+			s = new Socket( host, port );
+		}
+		
+		return s;
+	}
+	
 	public boolean connect()
 	{
 		try {
-			// System.out.println("Connecting to host: " + host + ", port: " + port + " ...");
-			sock = new Socket( host, port );
+			
+			sock = doConnect();
 			
 			// disable Nagle's algorithm
 			// 不要把很多小封包包裝成一個大封包再一次送出，
@@ -416,10 +460,20 @@ public class Telnet implements Protocol
 		return terminal_type;
 	}
 	
+	public Telnet(String h, int p, String sh, int sp )
+	{
+		this( h, p );
+		
+		socks_host = sh;
+		socks_port = sp;
+		using_socks = true;
+	}
+	
 	public Telnet( String h, int p )
 	{
 		host = h;
 		port = p;
+		using_socks = false;
 		
 		// 預設的 terminal type 是 vt100
 		terminal_type = "vt100";

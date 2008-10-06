@@ -91,3 +91,5 @@
 	20070814: jar-win32, zip-win32 tasks
 31. 10 秒內斷線自動重連
 	20060422: 完成
+32. 透過 Socks5 連線
+	20081006: Socks5 no authentication 完成
