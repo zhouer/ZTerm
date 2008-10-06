@@ -72,11 +72,8 @@ public class Resource implements Config
 		defmap.put( GEOMETRY_Y, "0");
 		defmap.put( GEOMETRY_WIDTH, "980");
 		defmap.put( GEOMETRY_HEIGHT, "720");
-		defmap.put( SHOW_TOOLBAR, "true");
-		
-		// chitsaou.070726: 分頁編號
 		defmap.put( TAB_NUMBER, "true");
-		// chitsaou.070726: 顯示捲軸
+		defmap.put( SHOW_TOOLBAR, "true");
 		defmap.put( SHOW_SCROLL_BAR, "true" );
 		
 		// 設定模擬終端機大小

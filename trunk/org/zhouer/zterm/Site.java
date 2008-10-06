@@ -32,17 +32,11 @@ public class Site implements Comparable {
 	public String emulation;
 	public final String defEmulation = "vt100";
 	
-	// 自動連線
+	// 啟動時自動連線
 	public boolean autoconnect;
 	
-	// 連線後自動登入
-	public boolean autologin;
-	
-	// 登入前以及登入後該自動輸入的字串。
-	public String prelogin, postlogin;
-	
-	// 使用者帳號、密碼及其提示字串。
-	public String usernameprompt, username, userpassprompt, userpass;
+	// 使用者帳號
+	public String username;
 	
 	// 最近連線時間。
 	public long lastvisit;
@@ -93,6 +87,7 @@ public class Site implements Comparable {
 		v.addElement( "name=" + name );
 		v.addElement( "host=" + host );
 		v.addElement( "port=" + port );
+		v.addElement( "username=" + username );
 		v.addElement( "protocol=" + protocol );
 		v.addElement( "alias=" + alias );
 		v.addElement( "encoding=" + encoding );
@@ -104,12 +99,6 @@ public class Site implements Comparable {
 			v.addElement( "autoconnect=true" );
 		} else {
 			v.addElement( "autoconnect=false" );	
-		}
-		
-		if( autologin ) {
-			v.addElement( "autologin=true" );
-		} else {
-			v.addElement( "autologin=false" );	
 		}
 		
 		return CSV.generate( v );
@@ -156,7 +145,7 @@ public class Site implements Comparable {
 		lastvisit = 0;
 		total = 0;
 		autoconnect = false;
-		autologin = false;
+		username = "";
 	}
 	
 	/**
@@ -214,10 +203,10 @@ public class Site implements Comparable {
 			autoconnect = false;	
 		}
 		
-		if( m.containsKey("autologin") ) {
-			autologin = ((String)m.get("autologin")).equalsIgnoreCase("true");
+		if( m.containsKey("username") ) {
+			username = (String)m.get( "username" );
 		} else {
-			autologin = false;	
+			username = "";
 		}
 	}
 }

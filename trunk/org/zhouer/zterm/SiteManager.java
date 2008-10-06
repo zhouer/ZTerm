@@ -38,30 +38,24 @@ class ParameterPanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = -3479511727147739169L;
 	
-	// 名稱, 位置, 埠號, 通訊協定. 帳號提示, 帳號, 密碼提示, 密碼, 自動連線, 自動登入
-	private JLabel nameLabel, hostLabel, portLabel, protocolLabel, aliasLabel;
-
-	private JLabel autoConnectLabel;
-	
+	// 名稱, 位置, 埠號, 通訊協定, 別名, 自動連線
+	private JLabel nameLabel, hostLabel, portLabel, protocolLabel, aliasLabel, autoConnectLabel;
 	private JTextField nameField, hostField, portField, aliasField;
-
-	private JCheckBox autoConnectCheckBox;
 	private ButtonGroup protocolGroup;
 	private JRadioButton sshButton, telnetButton;
+	private JCheckBox autoConnectCheckBox;
 
-	private String[] encodingList = { "Big5", "UTF-8" };
-	private String[] emulationList = { "vt100", "xterm", "xterm-color", "ansi" };
+	private JLabel usernameLabel;
+	private JTextField usernameField;
+
+	private JLabel updateLabel;
+	private JButton updateButton;
 
 	private JLabel encodingLabel, emulationLabel;
 	private JComboBox encodingCombo, emulationCombo;
-	
-//	private JCheckBox autoLoginCheckBox;
-//	private JLabel autoLoginLabel;
-//	private JLabel userPromptLabel, userLabel, passPromptLabel, passLabel;
-//	private JTextField userPromptField, userField, passPromptField, passField;
-	
-	private JButton updateButton;
-	private JLabel updateLabel;
+
+	private String[] encodingList = { "Big5", "UTF-8" };
+	private String[] emulationList = { "vt100", "xterm", "xterm-color", "ansi" };
 	
 	private SiteManager parent;
 	
@@ -71,6 +65,7 @@ class ParameterPanel extends JPanel implements ActionListener
 		hostField.setText( s.host );
 		portField.setText( Integer.toString( s.port ) );
 		aliasField.setText( s.alias );
+		usernameField.setText( s.username );
 		
 		if( s.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
 			telnetButton.setSelected( true );
@@ -82,6 +77,9 @@ class ParameterPanel extends JPanel implements ActionListener
 		emulationCombo.setSelectedItem( s.emulation );
 		
 		autoConnectCheckBox.setSelected( s.autoconnect );
+		
+		// username 只對 ssh2 連線有效
+		usernameField.setEnabled( s.protocol.equalsIgnoreCase( Protocol.SSH ) );
 	}
 	
 	public void actionPerformed( ActionEvent ae ) {
@@ -92,23 +90,27 @@ class ParameterPanel extends JPanel implements ActionListener
 			s.host = hostField.getText();
 			s.port = Integer.parseInt( portField.getText() );
 			s.alias = aliasField.getText();
+			s.username = usernameField.getText();
 			
 			if( telnetButton.isSelected() ) {
 				s.protocol = Protocol.TELNET;
 			} else if( sshButton.isSelected() ) {
-				s.protocol = Protocol.SSH;
+				s.protocol = Protocol.SSH;	
 			}
 			
 			s.encoding = encodingCombo.getSelectedItem().toString();
 			s.emulation = emulationCombo.getSelectedItem().toString();
 			
 			s.autoconnect = autoConnectCheckBox.isSelected();
-			// s.autologin = autoLoginCheckBox.isSelected();
+			s.username = usernameField.getText();
+			
 			parent.updateFavorite( s );
 		} else if( ae.getSource() == telnetButton ) {
 			portField.setText( Integer.toString( 23 ) );
+			usernameField.setEnabled( sshButton.isSelected() );
 		} else if( ae.getSource() == sshButton ) {
 			portField.setText( Integer.toString( 22 ) );
+			usernameField.setEnabled( sshButton.isSelected() );
 		}
 	}
 	
@@ -126,19 +128,15 @@ class ParameterPanel extends JPanel implements ActionListener
 		protocolLabel = new JLabel("通訊協定");
 		encodingLabel = new JLabel("文字編碼");
 		emulationLabel = new JLabel("終端機模擬");
-		autoConnectLabel = new JLabel("自動連線");
+		autoConnectLabel = new JLabel("啟動時連線");
+		usernameLabel = new JLabel("自動送出帳號");
 		updateLabel = new JLabel("修改設定後請記得按「更新」");
-		
-//		autoLoginLabel = new JLabel("自動登入");
-//		userPromptLabel = new JLabel("帳號提示");
-//		userLabel = new JLabel("帳號");
-//		passPromptLabel = new JLabel("密碼提示");
-//		passLabel = new JLabel("密碼");
 		
 		nameField = new JTextField( 15 );
 		hostField = new JTextField( 15 );
 		portField = new JTextField( 15 );
 		aliasField = new JTextField( 15 );
+		usernameField = new JTextField( 15 );
 		
 		telnetButton = new JRadioButton( "Telnet" );
 		telnetButton.addActionListener( this );
@@ -149,6 +147,7 @@ class ParameterPanel extends JPanel implements ActionListener
 		protocolGroup.add( telnetButton );
 		protocolGroup.add( sshButton );
 		
+		
 		encodingCombo = new JComboBox( encodingList );
 		encodingCombo.addActionListener( this );
 		
@@ -156,12 +155,6 @@ class ParameterPanel extends JPanel implements ActionListener
 		emulationCombo.addActionListener( this );
 		
 		autoConnectCheckBox = new JCheckBox();
-		
-//		autoLoginCheckBox = new JCheckBox();
-//		userPromptField = new JTextField( 15 );
-//		userField = new JTextField( 15 );
-//		passPromptField = new JTextField( 15 );
-//		passField = new JTextField( 15 );
 		
 		updateButton = new JButton("更新");
 		updateButton.addActionListener( this );
@@ -229,39 +222,13 @@ class ParameterPanel extends JPanel implements ActionListener
 		add( autoConnectLabel, c );
 		c.gridx = 1;
 		add( autoConnectCheckBox, c );
-
-		
-		/*
-		c.gridx = 0;
-		c.gridy = 3;
-		add( userPromptLabel, c );
-		c.gridx = 1;
-		add( userPromptField, c );
-		
-		c.gridx = 0;
-		c.gridy = 4;
-		add( userLabel, c );
-		c.gridx = 1;
-		add( userField, c );
-		
-		c.gridx = 0;
-		c.gridy = 5;
-		add( passPromptLabel, c );
-		c.gridx = 1;
-		add( passPromptField, c );
-		
-		c.gridx = 0;
-		c.gridy = 6;
-		add( passLabel, c );
-		c.gridx = 1;
-		add( passField, c );
 		
 		c.gridx = 0;
 		c.gridy = 8;
-		add( autoLoginLabel, c );
+		add( usernameLabel, c );
 		c.gridx = 1;
-		add( autoLoginCheckBox, c );
-		*/
+		add( usernameField, c );
+		
 		c.gridx = 0;
 		c.gridy = 9;
 		add( updateButton, c );
