@@ -337,7 +337,7 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 			long reopenTime = resource.getIntValue( Resource.AUTO_RECONNECT_TIME );
 			long reopenInterval = resource.getIntValue( Resource.AUTO_RECONNECT_INTERVAL );
 			long now = new Date().getTime();
-
+			
 			// 判斷連線時間距現在時間是否超過自動重連時間
 			// 若設定自動重連時間為 0 則總是自動重連
 			if( (now - startTime <= reopenTime * 1000) || reopenTime == 0 ) {
@@ -346,8 +346,10 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-
-				parent.reopenSession( this );	
+				
+				// 有可能在 sleep 時分頁被使用者手動關掉，只有當分頁仍存在時才重連
+				if( hasTab )
+					parent.reopenSession( this );	
 			}
 		}
 	}
