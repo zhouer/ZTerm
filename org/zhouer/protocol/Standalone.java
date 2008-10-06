@@ -54,7 +54,7 @@ public class Standalone
 			} else {
 				port = Integer.parseInt( args[2] );
 			}
-			p = new SSH2( args[1], port );
+			p = new SSH2( args[1], port, null );
 			p.setTerminalType( "vt100" );
 		} else {
 			System.out.println("Unknown protocol!");

@@ -840,3 +840,4 @@
 20081006:
 	Socks5 no authentication 完成，telnet connection 可以透過 putty 開的
 	ssh dynamic port forwarding 連線。
+	SSH 自動送出使用者帳號。

@@ -136,6 +136,7 @@ public class SSH2 implements Protocol
 {
 	private String host;
 	private int port;
+	private String username;
 	private String terminalType;
 	
 	private InputStream is;
@@ -157,7 +158,10 @@ public class SSH2 implements Protocol
 			conn.setTCPNoDelay( true );
 			connected = true;
 			
-			String username = Auth.getUsername();
+			// 若 SSH2 constructor 未指定 username 則用 Auth.getUsername() 取得
+			if( username == null || username.length() == 0 )
+				username = Auth.getUsername();
+			
 			if( username == null ) {
 				disconnect();
 				return false;
@@ -318,10 +322,11 @@ public class SSH2 implements Protocol
 		return terminalType;
 	}
 	
-	public SSH2( String h, int p )
+	public SSH2( String h, int p, String n )
 	{
 		host = h;
 		port = p;
+		username = n;
 		
 		connected = false;
 		authenticated = false;

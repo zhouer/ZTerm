@@ -440,7 +440,8 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		setState( STATE_TRYING );
 		
 		// 新建連線
-		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
+		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) )
+		{
 			if( resource.getBooleanValue( Resource.USING_SOCKS ) ) {
 				socks_host = resource.getStringValue( Resource.SOCKS_HOST );
 				socks_port = resource.getIntValue( Resource.SOCKS_PORT );
@@ -449,10 +450,14 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 				network = new Telnet( site.host, site.port );
 			}
 			network.setTerminalType( site.emulation );
-		} else if( site.protocol.equalsIgnoreCase( Protocol.SSH ) ) {
-			network = new SSH2( site.host, site.port );
+		} 
+		else if( site.protocol.equalsIgnoreCase( Protocol.SSH ) )
+		{
+			network = new SSH2( site.host, site.port, site.username );
 			network.setTerminalType( site.emulation );
-		} else {
+		}
+		else
+		{
 			System.err.println( "Unknown protocol: " + site.protocol );
 		}
 		
