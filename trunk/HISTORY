@@ -836,3 +836,7 @@
 
 20071003:
 	Apply H45 的 localization patch.
+
+20081006:
+	Socks5 no authentication 完成，telnet connection 可以透過 putty 開的
+	ssh dynamic port forwarding 連線。

@@ -18,9 +18,8 @@
 18. URL 中間有控制碼時，是否要繼續。
 19. 用 synchronized statement 保護 bi
 20. 可用再一次反白清除反白屬性
-21. Socks 4, 4a, 5 支援
-22. 中英文獨立字型設定
-23. 設定檔改用 xml properties file
-24. VT100 內的 repaint() 改為 repaint( long tm, int x, int y, int width, int height )
-25. 檔名中 / 應該換成 Path.separator
-26. Mac 上使用 ctrl-click 模擬右鍵
+21. 中英文獨立字型設定
+22. 設定檔改用 xml properties file
+23. VT100 內的 repaint() 改為 repaint( long tm, int x, int y, int width, int height )
+24. 檔名中 / 應該換成 Path.separator
+25. Mac 上使用 ctrl-click 模擬右鍵

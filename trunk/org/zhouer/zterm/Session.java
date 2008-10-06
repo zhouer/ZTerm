@@ -37,6 +37,9 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	private Convertor conv;
 	private Site site;
 	
+	private String socks_host;
+	private int socks_port;
+	
 	private VT100 vt;
 	private JScrollBar scrollbar;
 	
@@ -438,7 +441,13 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		
 		// 新建連線
 		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) ) {
-			network = new Telnet( site.host, site.port );
+			if( resource.getBooleanValue( Resource.USING_SOCKS ) ) {
+				socks_host = resource.getStringValue( Resource.SOCKS_HOST );
+				socks_port = resource.getIntValue( Resource.SOCKS_PORT );
+				network = new Telnet( site.host, site.port, socks_host, socks_port );
+			} else {
+				network = new Telnet( site.host, site.port );
+			}
 			network.setTerminalType( site.emulation );
 		} else if( site.protocol.equalsIgnoreCase( Protocol.SSH ) ) {
 			network = new SSH2( site.host, site.port );

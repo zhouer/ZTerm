@@ -31,6 +31,10 @@ public class Resource implements Config
 	public static final String AUTO_RECONNECT_TIME = "connect.autoreconnect-time";
 	public static final String AUTO_RECONNECT_INTERVAL = "connect.auto-reconnect-interval";
 	
+	public static final String USING_SOCKS = "connect.using-socks";
+	public static final String SOCKS_HOST = "connect.socks-host";
+	public static final String SOCKS_PORT = "connect.socks-port";
+	
 	public static final String EXTERNAL_BROWSER = "external-browser-command";
 	public static final String SYSTEM_LOOK_FEEL = "use-system-look-and-feel";
 	public static final String REMOVE_MANUAL_DISCONNECT = "remove-manual-disconnect";
@@ -89,6 +93,11 @@ public class Resource implements Config
 		defmap.put( AUTO_RECONNECT, "true" );
 		defmap.put( AUTO_RECONNECT_TIME, "10");
 		defmap.put( AUTO_RECONNECT_INTERVAL, "500" );
+		
+		// Socks 相關設定
+		defmap.put( USING_SOCKS, "false" );
+		defmap.put( SOCKS_HOST, "localhost" );
+		defmap.put( SOCKS_PORT, "2222" );
 		
 		// 字型設定
 		defmap.put( FONT_FAMILY, "Monospaced" );

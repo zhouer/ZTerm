@@ -204,6 +204,10 @@ class ConnectionPanel extends JPanel implements ActionListener
 	public JSpinner antiIdleTimeSpinner;
 	public SpinnerNumberModel antiIdleModel;
 	
+	public JLabel socksLabel, socksHostLabel, socksPortLabel;
+	public JCheckBox socksCheckBox;
+	public JTextField socksHostField, socksPortField;
+	
 	public void actionPerformed(ActionEvent ae) {
 		if( ae.getSource() == autoReconnectCheckBox ) {
 			reconnectTimeSpinner.setEnabled( autoReconnectCheckBox.isSelected() );
@@ -248,6 +252,14 @@ class ConnectionPanel extends JPanel implements ActionListener
 		antiIdleStringLabel = new JLabel(Messages.getString("Preference.AntiIdleString_Label_Text")); //$NON-NLS-1$
 		antiIdleStringField = new JTextField( resource.getStringValue(Resource.ANTI_IDLE_STRING), 15 );
 		
+		socksLabel = new JLabel( Messages.getString("Preference.UsingSocks_Label_Text") );
+		socksHostLabel = new JLabel( Messages.getString("Preference.SocksHost_Label_Text") );
+		socksPortLabel = new JLabel( Messages.getString("Preference.SocksPort_Label_Text") );
+		socksCheckBox = new JCheckBox();
+		socksCheckBox.setSelected( resource.getBooleanValue( Resource.USING_SOCKS) );
+		socksHostField = new JTextField( resource.getStringValue(Resource.SOCKS_HOST), 20 );
+		socksPortField = new JTextField( resource.getStringValue(Resource.SOCKS_PORT), 5 );
+		
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
@@ -288,6 +300,25 @@ class ConnectionPanel extends JPanel implements ActionListener
 		add( antiIdleStringLabel, c );
 		c.gridx = 1;
 		add( antiIdleStringField, c );
+		
+		c.gridx = 0;
+		c.gridy = 6;
+		add( socksLabel, c);
+		c.gridx = 1;
+		add( socksCheckBox, c);
+
+		c.gridx = 0;
+		c.gridy = 7;
+		add( socksHostLabel, c);
+		c.gridx = 1;
+		add( socksHostField, c);
+		
+		c.gridx = 0;
+		c.gridy = 8;
+		add( socksPortLabel, c);
+		c.gridx = 1;
+		add( socksPortField, c);
+		
 	}
 }
 
@@ -586,9 +617,11 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		
 		resource.setValue( Resource.ANTI_IDLE, cp.antiIdleCheckBox.isSelected() );
 		resource.setValue( Resource.ANTI_IDLE_INTERVAL, cp.antiIdleModel.getValue().toString() );
-		
-		// chitsaou.070726: 防閒置字串
 		resource.setValue( Resource.ANTI_IDLE_STRING, cp.antiIdleStringField.getText() );
+		
+		resource.setValue( Resource.USING_SOCKS, cp.socksCheckBox.isSelected() );
+		resource.setValue( Resource.SOCKS_HOST, cp.socksHostField.getText() );
+		resource.setValue( Resource.SOCKS_PORT, cp.socksPortField.getText() );
 		
 		resource.setValue( Resource.SYSTEM_LOOK_FEEL, ap.systemLookFeelCheckBox.isSelected() );
 		resource.setValue( Resource.SHOW_TOOLBAR, ap.showToolbarCheckBox.isSelected() );
@@ -598,9 +631,6 @@ public class Preference extends JDialog implements ActionListener, TreeSelection
 		resource.setValue( Resource.TERMINAL_SCROLLS, ap.scrollModel.getValue().toString() );
 		resource.setValue( Resource.TERMINAL_COLUMNS, ap.terminalColumnsModel.getValue().toString() );
 		resource.setValue( Resource.TERMINAL_ROWS, ap.terminalRowsModel.getValue().toString() );
-		
-		// chitsaou.070726: 分頁編號
-		// chitsaou.070726: 顯示捲軸
 		resource.setValue( Resource.TAB_NUMBER, ap.tabNumberCheckBox.isSelected() );
 		resource.setValue( Resource.SHOW_SCROLL_BAR, ap.showScrollBarCheckBox.isSelected() );
 		
