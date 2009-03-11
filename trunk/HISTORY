@@ -843,3 +843,7 @@
 	SSH 自動送出使用者帳號。
 	修正連上遠端 server 後立即被斷線，手動關掉分頁仍會一直重連的 bug.
 	find . -name '*.java' -print0 | xargs -0 wc -l -> 7908
+
+20090312:
+	在 popup menu 加上 Google search，方便選取文字後直接搜尋。
+
