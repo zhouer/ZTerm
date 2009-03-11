@@ -62,6 +62,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	// popup 選單
 	private JPopupMenu popupMenu;
 	private JMenuItem popupCopyItem, popupPasteItem, popupColorCopyItem, popupColorPasteItem, popupCopyLinkItem;
+	private JMenuItem googleSearchItem;
 	
 	// 連線工具列
 	private JToolBar connectionToolbar;
@@ -232,11 +233,17 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		popupCopyLinkItem.addActionListener( this );
 		popupCopyLinkItem.setEnabled( false );
 		
+		googleSearchItem = new JMenuItem( Messages.getString("ZTerm.Popup_GoogleSearch_MenuItem_Text") );
+		googleSearchItem.addActionListener( this );
+		googleSearchItem.setEnabled( false );
+
 		popupMenu.add( popupCopyItem );
 		popupMenu.add( popupPasteItem );
 		popupMenu.add( popupColorCopyItem );
 		popupMenu.add( popupColorPasteItem );
+		popupMenu.addSeparator();
 		popupMenu.add( popupCopyLinkItem );
+		popupMenu.add( googleSearchItem );
 	}
 	
 	private void makeTabbedPane()
@@ -588,14 +595,16 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		}
 	}
 	
-	public void showPopup( int x, int y, String link )
+	public void showPopup( int x, int y, String selected, String link )
 	{
 		Point p = getLocationOnScreen();
 		
 		// TODO: 用 tmpLink 的作法蠻笨的，但暫時想不到好作法
-		popupCopyLinkItem.setEnabled( link != null );
+		popupCopyLinkItem.setEnabled( link != null && link.length() > 0 );
 		tmpLink = link;
 		
+		googleSearchItem.setEnabled( selected != null && selected.length() > 0 );
+
 		// 傳進來的是滑鼠相對於視窗左上角的座標，減去主視窗相對於螢幕左上角的座標，可得滑鼠相對於主視窗的座標。
 		popupMenu.show( this, x - p.x , y - p.y );
 	}
@@ -846,6 +855,17 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		}
 	}
 	
+	public String getSelectedText()
+	{
+		Session s = (Session)tabbedPane.getSelectedComponent();
+		
+		if( s != null ) {
+			return s.getSelectedText();
+		}
+
+		return null;
+	}
+	
 	public boolean isTabForeground( Session s )
 	{
 		return (tabbedPane.indexOfComponent(s) == tabbedPane.getSelectedIndex());
@@ -961,6 +981,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			colorPaste();
 		} else if( source == popupCopyLinkItem ) {
 			copyLink();
+		} else if( source == googleSearchItem ) {
+			String str = getSelectedText();
+			openExternalBrowser("http://www.google.com.tw/search?q=" + str);
 		} else if( source == telnetButton ) {
 			siteText.setText( "telnet://" );
 			siteField.requestFocusInWindow();
