@@ -61,8 +61,9 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	
 	// popup 選單
 	private JPopupMenu popupMenu;
+	private JMenu quickLinkMenu;
 	private JMenuItem popupCopyItem, popupPasteItem, popupColorCopyItem, popupColorPasteItem, popupCopyLinkItem;
-	private JMenuItem googleSearchItem;
+	private JMenuItem googleSearchItem, tinyurlItem, orzItem, badongoItem;
 	
 	// 連線工具列
 	private JToolBar connectionToolbar;
@@ -237,6 +238,24 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		googleSearchItem.addActionListener( this );
 		googleSearchItem.setEnabled( false );
 
+		quickLinkMenu = new JMenu( Messages.getString("ZTerm.Popup_QuickLink_Menu_Text") );
+		
+		tinyurlItem = new JMenuItem( Messages.getString("ZTerm.Popup_Tinyurl_MenuItem_Text") );
+		tinyurlItem.addActionListener( this );
+		tinyurlItem.setEnabled( false );
+
+		orzItem = new JMenuItem( Messages.getString("ZTerm.Popup_Orz_MenuItem_Text") );
+		orzItem.addActionListener( this );
+		orzItem.setEnabled( false );
+
+		badongoItem = new JMenuItem( Messages.getString("ZTerm.Popup_Badongo_MenuItem_Text") );
+		badongoItem.addActionListener( this );
+		badongoItem.setEnabled( false );
+
+		quickLinkMenu.add( tinyurlItem );
+		quickLinkMenu.add( orzItem );
+		quickLinkMenu.add( badongoItem );
+		
 		popupMenu.add( popupCopyItem );
 		popupMenu.add( popupPasteItem );
 		popupMenu.add( popupColorCopyItem );
@@ -244,6 +263,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		popupMenu.addSeparator();
 		popupMenu.add( popupCopyLinkItem );
 		popupMenu.add( googleSearchItem );
+		popupMenu.add( quickLinkMenu );
 	}
 	
 	private void makeTabbedPane()
@@ -598,13 +618,18 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	public void showPopup( int x, int y, String selected, String link )
 	{
 		Point p = getLocationOnScreen();
+		boolean hoverLink = (link != null && link.length() > 0);
+		boolean hasSelectedText = (selected != null && selected.length() > 0);
 		
 		// TODO: 用 tmpLink 的作法蠻笨的，但暫時想不到好作法
-		popupCopyLinkItem.setEnabled( link != null && link.length() > 0 );
+		popupCopyLinkItem.setEnabled( hoverLink );
 		tmpLink = link;
 		
-		googleSearchItem.setEnabled( selected != null && selected.length() > 0 );
-
+		googleSearchItem.setEnabled( hasSelectedText );
+		tinyurlItem.setEnabled( hasSelectedText );
+		orzItem.setEnabled( hasSelectedText );
+		badongoItem.setEnabled( hasSelectedText );
+		
 		// 傳進來的是滑鼠相對於視窗左上角的座標，減去主視窗相對於螢幕左上角的座標，可得滑鼠相對於主視窗的座標。
 		popupMenu.show( this, x - p.x , y - p.y );
 	}
@@ -866,6 +891,16 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		return null;
 	}
 	
+	public void resetSelected()
+	{
+		Session s = (Session)tabbedPane.getSelectedComponent();
+		
+		if( s != null ) {
+			s.resetSelected();
+			s.repaint();
+		}
+	}
+	
 	public boolean isTabForeground( Session s )
 	{
 		return (tabbedPane.indexOfComponent(s) == tabbedPane.getSelectedIndex());
@@ -983,7 +1018,20 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			copyLink();
 		} else if( source == googleSearchItem ) {
 			String str = getSelectedText();
+			resetSelected();
 			openExternalBrowser("http://www.google.com.tw/search?q=" + str);
+		} else if( source == tinyurlItem ) {
+			String str = getSelectedText();
+			resetSelected();
+			openExternalBrowser("http://tinyurl.com/" + str);
+		} else if( source == orzItem ) {
+			String str = getSelectedText();
+			resetSelected();
+			openExternalBrowser("http://0rz.tw/" + str);
+		} else if( source == badongoItem ) {
+			String str = getSelectedText();
+			resetSelected();
+			openExternalBrowser("http://www.badongo.com/file/" + str);
 		} else if( source == telnetButton ) {
 			siteText.setText( "telnet://" );
 			siteField.requestFocusInWindow();
