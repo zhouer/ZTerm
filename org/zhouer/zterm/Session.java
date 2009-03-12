@@ -381,12 +381,9 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 	public void showPopup( int x, int y )
 	{
 		Point p = vt.getLocationOnScreen();
-		String selected, link;
+		String link = vt.getURL(x, y);
 
-		selected = getSelectedText();
-		link = vt.getURL(x, y);
-
-		parent.showPopup( p.x + x, p.y + y, selected, link );
+		parent.showPopup( p.x + x, p.y + y, link );
 	}
 	
 	public void openExternalBrowser( String url )

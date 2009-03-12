@@ -232,25 +232,20 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		
 		popupCopyLinkItem = new JMenuItem( Messages.getString("ZTerm.Popup_CopyLink_MenuItem_Text") ); //$NON-NLS-1$
 		popupCopyLinkItem.addActionListener( this );
-		popupCopyLinkItem.setEnabled( false );
 		
 		googleSearchItem = new JMenuItem( Messages.getString("ZTerm.Popup_GoogleSearch_MenuItem_Text") );
 		googleSearchItem.addActionListener( this );
-		googleSearchItem.setEnabled( false );
 
 		quickLinkMenu = new JMenu( Messages.getString("ZTerm.Popup_QuickLink_Menu_Text") );
 		
 		tinyurlItem = new JMenuItem( Messages.getString("ZTerm.Popup_Tinyurl_MenuItem_Text") );
 		tinyurlItem.addActionListener( this );
-		tinyurlItem.setEnabled( false );
 
 		orzItem = new JMenuItem( Messages.getString("ZTerm.Popup_Orz_MenuItem_Text") );
 		orzItem.addActionListener( this );
-		orzItem.setEnabled( false );
 
 		badongoItem = new JMenuItem( Messages.getString("ZTerm.Popup_Badongo_MenuItem_Text") );
 		badongoItem.addActionListener( this );
-		badongoItem.setEnabled( false );
 
 		quickLinkMenu.add( tinyurlItem );
 		quickLinkMenu.add( orzItem );
@@ -615,15 +610,24 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		}
 	}
 	
-	public void showPopup( int x, int y, String selected, String link )
+	public void showPopup( int x, int y, String link )
 	{
 		Point p = getLocationOnScreen();
+		String selected = getSelectedText();
+		
 		boolean hoverLink = (link != null && link.length() > 0);
 		boolean hasSelectedText = (selected != null && selected.length() > 0);
+		boolean hasClipText = (clip.getContent().length() > 0);
+		boolean hasColorText = (colorText != null && colorText.length() > 0);
 		
 		// TODO: 用 tmpLink 的作法蠻笨的，但暫時想不到好作法
 		popupCopyLinkItem.setEnabled( hoverLink );
 		tmpLink = link;
+		
+		popupCopyItem.setEnabled( hasSelectedText );
+		popupPasteItem.setEnabled( hasClipText );
+		popupColorCopyItem.setEnabled( hasSelectedText );
+		popupColorPasteItem.setEnabled( hasColorText );
 		
 		googleSearchItem.setEnabled( hasSelectedText );
 		tinyurlItem.setEnabled( hasSelectedText );
