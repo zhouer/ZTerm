@@ -1160,7 +1160,21 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			// 功能鍵不再往下送
 			return true;
 		}
-		
+
+		if( ke.isShiftDown() ) {
+			if( ke.getKeyCode() == KeyEvent.VK_INSERT ) {
+				paste();
+				return true;
+			}
+		}
+
+		if( ke.isCtrlDown() ) {
+			if( ke.getKeyCode() == KeyEvent.VK_INSERT ) {
+				copy();
+				return true;
+			}
+		}
+
 		// 一般鍵，繼續往下送。
 		return false;
 	}
