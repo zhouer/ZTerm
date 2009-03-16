@@ -1168,7 +1168,7 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 			}
 		}
 
-		if( ke.isCtrlDown() ) {
+		if( ke.isControlDown() ) {
 			if( ke.getKeyCode() == KeyEvent.VK_INSERT ) {
 				copy();
 				return true;
