@@ -849,3 +849,6 @@
 
 20090313:
 	在 popup menu 加上快速連結選單及 tinyurl, 0rz, badongo 快速連結。
+
+20090316:
+	加上 ctrl-insert (copy), shift-insert (paste) 快速鍵。
