@@ -614,10 +614,11 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 	{
 		Point p = getLocationOnScreen();
 		String selected = getSelectedText();
+		String clipText = clip.getContent();
 		
 		boolean hoverLink = (link != null && link.length() > 0);
 		boolean hasSelectedText = (selected != null && selected.length() > 0);
-		boolean hasClipText = (clip.getContent().length() > 0);
+		boolean hasClipText = (clipText != null && clipText.length() > 0);
 		boolean hasColorText = (colorText != null && colorText.length() > 0);
 		
 		// TODO: 用 tmpLink 的作法蠻笨的，但暫時想不到好作法
