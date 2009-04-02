@@ -35,9 +35,12 @@ public class Site implements Comparable {
 	// 啟動時自動連線
 	public boolean autoconnect;
 	
+	// 透過 Socks 連線
+	public boolean usesocks;
+	
 	// 使用者帳號
 	public String username;
-	
+
 	// 最近連線時間。
 	public long lastvisit;
 
@@ -101,6 +104,12 @@ public class Site implements Comparable {
 			v.addElement( "autoconnect=false" );	
 		}
 		
+		if( usesocks ) {
+			v.addElement( "usesocks=true" );
+		} else {
+			v.addElement( "usesocks=false" );	
+		}
+
 		return CSV.generate( v );
 	}
 	
@@ -145,6 +154,7 @@ public class Site implements Comparable {
 		lastvisit = 0;
 		total = 0;
 		autoconnect = false;
+		usesocks = true;
 		username = "";
 	}
 	
@@ -201,6 +211,12 @@ public class Site implements Comparable {
 			autoconnect = ((String)m.get("autoconnect")).equalsIgnoreCase("true");
 		} else {
 			autoconnect = false;	
+		}
+		
+		if( m.containsKey("usesocks") ) {
+			usesocks = ((String)m.get("usesocks")).equalsIgnoreCase("true");
+		} else {
+			usesocks = true;
 		}
 		
 		if( m.containsKey("username") ) {

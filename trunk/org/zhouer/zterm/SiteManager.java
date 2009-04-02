@@ -57,6 +57,9 @@ class ParameterPanel extends JPanel implements ActionListener
 	private String[] encodingList = { "Big5", "UTF-8" };
 	private String[] emulationList = { "vt100", "xterm", "xterm-color", "ansi" };
 	
+	private JLabel useSocksLabel;
+	private JCheckBox useSocksCheckBox;
+
 	private SiteManager parent;
 	
 	public void updateParameter( Site s )
@@ -77,6 +80,7 @@ class ParameterPanel extends JPanel implements ActionListener
 		emulationCombo.setSelectedItem( s.emulation );
 		
 		autoConnectCheckBox.setSelected( s.autoconnect );
+		useSocksCheckBox.setSelected( s.usesocks );
 		
 		// username 只對 ssh2 連線有效
 		usernameField.setEnabled( s.protocol.equalsIgnoreCase( Protocol.SSH ) );
@@ -102,6 +106,7 @@ class ParameterPanel extends JPanel implements ActionListener
 			s.emulation = emulationCombo.getSelectedItem().toString();
 			
 			s.autoconnect = autoConnectCheckBox.isSelected();
+			s.usesocks = useSocksCheckBox.isSelected();
 			s.username = usernameField.getText();
 			
 			parent.updateFavorite( s );
@@ -129,6 +134,7 @@ class ParameterPanel extends JPanel implements ActionListener
 		encodingLabel = new JLabel("文字編碼");
 		emulationLabel = new JLabel("終端機模擬");
 		autoConnectLabel = new JLabel("啟動時連線");
+		useSocksLabel = new JLabel("Socks 連線");
 		usernameLabel = new JLabel("自動送出帳號");
 		updateLabel = new JLabel("修改設定後請記得按「更新」");
 		
@@ -155,6 +161,7 @@ class ParameterPanel extends JPanel implements ActionListener
 		emulationCombo.addActionListener( this );
 		
 		autoConnectCheckBox = new JCheckBox();
+		useSocksCheckBox = new JCheckBox();
 		
 		updateButton = new JButton("更新");
 		updateButton.addActionListener( this );
@@ -225,12 +232,19 @@ class ParameterPanel extends JPanel implements ActionListener
 		
 		c.gridx = 0;
 		c.gridy = 8;
+		c.gridwidth = 1;
+		add( useSocksLabel, c );
+		c.gridx = 1;
+		add( useSocksCheckBox, c );
+		
+		c.gridx = 0;
+		c.gridy = 9;
 		add( usernameLabel, c );
 		c.gridx = 1;
 		add( usernameField, c );
 		
 		c.gridx = 0;
-		c.gridy = 9;
+		c.gridy = 10;
 		add( updateButton, c );
 		c.gridx = 1;
 		add( updateLabel, c );
