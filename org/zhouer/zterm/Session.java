@@ -438,7 +438,7 @@ public class Session extends JPanel implements Runnable, Application, Adjustment
 		// 新建連線
 		if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) )
 		{
-			if( resource.getBooleanValue( Resource.USING_SOCKS ) ) {
+			if( resource.getBooleanValue( Resource.USING_SOCKS ) && site.usesocks ) {
 				socks_host = resource.getStringValue( Resource.SOCKS_HOST );
 				socks_port = resource.getIntValue( Resource.SOCKS_PORT );
 				network = new Telnet( site.host, site.port, socks_host, socks_port );
