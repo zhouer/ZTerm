@@ -852,3 +852,10 @@
 
 20090316:
 	加上 ctrl-insert (copy), shift-insert (paste) 快速鍵。
+
+20090402:
+	增加各站台設定 socks 使用與否的開關 (by xeonchen)
+
+20091023:
+	在視窗標題列顯示連線通訊協定及是否使用 SOCKS.
+	find . -name '*.java' -print0 | xargs -0 wc -l -> 8033
