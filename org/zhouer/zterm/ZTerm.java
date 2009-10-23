@@ -439,7 +439,14 @@ public class ZTerm extends JFrame implements ActionListener, ChangeListener, Key
 		if( s != null )
 		{	
 			// 修改視窗標題列
-			setTitle( "ZTerm - " + s.getWindowTitle() ); //$NON-NLS-1$
+			Site site = s.getSite();
+			StringBuffer title = new StringBuffer( "ZTerm - " + s.getWindowTitle() + " " );
+			title.append( "[" + site.protocol + "]" );
+
+			// 只有 telnet 使用 SOCKS，且全域及站台設定皆要開啟
+			if( site.protocol.equalsIgnoreCase( Protocol.TELNET ) && resource.getBooleanValue( Resource.USING_SOCKS ) && site.usesocks )
+				title.append( "[SOCKS]" );
+			setTitle( title.toString() );
 			
 			// 修改位置列
 			siteText.setText( s.getURL() );
