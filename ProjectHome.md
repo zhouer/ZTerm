@@ -1,0 +1,1 @@
+zterm is a terminal (VT100, xterm, ...) emulator with excellent traditional Chinese support.
