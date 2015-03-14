@@ -1,11 +1,9 @@
-ZTerm current
-
 ZTerm 是一個專為 BBS 設計的連線軟體。
 
 特色：
 
 	* 支援模擬終端機 vt100（較完整）, xterm（部份）
-    * 支援通訊協定 Telnet, SSH2
+	* 支援通訊協定 Telnet, SSH2
 	* 支援文字編碼 Big5, UTF-8
 	* 支援分頁 (Tab)
 	* 支援捲軸
